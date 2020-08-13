@@ -1,0 +1,414 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+
+<!-- You might want to try something fancier: -->
+<!-- html/nunjucks docs: https://mozilla.github.io/nunjucks/ -->
+<!-- pug: https://pugjs.org/ -->
+<!-- haml: http://haml.info/ -->
+<!-- hbs(handlebars): http://handlebarsjs.com/ -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- COMMON TAGS -->
+    <meta charset="utf-8" />
+    <title>Data help page</title>
+    <link
+      rel="shortcut icon"
+      href="https://cdn.discordapp.com/avatars/647224894953619492/67d711a09d211f01edd520dc48e63459.png?size=128"
+    />
+    <!-- Search Engine -->
+    <meta name="description" content="Data help page -1 " />
+    <meta
+      name="image"
+      content="https://cdn.glitch.com/ca1b081c-b4c8-41bc-bb08-91d500baeab9%2Froboticon.png"
+    />
+    <!-- Schema.org for Google -->
+    <meta itemprop="name" content="Data help page - 2" />
+    <meta itemprop="description" content="Data help page - 3" />
+    <meta
+      itemprop="image"
+      content="https://cdn.glitch.com/ca1b081c-b4c8-41bc-bb08-91d500baeab9%2Froboticon.png"
+    />
+    <!-- Open Graph general (Facebook, Pinterest & Google+) -->
+    <meta name="og:title" content="Data help page" />
+    <meta name="og:description" content="Shows commands for Data" />
+    <meta
+      name="og:image"
+      content="https://cdn.discordapp.com/avatars/647224894953619492/67d711a09d211f01edd520dc48e63459.png?size=128"
+    />
+    <meta name="og:url" content="https://datacord.glitch.me/" />
+    <meta name="og:type" content="website" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- import the webpage's stylesheet -->
+    <link
+      href="https://unpkg.com/nes.css@2.2.0/css/nes.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <!-- import the webpage's client-side javascript file -->
+    <script src="/client.js" defer></script>
+    <script>
+      <script src="https://superheros-59a4.restdb.io/rest/_jsapi.js">
+      var prefix = "d!";
+    </script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Data Help Page</h1>
+      <h2>
+        <a href="https://superhero-database.glitch.me/">Superhero Database</a>
+      </h2>
+      <h2>Menu</h2>
+      <ul class="is-disc">
+        <li>
+          <a href="#commands">Commands</a>
+          <ul class="is-disk">
+            <li>
+              <a href="#commands.superhero_commands">Prefix commands</a>
+              <ul>
+                <li>
+                  <a href="#commands.superhero_commands.commands">Commands</a>
+                </li>
+                <li>
+                  <a href="#commands.superhero_commands.terminology"
+                    >Terminology</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="#commands.superhero_commands">Superhero commands</a>
+              <ul>
+                <li>
+                  <a href="#commands.superhero_commands.commands">Commands</a>
+                </li>
+                <li>
+                  <a href="#commands.superhero_commands.terminology"
+                    >Terminology</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="#commands.casual_commands">Casual commands</a>
+              <ul>
+                <li>
+                  <a href="#commands.casual_commands.commands">Commands</a>
+                </li>
+                <li>
+                  <a href="#commands.casual_commands.terminology"
+                    >Terminology</a
+                  >
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#build_a_bot">Build a bot</a>
+          <ul class="is-disk">
+            <li>
+              <a href="#build_a_bot.setup">Setup</a>
+              <ul>
+                <li>
+                  <a href="#build_a_bot.setup.application">Application</a>
+                </li>
+                <li>
+                  <a href="#build_a_bot.setup.glitch">Glitch</a>
+                </li>
+                <li>
+                  <a href="#build_a_bot.setup.uptime_robot">Uptime Robot</a>
+                </li>
+                <li>
+                  <a href="#build_a_bot.setup.final_steps">Final Steps</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </header>
+    <main>
+      <h2><a name="commands">Commands</a></h2>
+      <section>
+        <div class="nes-container is-light with-title">
+          <h2 class="title">
+            <a name="commands.prefix_commands">Prefix Commands</a>
+          </h2>
+          <p><a name="commands.prefix_commands.commands">Commands:</a></p>
+          <ul class="is-disc">
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >calc - WORK IN PROGRESS
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >game - WORK IN PROGRESS
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >getavatar - Returns a link to your avatar
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >getbot - Returns info on the bot
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >getcode - WORK IN PROGRESS
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >getemoji <b>EMOJINAME</b>- Displays foreign emoji
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >getemojilink <b>EMOJI</b>- Returns a link to the emoji
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >getlucky - Old easter egg
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >getreal <b>VALUE</b> - BotDev tool that displays raw text
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >help - Displays a link to this page
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >joke - Toggles joking
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >s <b>QUERY</b> - Searches in Google, Youtube and Wiki
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >savegame <b>EMOJI</b>- WORK IN PROGRESS
+            </li>
+          </ul>
+          <p><a name="commands.prefix_commands.terminology">Terminology:</a></p>
+          <ul class="is-disc">
+            <li><b>BOTNAME</b> - The current name of the Bot</li>
+            <li>
+              <b>EMOJI</b> - The name of the Emoji you want to use
+              <i>(e.g Thiccard, Bruh, Ow)</i>
+            </li>
+            <li>
+              <b>QUERY</b> - The value you want to search
+              <i
+                >(e.g What is Obama's last name?, Who is Joe?, the friendly lion
+                yt)</i
+              >
+            </li>
+            <li>
+              <b>VALUE</b> - The value you want to use
+              <i>(e.g an emoji, a mention, a channel link)</i>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <div class="nes-container is-light with-title">
+          <h2 class="title">
+            <a name="commands.superhero_commands">Superhero commands</a>
+          </h2>
+          <p><a name="commands.superhero_commands.">Commands:</a></p>
+          <ul class="is-disc">
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >get<b>TABLE NAME</b> - Displays a record from a table
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >list<b>TABLE</b> - Displays all record names from a table
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >listtables - Displays all table names from the database
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >new<b>TABLE NAME</b> - Creates an empty record (Except for the
+              name provided) in a table
+            </li>
+            <li>
+              <script type="text/javascript">
+                document.write(prefix);</script
+              >set<b>TABLE NAME </b>{<b>FIELD</b>=<b>VALUE</b>} - Changes a
+              field in a table to a provided value
+            </li>
+          </ul>
+          <p>
+            <a name="commands.superhero_commands.terminology">Terminology:</a>
+          </p>
+          <ul class="is-disc">
+            <li>
+              <b>TABLE</b> - The name of the Table you want to use
+              <i>(e.g supe, power, team)</i>
+            </li>
+            <li>
+              <b>NAME</b> - The name of the Record you want to use
+              <i>(e.g The Traveler, Sedative Farts, The Avengers)</i>
+            </li>
+            <li>
+              <b>FIELD</b> - The name of the Field you want to use
+              <i>(e.g Alias, Description, Members)</i>
+            </li>
+            <li>
+              <b>VALUE</b> - The value you want to use
+              <i>(e.g The Traveler, Sedative Farts, The Avengers)</i>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <div class="nes-container is-light with-title">
+          <h2 class="title">
+            <a name="commands.casual_commands">Casual commands</a>
+          </h2>
+          <p><a name="commands.casual_commands.commands">Commands:</a></p>
+          <ul class="is-disc">
+            <li>
+              <img
+                aria-label=":crab~1:"
+                src="https://cdn.discordapp.com/emojis/654633753758400513.png?v=1"
+                alt=":crab~1:"
+                width="30px"
+                hight="30px"
+              />
+              - Returns
+              <img
+                aria-label=":crab~1:"
+                src="https://cdn.discordapp.com/emojis/654633753758400513.png?v=1"
+                alt=":crab~1:"
+                width="30px"
+                hight="30px"
+              />
+            </li>
+            <li>
+              Are you <b>(Containing a QUERY and BOTNAME)</b> - Answers a
+              question
+            </li>
+            <li>
+              Do you hate <i>or</i> Do you like <i>or</i> Do you love
+              <b>(Containing a QUERY and BOTNAME)</b> - Answers a question
+            </li>
+            <li>hehe <i>or</i> jk - Returns random reply</li>
+            <li>hello there - Returns the name of the bold one</li>
+            <li>I'm <i>or</i> I am <i>or</i> Imma - Returns a 'dad' joke</li>
+            <li>
+              Jared - Returns
+              <img
+                aria-label=":jessicaofborg:"
+                src="https://cdn.discordapp.com/emojis/692300573977870346.png?v=1"
+                alt=":jessicaofborg:"
+                width="30px"
+                hight="30px"
+              />
+            </li>
+            <li>
+              Lost the game - Returns
+              <img
+                aria-label=":lostthegame:"
+                src="https://cdn.discordapp.com/emojis/687198759590952966.png?v=1"
+                alt=":lostthegame:"
+                width="30px"
+                hight="30px"
+              />, Did you just lose?
+            </li>
+            <li>Paul <i>or</i> 💀 - Paul comes over for a visit</li>
+            <li>Rip - Returns a message to pay respects</li>
+          </ul>
+          <p><a name="commands.casual_commands.terminology">Terminology:</a></p>
+          <ul class="is-disc">
+            <li><b>QUERY</b> - A question</li>
+            <li><b>BOTNAME</b> - The current name of the bot</li>
+          </ul>
+        </div>
+      </section>
+      <section>
+        <h2><a name="build_a_bot">Build a bot</a></h2>
+      </section>
+      <section>
+        <div class="nes-container is-light with-title">
+          <h2 class="title">
+            <a name="build_a_bot.setup">Setup</a>
+          </h2>
+          <p><a name="build_a_bot.setup.application">Application:</a></p>
+          <ul class="is-disc">
+            <li>
+              Go to the
+              <a href="https://discordapp.com/developers"
+                >Discord Developer Portal</a
+              >
+            </li>
+            <li>Make application</li>
+            <li>Make bot</li>
+            <li>Copy token</li>
+            <li>Exit</li>
+          </ul>
+          <p><a name="build_a_bot.setup.glitch">Glitch:</a></p>
+          <ul class="is-disc">
+            <li>Go to the <a href="https://glitch.com">Glitch Homepage</a></li>
+            <li>Make an account</li>
+            <li>
+              Make
+              <a href="https://glitch.com/edit/#!/remix/starter-discord"
+                >Discord Bot Project</a
+              >
+            </li>
+            <li>Paste your token under DISCORD_TOKEN in .env</li>
+            <li>Click share, then live app, then the uppermost copy button</li>
+          </ul>
+          <p><a name="build_a_bot.setup.uptime_robot">Uptime Robot:</a></p>
+          <ul class="is-disc">
+            <li>
+              Go to the
+              <a href="https://uptimerobot.com">Uptime Robot Homepage</a>
+            </li>
+            <li>Make an account</li>
+            <li>Make a monitor</li>
+            <li>Paste your link under URL</li>
+            <li>Copy main API key</li>
+          </ul>
+          <p><a name="build_a_bot.setup.final_steps">Final Steps:</a></p>
+          <ul class="is-disc">
+            <li>Paste API key into glitch</li>
+            <li>Add a prefix under .env</li>
+            <li>Go to dev portal</li>
+            <li>Create invite link</li>
+            <li>Test with command</li>
+          </ul>
+        </div>
+      </section>
+      <section></section>
+    </main>
+  </body>
+</html>
