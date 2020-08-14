@@ -1,10 +1,11 @@
+var botname = "Data"
+var realbotname = "Datacord"
+var prefix = "d!"
+
 const puns = require("puns.dev");
 var pun_id = 0;
 var reply_time = true;
-var botname = process.env.BOTNICKNAME;
-var realbotname = process.env.REALBOTNAME;
 var guess_display = ["`                   `\n`                   `\n`                   `\n`                   `\n`                   `\n`                   `", "`                   `\n`                   `\n`                   `\n`                   `\n`                   `\n`  _______          `", "`                   `\n`                   `\n`                   `\n`                   `\n`                   `\n` \_______          `", "`                   `\n`|                  `\n`|                  `\n`|                  `\n`|                  `\n`|\_______          `", "`                   `\n`|/                 `\n`|                  `\n`|                  `\n`|                  `\n`|\_______          `", "`__________         `\n`|/                 `\n`|                  `\n`|                  `\n`|                  `\n`|\_______          `", "`__________         `\n`|/        |        `\n`|                  `\n`|                  `\n`|                  `\n`|\_______          `", "`__________         `\n`|/        |        `\n`|         O        `\n`|                  `\n`|                  `\n`|\_______          `", "`__________         `\n`|/        |        `\n`|        \O        `\n`|                  `\n`|                  `\n`|\_______          `", "`__________         `\n`|/        |        `\n`|        \O/       `\n`|                  `\n`|                  `\n`|\_______          `", "`__________         `\n`|/        |        `\n`|        \O/       `\n`|         |        `\n`|                  `\n`|\_______          `", "`__________         `\n`|/        |        `\n`|        \O/       `\n`|         |        `\n`|        /         `\n`|\_______          `", "`__________         `\n`|/        |        `\n`|        \O/       `\n`|         |        `\n`|        / \       `\n`|\_______          `"]
-var prefix = process.env.PREFIX;
 var print;
 var last_message = "";
 var last_user = "";
