@@ -130,22 +130,6 @@ app.get("/update", function (request, response) {
 
     var url = "https://github.dev/Transit-Lumber/Transit-Lumber.github.io/"
 
-    puppeteer.launch().then(async browser => {
-      const page = await browser.newPage();
-    
-      await page.goto(url)
-
-      // Wait for the page to load and take a screenshot
-      await page.waitForSelector("html")
-
-      await page.screenshot({path: 'screenshot.png'});
-
-      // Send the screenshot from this repo and a message to the test channel
-      sendMessage("Screenshot taken", "TEST")
-      sendMessage(__dirname + "/screenshot.png", "TEST")
-
-      await browser.close();
-    })();
 });
 
 const listener = app.listen(process.env.PORT, function () {
@@ -216,7 +200,7 @@ function checkRepo() {
     })
 }
 
-checkRepo()
+// checkRepo()
 
 async function matchHashes(hash, url) {
     // Run a fetch on the url

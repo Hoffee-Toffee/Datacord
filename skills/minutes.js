@@ -1,32 +1,3 @@
- const discordBotkit = require("botkit-discord");
-
-const data_config = {
-  token: process.env.DATA_DISCORD_TOKEN
-};
-const minutes_config = {
-  token: process.env.MINUTES_DISCORD_TOKEN
-};
-
-const dataBot = discordBotkit(data_config);
-const minutesBot = discordBotkit(minutes_config);
-
-require("./skills/data.js")(dataBot);
-require("./skills/minutes.js")(minutesBot);
-module.exports = {
-    dataBot,
-    minutesBot
-}
-
-// Login to minutesBot with discord.js
-// Require discord.js
-const Discord = require("discord.js");
-
-// Create a new client instance
-const client = new Discord.Client( { intents: ["GUILDS", "GUILD_MESSAGES"] } );
-
-// Log in to Discord with your client's token
-client.login(process.env.MINUTES_DISCORD_TOKEN);
-
 // Generate southern greetings
 function genGreeting(plural = true) {
     var greets = ["howdy", "mornin'", "hello", "hiya", "hey", "good morning"]
@@ -63,13 +34,9 @@ function genGreeting(plural = true) {
     return greeting.charAt(0).toUpperCase() + greeting.slice(1);
 }
 
-// Run when the client is ready
-client.on("ready", () => {
-    console.log("I am ready!");
-
-    // Change the bot's presence
-    client.user.setPresence({ activities: [{ name: "over the Sacred Timelines", type: "WATCHING", details: "" }] });
-
-    // Send a greeting to the channel provided by the api
-    // client.channels.cache.get(process.env.MINUTES_ID).send(genGreeting());
-  });
+module.exports = function(controller) {
+    // Reply with a greeting when someone says "greet"
+    controller.hears("greet", ["ambient", "direct_message", "mention"], (bot, message) => {
+        bot.reply(message, genGreeting());
+    });
+}
