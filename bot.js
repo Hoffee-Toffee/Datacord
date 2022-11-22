@@ -71,5 +71,5 @@ client.on("ready", () => {
     client.user.setPresence({ activities: [{ name: "over the Sacred Timelines", type: "WATCHING", details: "" }] });
 
     // Send a greeting to the channel provided by the api
-    // client.channels.cache.get(process.env.MINUTES_ID).send(genGreeting());
+    client.channels.cache.get(process.env.MINUTES_ID).send(genGreeting());
   });
