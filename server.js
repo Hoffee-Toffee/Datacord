@@ -43,7 +43,6 @@ catch (err) {
 
 var intervalID = setInterval(timecheck, 10000); // Every 10 seconds, check the coundown
 var gifLoop = setInterval(checkGIF, 40000); // Every 40 seconds, check if a gif should be sent
-// var repoCheck = setInterval(checkRepo, 60000); // Every minute, check if the repo's submodules need to be updated
 
 function timecheck() {
     var currentdate = new Date();
@@ -122,15 +121,6 @@ app.get("/notify", function (request, response) {
     sendMessage(message, hook)
     response.send("Message sent")
 });
-app.get("/update", function (request, response) {
-    // Update the repo using github dev (using puppeteer)
-    // @ https://github.dev/Transit-Lumber/Transit-Lumber.github.io
-
-    // Use the link above and send a screenshot to a chat
-
-    var url = "https://github.dev/Transit-Lumber/Transit-Lumber.github.io/"
-
-});
 
 const listener = app.listen(process.env.PORT, function () {
     console.log("Your app is listening on port " + listener.address().port);
@@ -172,64 +162,3 @@ function checkGIF() {
         gifSent = true
     }
 }
-
-function checkRepo() {
-    // Get the list of submodules from the repo
-    var url = "https://raw.githubusercontent.com/Transit-Lumber/Transit-Lumber.github.io/main/.gitmodules"
-    var response = fetchUrl(url, function (error, meta, body) {
-        // Get the list of submodules from the repo
-        var data = body.toString().split("\"")
-
-        // Get the commit hashs of the submodules
-        var url = "https://api.github.com/repos/Transit-Lumber/Transit-Lumber.github.io/git/trees/main"
-
-        // Run a fetch on the url
-        var response = fetchUrl(url, function (error, meta, body) {
-            // Get the data from the fetch that are submodules
-            var hashs = JSON.parse(body.toString()).tree.filter(x => data.includes(x.path)).map(x => x.sha)
-
-            // Loop through the submodules
-            for (var i = 0; i < hashs.length; i++) {
-                var hash = hashs[i]
-                var url = "https://api.github.com/repos/Transit-Lumber/" + data[i * 2 + 1] + "/git/trees/main"
-
-                // Run a fetch on the url (wait continue when done)
-                matchHashes(hash, url)
-            }
-        })
-    })
-}
-
-// checkRepo()
-
-async function matchHashes(hash, url) {
-    // Run a fetch on the url
-    var response = await fetchUrl(url, function (error, meta, body) {
-        var data = JSON.parse(body.toString()).sha
-
-        // Check if the submodule has been updated
-        if (hash != data) {
-            // Update the submodule
-            updateSubmodule(url.split("/")[5])
-        }
-    })
-}
-
-function updateSubmodule(name) {
-    console.log("Updating submodule " + name)
-}
-
-// Octokit.js
-// https://github.com/octokit/core.js#readme
-
-// Run an action on the repo (to update submodules)
-const octokit = new Octokit({
-    auth: process.env.OCTOKIT_TOKEN
-})
-  
-await octokit.request('POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/{ref}', {
-    owner: 'Transit-Lumber',
-    repo: 'Transit-Lumber.github.io',
-    workflow_id: 'update.yml',
-    ref: 'main'
-})
