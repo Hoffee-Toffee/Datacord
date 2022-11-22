@@ -218,3 +218,18 @@ async function matchHashes(hash, url) {
 function updateSubmodule(name) {
     console.log("Updating submodule " + name)
 }
+
+// Octokit.js
+// https://github.com/octokit/core.js#readme
+
+// Run an action on the repo (to update submodules)
+const octokit = new Octokit({
+    auth: process.env.OCTOKIT_TOKEN
+})
+  
+await octokit.request('POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/{ref}', {
+    owner: 'Transit-Lumber',
+    repo: 'Transit-Lumber.github.io',
+    workflow_id: 'update.yml',
+    ref: 'main'
+})
