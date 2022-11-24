@@ -1,0 +1,16 @@
+name: Datacord
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync to Glitch Project
+        uses: kanadgupta/glitch-sync@main
+        with:
+          auth-token: '${{ secrets.authToken }}'
+          project-id: '${{ secrets.projectId }}'

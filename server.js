@@ -137,7 +137,7 @@ function getGif() {
     var url = "https://tenor.googleapis.com/v2/search?q=" + query + "&key=" + process.env.TENOR_KEY + "&client_key=gif_bot&limit=1&random=true"
     var response = fetchUrl(url, function (error, meta, body) {
         var data = JSON.parse(body.toString())
-        sendMessage(data.results[0].url, "GIF")
+        sendMessage(data.results[0].itemurl, "GIF")
     })
 }
 
