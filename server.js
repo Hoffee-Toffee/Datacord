@@ -13,19 +13,23 @@ var gifSent = false
 var gifQueries = [
     {
         "query": "dua lipa",
-        "weight": 3
+        "weight": 3 // 3 
     },
     {
         "query": "jess bush star trek nurse christine chapel",
-        "weight": 5
+        "weight": 5 // 2
     },
     {
         "query": "death on the nile emma mackey jacqueline de bellefort",
-        "weight": 6
+        "weight": 6 // 1
     },
     {
         "query": "sylvie sophia di martino",
-        "weight": 8
+        "weight": 8 // 2
+    },
+    {
+        "query": "gal gadot",
+        "weight": 10 // 2
     }
 ]
 
@@ -121,14 +125,68 @@ app.get("/notify", function (request, response) {
     sendMessage(message, hook)
     response.send("Message sent")
 });
+app.get("/vote", function (request, response) {
+    var title = request.query.title
+    var description = request.query.description
+    var color = request.query.color
+    var id = request.query.id
+
+    // Get 12 hours from now
+    var date = new Date();
+    date.setHours(date.getHours() + 12);
+
+    var embed = {
+      "content": `New proposal \"${title}\"`,
+      "tts": false,
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "style": 3,
+              "label": `Accept`,
+              "custom_id": `accept`,
+              "disabled": false,
+              "type": 2
+            },
+            {
+              "style": 4,
+              "label": `Reject`,
+              "custom_id": `review`,
+              "disabled": false,
+              "type": 2
+            }
+          ]
+        }
+      ],
+      "embeds": [
+        {
+          "type": "rich",
+          "title": title,
+          "description": description,
+          "color": parseInt(color),
+          "timestamp": date.toISOString(),
+          "footer": {
+            "text": `Voting close`
+          },
+          "url": `https://transit-lumber.github.io/supedb/map.html?id=${id}`,
+        }
+      ]
+    }
+
+    sendMessage(embed, "TEST")
+    response.send("Message sent")
+});
+
+
 
 const listener = app.listen(process.env.PORT, function () {
     console.log("Your app is listening on port " + listener.address().port);
 });
 
 function getGif() {
-    // Get a random number between 0 and 8
-    var random = Math.floor(Math.random() * 8)
+    // Get a random number between 0 and the weight of the last gif
+    var random = Math.floor(Math.random() * giflist[giflist.length - 1].weight);
 
     // Get a random query from the array based on the random number
     var query = gifQueries.find(x => random <= x.weight - 1).query
