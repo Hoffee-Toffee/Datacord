@@ -186,7 +186,7 @@ const listener = app.listen(process.env.PORT, function () {
 
 function getGif() {
     // Get a random number between 0 and the weight of the last gif
-    var random = Math.floor(Math.random() * giflist[giflist.length - 1].weight);
+    var random = Math.floor(Math.random() * gifQueries[gifQueries.length - 1].weight);
 
     // Get a random query from the array based on the random number
     var query = gifQueries.find(x => random <= x.weight - 1).query

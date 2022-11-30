@@ -36,7 +36,8 @@ function genGreeting(plural = true) {
 
 module.exports = function(controller) {
     // Reply with a greeting when someone says "greet"
-    controller.hears("greet", ["ambient", "direct_message", "mention"], (bot, message) => {
+    controller.hears(".greet", ["ambient", "direct_message", "mention"], (bot, message) => {
+        if (message.text !== ".greet") return;
         bot.reply(message, genGreeting());
     });
 }
