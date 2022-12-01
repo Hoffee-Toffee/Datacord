@@ -8,6 +8,36 @@ const discordBotkit = require("botkit-discord");
 const discordBot = require("./bot");
 const app = express();
 const fetchUrl = require("fetch").fetchUrl;
+const firebase = require("firebase");
+
+// Firebase configurations (for the bot database and the supes database)
+const supeConfig = {
+    apiKey: process.env.SUPE_API_KEY,
+    authDomain: "supe-db.firebaseapp.com",
+    projectId: "supe-db",
+    storageBucket: "supe-db.appspot.com",
+    messagingSenderId: "414925832647",
+    appId: "1:414925832647:web:04e6b82a8fc2dd48bf99e2",
+    measurementId: "G-FCEP73WM0G"
+};
+
+const botConfig = {
+    apiKey: process.env.BOT_API_KEY,
+    authDomain: "datacord-c462a.firebaseapp.com",
+    projectId: "datacord-c462a",
+    storageBucket: "datacord-c462a.appspot.com",
+    messagingSenderId: "432090619409",
+    appId: "1:432090619409:web:4626b9a132ab5c4cc61bb0",
+    measurementId: "G-4N3BH0J3GD"
+};
+
+// Initialize Firebase apps
+const supeApp = firebase.initializeApp(supeConfig, "supeApp");
+const botApp = firebase.initializeApp(botConfig, "botApp");
+
+// Get each firestore collection
+const supeDB = supeApp.firestore();
+const botDB = botApp.firestore();
 
 var gifSent = false
 var gifQueries = [
@@ -47,6 +77,7 @@ catch (err) {
 
 var intervalID = setInterval(timecheck, 10000); // Every 10 seconds, check the coundown
 var gifLoop = setInterval(checkGIF, 40000); // Every 40 seconds, check if a gif should be sent
+var supeLoop = setInterval(checkSupe, 40000); // Check every 40 seconds if it's time to send a report
 
 function timecheck() {
     var currentdate = new Date();
@@ -219,4 +250,20 @@ function checkGIF() {
         getGif()
         gifSent = true
     }
+}
+
+function supeLoop() {
+    // Needs to check firebase for any document changes
+
+    // Get the first document in the collection
+    botDB.collection("test").doc("test").get().then((doc) => {
+        if (doc.exists) {
+            console.log("Document data:", doc.data());
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    }).catch((error) => {
+        console.log("Error getting document:", error);
+    });
 }
