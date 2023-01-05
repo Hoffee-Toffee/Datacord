@@ -10,6 +10,7 @@ const app = express();
 const fetchUrl = require("fetch").fetchUrl;
 
 var gifSent = false
+var trisGifSent = false
 var gifQueries = [
     {
         "query": "dua lipa",
@@ -30,6 +31,10 @@ var gifQueries = [
     {
         "query": "gal gadot",
         "weight": 10 // 2
+    },
+    {
+        "query": "ava max",
+        "weight": 12 // 2
     }
 ]
 
@@ -99,6 +104,10 @@ function sendMessage(message, hookname) {
         var id = process.env.TEST_ID;
         var token = process.env.TEST_TOKEN;
     }
+    else if (hookname == "TRISBOT") {
+        var id = process.env.TBOT_ID;
+        var token = process.env.TBOT_TOKEN;
+    }
 
     const Discord = require("discord.js");
     const webhook = new Discord.WebhookClient({
@@ -106,11 +115,7 @@ function sendMessage(message, hookname) {
         token: token
     })
 
-    console.log(webhook)
-
-    webhook.send({
-        content: message
-    }).catch(console.error);
+    webhook.send(message).catch(err => { console.log(err) } );
 }
 
 app.use(express.static("public"));
@@ -200,23 +205,48 @@ function getGif() {
 }
 
 function checkGIF() {
-    if (gifSent) {
-        gifSent = false
-        return
-    }
-
     var currenttime = new Date();
 
     console.log("Checking for gif, current time is " + currenttime.getHours() + ":" + currenttime.getMinutes())
 
     // Send a gif every 2 hours from 7am till 1am
-    if (![18, 20, 22, 0, 2, 4, 6, 8, 10, 12].includes(currenttime.getHours())) {
-        return
-    }
-
-    if (currenttime.getMinutes() == 0) {
+    if ([18, 20, 22, 0, 2, 4, 6, 8, 10, 12].includes(currenttime.getHours()) && currenttime.getMinutes() == 0 && !gifSent) {
         console.log("Time matches, sending gif")
         getGif()
         gifSent = true
     }
+    // Reset the gifSent variable when a gif hasn't been sent
+    else {
+        gifSent = false
+    }
+
+    // Send a gif every 30 minutes from 7am till 1am (except for every 2 hours)
+    if ([18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].includes(currenttime.getHours())) {
+        // If the hour is even, only send a gif if the minute is 30 and the gif hasn't been sent yet
+        if (currenttime.getHours() % 2 == 0 && currenttime.getMinutes() == 30 && !trisGifSent) {
+            console.log("Time matches, sending gif")
+            trisGif()
+            trisGifSent = true
+        }
+        // If the hour is odd, only send a gif if the minute is 0 or 30 and the gif hasn't been sent yet
+        else if (currenttime.getHours() % 2 == 1 && [0, 30].includes(currenttime.getMinutes()) && !trisGifSent) {
+            console.log("Time matches, sending gif")
+            trisGif()
+            trisGifSent = true
+        }
+        // Reset the trisGifSent variable when a gif hasn't been sent
+        else {
+            trisGifSent = false
+        }
+    }
+}
+
+function trisGif() {
+    // Get a random url from the 'gifUrls.json' file
+    fs.readFile('gifUrls.json', 'utf8', function (err, data) {
+        if (err) throw err;
+        var urls = JSON.parse(data);
+        var random = Math.floor(Math.random() * urls.length);
+        sendMessage(urls[random], "TRISBOT")
+    });
 }
