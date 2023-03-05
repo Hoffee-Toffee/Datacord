@@ -50,41 +50,7 @@ catch (err) {
     var currentpos = 0;
 }
 
-var intervalID = setInterval(timecheck, 10000); // Every 10 seconds, check the coundown
 var gifLoop = setInterval(checkGIF, 40000); // Every 40 seconds, check if a gif should be sent
-
-function timecheck() {
-    var currentdate = new Date();
-    var diff = checkdate.getTime() - currentdate.getTime() - timezoneoffset;
-
-    var daydiff = Math.ceil(diff / (1000 * 3600 * 24))
-    var hourdiff = Math.ceil(diff / (1000 * 3600))
-    var mindiff = Math.ceil(diff / (1000 * 60))
-
-    var diffmessage = (daydiff + " days")
-
-    if (daydiff < 2) {
-        if (hourdiff < 2) {
-            diffmessage = (mindiff + " minutes")
-        }
-        else {
-            diffmessage = (hourdiff + " hours")
-        }
-    }
-
-    if (diffmessage == intervals[currentpos]) {
-        if (diffmessage == "0 minutes") {
-            sendMessage(`${eventname} time ${faces[Math.round(Math.floor(Math.random() * faces.length))]}`, "MEDIA")
-        }
-        else {
-            sendMessage(`${diffmessage} until ${eventname} ${faces[Math.round(Math.floor(Math.random() * faces.length))]}`, "MEDIA")
-        }
-        currentpos += 1
-        fs.writeFile('./time_status.txt', diffmessage, function (err) {
-            if (err) sendMessage("Error message received from the JS Server:\n`" + err + "`", "MEDIA");
-        });
-    }
-}
 
 function sendMessage(message, hookname) {
     console.log("Sending message \"" + message + "\" to " + hookname + " webhook")
