@@ -1,0 +1,4050 @@
+[
+    {
+        "id": "lfuf8rmaw1z",
+        "class": "Era",
+        "title": "Ancient Era",
+        "description": "A short description...",
+        "position": 0,
+        "header": [],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rma1t0v",
+        "class": "Head",
+        "title": "First Dirijat War",
+        "description": "Ancient war between alien civilizations and the Dirijat.",
+        "color": "e81313",
+        "position": [
+            10,
+            10
+        ],
+        "header": [],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rma1jxg",
+        "class": "Sub",
+        "title": "Artifact Shards Adrift",
+        "description": "It's pieces survive the destruction of Nayzar and spread across space.",
+        "headId": "lfuf8rma1t0v",
+        "position": [
+            25,
+            0
+        ],
+        "header": [],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rma1xfd",
+        "class": "Link",
+        "parentId": "lfuf8rma1t0v",
+        "childId": "lfuf8rma1jxg",
+        "type": "c",
+        "line": [
+            [
+                "lfuf8rma1t0v",
+                0.5,
+                "lfuf8rma1t0v",
+                0
+            ],
+            [
+                "lfuf8rma1t0v",
+                0.5,
+                "lfuf8rma1jxg",
+                0.5
+            ],
+            [
+                "lfuf8rma1jxg",
+                0,
+                "lfuf8rma1jxg",
+                0.5
+            ]
+        ]
+    },
+    {
+        "id": "lfuf8rma1iw0",
+        "class": "Sub",
+        "title": "Nayzar Destroyed",
+        "description": "The planet is destroyed as a result.",
+        "headId": "lfuf8rma1t0v",
+        "position": [
+            25,
+            10
+        ],
+        "header": [],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmapsm",
+        "class": "Link",
+        "parentId": "lfuf8rma1t0v",
+        "childId": "lfuf8rma1iw0",
+        "type": "c",
+        "line": [
+            [
+                "lfuf8rma1t0v",
+                1,
+                "lfuf8rma1t0v",
+                0.5
+            ],
+            [
+                "lfuf8rma1iw0",
+                0,
+                "lfuf8rma1iw0",
+                0.5
+            ]
+        ]
+    },
+    {
+        "id": "lfuf8rma1gyi",
+        "class": "Sub",
+        "title": "Most Aliens Now Extinct",
+        "description": "The Dirijat had assimilated most, with the rest either extinct or in hiding.",
+        "headId": "lfuf8rma1t0v",
+        "position": [
+            25,
+            20
+        ],
+        "header": [],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmb11x1",
+        "class": "Era",
+        "title": "Middle Ages",
+        "description": "Description of this era",
+        "position": 35,
+        "header": [],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmbebt",
+        "class": "Head",
+        "title": "Xalvador",
+        "description": "Xalvador was born in Normandy, France, 1059.",
+        "color": "FFFFFF",
+        "position": [
+            40,
+            25
+        ],
+        "header": [
+            {
+                "id": "lfuf8rmb1zfc",
+                "type": "infobox",
+                "banner": {
+                    "title": "Xalvador",
+                    "subtitle": "N/A"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmb1nbj",
+                        "key": "Full Name",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmbmau",
+                        "key": "Alias(es)",
+                        "value": "Xalvador"
+                    },
+                    {
+                        "id": "lfuf8rmbiux",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmb1irf",
+                        "key": "Gender",
+                        "value": "[Male]"
+                    },
+                    {
+                        "id": "lfuf8rmb1twb",
+                        "key": "Nationality",
+                        "value": "[Norman]"
+                    },
+                    {
+                        "id": "lfuf8rmb1lol",
+                        "key": "Affiliation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb24ct",
+                        "key": "Rank/Title",
+                        "value": "[Knight]"
+                    },
+                    {
+                        "id": "lfuf8rmb22mr",
+                        "key": "Occupation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb1yax",
+                        "key": "Status",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmbcyy",
+                        "key": "Born",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb15tr",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb12bo",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb1e5x",
+                        "key": "Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb10kg",
+                        "key": "Enhanced Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmbwnd",
+                        "key": "Skills",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb1khw",
+                        "key": "Gear",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmbb5s",
+                        "key": "Father",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb1k4o",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmbtu7",
+                        "key": "Sibling(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb1xxa",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmbz5q",
+                        "key": "Partner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmbzjs",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb229z",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmbkk9",
+                        "key": "Likeness",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmb1rod",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmbv2g",
+                        "type": "paragraph",
+                        "text": "N/A"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmbpwy",
+        "class": "Head",
+        "title": "Caesarea",
+        "description": "Curtana, wields a flaming sword and powerful armor.",
+        "color": "ffffff",
+        "position": [
+            40,
+            10
+        ],
+        "header": [
+            {
+                "id": "lfuf8rmb214t",
+                "type": "infobox",
+                "banner": {
+                    "title": "Lady Curtana",
+                    "subtitle": "Caesarea"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmbgoo",
+                        "key": "Full Name",
+                        "value": "Caesarea"
+                    },
+                    {
+                        "id": "lfuf8rmb22tt",
+                        "key": "Alias(es)",
+                        "value": "Curtana\nLady Curtana"
+                    },
+                    {
+                        "id": "lfuf8rmb1in6",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmb1bje",
+                        "key": "Gender",
+                        "value": "[Female]"
+                    },
+                    {
+                        "id": "lfuf8rmbbpt",
+                        "key": "Nationality",
+                        "value": "[Anglo-Saxon]"
+                    },
+                    {
+                        "id": "lfuf8rmbths",
+                        "key": "Affiliation(s)",
+                        "value": "[Black Fangs] (Leader)"
+                    },
+                    {
+                        "id": "lfuf8rmb1yk8",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb1njk",
+                        "key": "Occupation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb1v86",
+                        "key": "Status",
+                        "value": "Active ([2025])"
+                    },
+                    {
+                        "id": "lfuf8rmb21s6",
+                        "key": "Born",
+                        "value": "November 15, [1061]"
+                    },
+                    {
+                        "id": "lfuf8rmb140h",
+                        "key": "Disappeared",
+                        "value": "[1098] (Timejump)\nReturned [2025]"
+                    },
+                    {
+                        "id": "lfuf8rmb22zx",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb1anl",
+                        "key": "Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb137w",
+                        "key": "Enhanced Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmbvv2",
+                        "key": "Skills",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb23mv",
+                        "key": "Gear",
+                        "value": "[Curtana's Sword]\n[Curtana's Armor]"
+                    },
+                    {
+                        "id": "lfuf8rmbs2x",
+                        "key": "Father",
+                        "value": "[Caesarea's Father]"
+                    },
+                    {
+                        "id": "lfuf8rmb1yl1",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmbv59",
+                        "key": "Sibling(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb1tph",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmbvvh",
+                        "key": "Partner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb18mv",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmbgv3",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmb19qm",
+                        "key": "Likeness",
+                        "value": "Sophia Di Martino (Appearance)"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmbky0",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmb1uzo",
+                        "type": "paragraph",
+                        "text": "Caesarea was born on the 15th of November 1061. Her Father was a blacksmith.\n\nIn 1069, [Northumbia] revolts against [King William]. As a result, William quells these rebellions by the sword and famine, burning many villages.\n\nIn one of these campaigns, he attacks and kills the parents of Caesarea in their small village as they opposed his rule.\nTheir deaths sparked a hatred of the [Norman Aristocracy] in young Caesarea. \n\nCaesarea is sent as a servant girl to work as a servant for a Norman noble family. During 1069, whilst working as a servant, Caesarea becomes friends with this noble families’ son, Xalvador who treats her kindly unlike his family. In 1085, [Xalvador] is sent to become a royal [knight] by his family. This angers Caesarea greatly.\n\nThe next year, Caesarea becomes sick of the injustices faced by her people the Anglo-Saxons by the Norman aristocracy and monarchy so she founds the [Black Fangs] an anti-monarchal organization. She casts [her weapon|Void Curtana], a from a stolen Curtana as well as from the mysterious [void metal]. Jedi Master Tim Yoda — Today at 8:57 PM This void metal is from a shadowy ore that could be found deep underground. When set on fire this metal would emit a black flame. She adopts the alias Curtana and uses a mask to hide her face. Whilst in France on the 9th of September 1087, when seizing the province of Mantes, the history books tell you King William either fell ill or was injured by the pommel of his saddle. The real truth is, King William was poisoned by The Order of the Shadow Blade under Caesarea’s direct orders. For the next three years under their aliases, Sir Zacharay and Curtana became constantly at odds, not realizing who they were really fighting. In their civilian life they both had no idea of each other's double life as a hero and a villain as they grow ever closer. Caesarea does not want to tell Xalvador of her double life in fear that he will get in harm's way. In 1098, During one of Sir Zachary's sieges of The Order of The Shadow Blade’s castles, there he and Curtana would finally meet and duel. Due to the siege the castle begins to crumble whilst in the cave below Sir Zachary and Curtana would continue to duel. Sir Zachary would get the upper hand and knocks Curtana’s mask off revealing it was, Caesarea all along, his friend. Shocked he lays down his weapon and takes off his mask. Realizing they were fighting each other they would spend their last moments together as allies. They share a kiss as the cave collapses around them. This was supposed to be their end but in their last moments they would be taken away in flash into a distant future. Everyone would think them dead in their timeline ending the legacy of Curtana and Sir Zachary. [The Pure] in [The Corrupt|Corrupt] in an instant take superheroes and supervillains from across the multiverse for their own ideological and proxy war. Curtana and Xalvador are taken away.\n\nLady Curtana (Caesarea) Sunday, 6 March 2022 12:44 pm Villians Page 532 Curtana and Xalvador are taken away. In the event of their deaths they requested that their bodies are brought back to the cave where they would be found and properly buried many years later. Caesarea (Curtana. Caesaria grew up in a poor English family. Her Father was a blacksmith. During the Norman Invasion of England her father was part of the slaughter when King Willian the Conqueror pillaged villages to assert his control. Because of this she grew hate the king and Royals. In her early life she became friends with Zackary, a young boy of a slightly higher class. As they grew up her hatred for the royal family grew. While Sir Zackary later became a vigilantly knight, Curtana drifted down the path of darkness. Through her hatred she crafted her weapon a dark sword, a stolen Royal curtana. She Melted this down and forged a New sword out of Void metal. A shadowy ore that could be found deep underground. When set on fire this blade would emit a black flame. Setting up the black fangs, a shadowy organization bent upon overthrowing the monarchy. Under their aliases Sir Zacary and Curtana were constantly at odds. In their civilian life they both had no idea of each other's double life as a hero and a villain. in their personal life they would become closer together. They would never tell each other of their secret life in fear of them getting in harm’s way until that fateful day. On Sir Zachary's last crusade, he would come to the black fangs castle. There him and Curtana would duel. With the help with Sir Zachary’s allies the castle would be sieged and begin to crumble. In a cave underneath the castle Sir Zachary and Curtana would continue to duel while the cave would be crumbling around. Sir Zachary would get the upper hand and knock off Curtana’s mask off revealing her face. Shocked he lay down his weapon and take of his mask. Realizing they were fighting each other they would spend their last moments together as allies. In their last moments they would be taken away in flash into a distant future. Everyone would think them dead in their timeline ending the legacy of Curtana and Sir Zachary. In the event of their deaths they requested that their bodies are brought back to the cave where they would be found and properly buried many years later. Along with Curtana she also goes by the title Lady Curtana kk. Not really but anyways based off the stuff you mentioned earlier. Her armour offers her Enhanced strength, agility and speed. To start with, I was thinking about integrating his want to punish reality into already established lore."
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": [
+            "Curtana",
+            "Lady Curtana"
+        ]
+    },
+    {
+        "id": "lfuf8rmb15o2",
+        "class": "Head",
+        "title": "Norman Invasion of England",
+        "description": "Willaim the Conqueror becomes king. He goes on a campaign of bringing villages and quelling uprisings in his kingdom.",
+        "color": "cc4e00",
+        "position": [
+            55,
+            0
+        ],
+        "header": [],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmb1cx0",
+        "class": "Sub",
+        "title": "Northumbria Revolts",
+        "description": "In 1069, Northumbria revolts against King William.",
+        "headId": "lfuf8rmb15o2",
+        "position": [
+            70,
+            5
+        ],
+        "header": [],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmb22sf",
+        "class": "Link",
+        "parentId": "lfuf8rmb1cx0",
+        "childId": "lfuf8rmb15o2",
+        "type": "c",
+        "line": [
+            [
+                "lfuf8rmb15o2",
+                0.5,
+                "lfuf8rmb15o2",
+                1
+            ],
+            [
+                "lfuf8rmb15o2",
+                0.5,
+                "lfuf8rmb1cx0",
+                0.5
+            ],
+            [
+                "lfuf8rmb1cx0",
+                0,
+                "lfuf8rmb1cx0",
+                0.5
+            ]
+        ]
+    },
+    {
+        "id": "lfuf8rmc1g7o",
+        "class": "Sub",
+        "title": "Villages Purged and Burned",
+        "description": "The Normans respond by burning and killing the inhabitants of the villages.",
+        "headId": "lfuf8rmb15o2",
+        "position": [
+            85,
+            0
+        ],
+        "header": [],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmcl1w",
+        "class": "Sub",
+        "title": "Caesarea Becomes a Servant",
+        "description": "Caesarea is sent as a servant girl to work as a servant for a Norman noble family.",
+        "headId": "lfuf8rmbpwy",
+        "position": [
+            105,
+            10
+        ],
+        "header": [],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmc1818",
+        "class": "Link",
+        "parentId": "lfuf8rma1t0v",
+        "childId": "lfuf8rma1gyi",
+        "type": "c",
+        "line": [
+            [
+                "lfuf8rma1t0v",
+                0.5,
+                "lfuf8rma1t0v",
+                1
+            ],
+            [
+                "lfuf8rma1t0v",
+                0.5,
+                "lfuf8rma1gyi",
+                0.5
+            ],
+            [
+                "lfuf8rma1gyi",
+                0,
+                "lfuf8rma1gyi",
+                0.5
+            ]
+        ]
+    },
+    {
+        "id": "lfuf8rmc12tb",
+        "class": "Sub",
+        "title": "Caesarea's Parents Killed",
+        "description": "Caesarea's parents were among those who were killed in the burning of their village.",
+        "headId": "lfuf8rmbpwy",
+        "position": [
+            85,
+            10
+        ],
+        "header": [],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmc1ced",
+        "class": "Link",
+        "parentId": "lfuf8rmc1g7o",
+        "childId": "lfuf8rmc12tb",
+        "type": "e",
+        "line": [
+            [
+                "lfuf8rmc1g7o",
+                0.5,
+                "lfuf8rmc1g7o",
+                1
+            ],
+            [
+                "lfuf8rmc12tb",
+                0.5,
+                "lfuf8rmc12tb",
+                0
+            ]
+        ]
+    },
+    {
+        "id": "lfuf8rmc1mt6",
+        "class": "Sub",
+        "title": "Caesarea Born",
+        "description": "Caesarea was born on the 15th of November 1061, in Northumbria in a country village.",
+        "headId": "lfuf8rmbpwy",
+        "position": [
+            50,
+            10
+        ],
+        "header": [],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmcmcg",
+        "class": "Link",
+        "parentId": "lfuf8rmbpwy",
+        "childId": "lfuf8rmc1mt6",
+        "type": "e",
+        "line": [
+            [
+                "lfuf8rmbpwy",
+                1,
+                "lfuf8rmbpwy",
+                0.5
+            ],
+            [
+                "lfuf8rmc1mt6",
+                0,
+                "lfuf8rmc1mt6",
+                0.5
+            ]
+        ]
+    },
+    {
+        "id": "lfuf8rmc1pi3",
+        "class": "Sub",
+        "title": "Caesarea Develops Hate for Normans",
+        "description": "The deaths of her parents sparks a hatred of the Norman Aristocracy in young Caesarea.",
+        "headId": "lfuf8rmbpwy",
+        "position": [
+            85,
+            20
+        ],
+        "header": [],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmc23ze",
+        "class": "Link",
+        "parentId": "lfuf8rmc12tb",
+        "childId": "lfuf8rmc1pi3",
+        "type": "e",
+        "line": [
+            [
+                "lfuf8rmc12tb",
+                0.5,
+                "lfuf8rmc12tb",
+                1
+            ],
+            [
+                "lfuf8rmc1pi3",
+                0.5,
+                "lfuf8rmc1pi3",
+                0
+            ]
+        ]
+    },
+    {
+        "id": "lfuf8rmc189u",
+        "class": "Link",
+        "parentId": "lfuf8rmc12tb",
+        "childId": "lfuf8rmcl1w",
+        "type": "f",
+        "line": [
+            [
+                "lfuf8rmc12tb",
+                1,
+                "lfuf8rmc12tb",
+                0.5
+            ],
+            [
+                "lfuf8rmcl1w",
+                0,
+                "lfuf8rmcl1w",
+                0.5
+            ]
+        ]
+    },
+    {
+        "id": "lfuf8rmc14d1",
+        "class": "Link",
+        "parentId": "lfuf8rmc1g7o",
+        "childId": "lfuf8rmcl1w",
+        "type": "f",
+        "line": [
+            [
+                "lfuf8rmc1g7o",
+                1,
+                "lfuf8rmc1g7o",
+                0.5
+            ],
+            [
+                "lfuf8rmcl1w",
+                0.5,
+                "lfuf8rmc1g7o",
+                0.5
+            ],
+            [
+                "lfuf8rmcl1w",
+                0.5,
+                "lfuf8rmcl1w",
+                0
+            ]
+        ]
+    },
+    {
+        "id": "lfuf8rmc1nwp",
+        "class": "Link",
+        "parentId": "lfuf8rmc1pi3",
+        "childId": "lfuf8rmcl1w",
+        "type": "f",
+        "line": [
+            [
+                "lfuf8rmc1pi3",
+                1,
+                "lfuf8rmc1pi3",
+                0.5
+            ],
+            [
+                "lfuf8rmcl1w",
+                0.5,
+                "lfuf8rmc1pi3",
+                0.5
+            ],
+            [
+                "lfuf8rmcl1w",
+                0.5,
+                "lfuf8rmcl1w",
+                1
+            ]
+        ]
+    },
+    {
+        "id": "lfuf8rmc109b",
+        "class": "Link",
+        "parentId": "lfuf8rmb1cx0",
+        "childId": "lfuf8rmc1g7o",
+        "type": "c",
+        "line": [
+            [
+                "lfuf8rmb1cx0",
+                0.5,
+                "lfuf8rmb1cx0",
+                0
+            ],
+            [
+                "lfuf8rmb1cx0",
+                0.5,
+                "lfuf8rmc1g7o",
+                0.5
+            ],
+            [
+                "lfuf8rmc1g7o",
+                0,
+                "lfuf8rmc1g7o",
+                0.5
+            ]
+        ]
+    },
+    {
+        "id": "lfuf8rmcmpq",
+        "class": "Info",
+        "title": "Character Template",
+        "description": "Template for character pages.",
+        "header": [
+            {
+                "id": "lfuf8rmc1r6m",
+                "type": "infobox",
+                "banner": {
+                    "title": "N/A",
+                    "subtitle": "N/A"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmc1b6v",
+                        "key": "Full Name",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmc24r3",
+                        "key": "Alias(es)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmc9dw",
+                        "key": "Species",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmckov",
+                        "key": "Gender",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmc1gq3",
+                        "key": "Nationality",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmc1qyc",
+                        "key": "Affiliation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmc1ezs",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmc21kl",
+                        "key": "Occupation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmc20pt",
+                        "key": "Status",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmc1vfm",
+                        "key": "Born",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmc20sy",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmc11w8",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd1t0z",
+                        "key": "Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd9um",
+                        "key": "Enhanced Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmdgqq",
+                        "key": "Skills",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd8us",
+                        "key": "Gear",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd15rw",
+                        "key": "Father",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmdxlf",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd16t7",
+                        "key": "Sibling(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd252z",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmdv3b",
+                        "key": "Partner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmdww8",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd236a",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd1kwh",
+                        "key": "Likeness",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmd1lzn",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmd1u13",
+                        "type": "paragraph",
+                        "text": "N/A"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [
+            "Templates"
+        ],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmd1fov",
+        "class": "Info",
+        "title": "Starship / Space Station Template",
+        "description": "Description",
+        "header": [
+            {
+                "id": "lfuf8rmd24c8",
+                "type": "infobox",
+                "banner": {
+                    "title": "N/A",
+                    "subtitle": "N/A"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmdtf7",
+                        "key": "Name",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmdl2v",
+                        "key": "Type",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd21ld",
+                        "key": "Class",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd23tn",
+                        "key": "Manufacturer",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd1nbb",
+                        "key": "Owner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd9o6",
+                        "key": "Role(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd1beg",
+                        "key": "Mission(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmdw1w",
+                        "key": "Status",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmdrlx",
+                        "key": "Location",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmdu1s",
+                        "key": "Commissioned",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmdno0",
+                        "key": "Decommissioned",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd1pdw",
+                        "key": "Destroyed",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd1jhv",
+                        "key": "Engine Unit(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd1r39",
+                        "key": "Armament",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd9vb",
+                        "key": "Complement",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmdbgk",
+                        "key": "Commanding Officer(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmdk9f",
+                        "key": "Crewmembers",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmdp0e",
+                        "key": "Passengers",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmd1h1z",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmd239m",
+                        "type": "paragraph",
+                        "text": "N/A"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [
+            "Templates"
+        ],
+        "tags": [
+            "Starship",
+            "Space Station"
+        ],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmd1wmr",
+        "class": "Info",
+        "title": "Celestial Object Template",
+        "description": "Short description here...",
+        "header": [
+            {
+                "id": "lfuf8rmd13bq",
+                "type": "infobox",
+                "banner": {
+                    "title": "N/A",
+                    "subtitle": "N/A"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmdlab",
+                        "key": "Type",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd20i1",
+                        "key": "Affiliation",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd19tn",
+                        "key": "Status",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmdpc1",
+                        "key": "Satellite(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd1bof",
+                        "key": "Location",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmdki7",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmd1t0l",
+                        "type": "paragraph",
+                        "text": "N/A"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [
+            "Templates"
+        ],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmd1gpf",
+        "class": "Info",
+        "title": "Taisuke Lee",
+        "description": "Mr Teleporty Dude",
+        "header": [
+            {
+                "id": "lfuf8rmd10vf",
+                "type": "infobox",
+                "banner": {
+                    "title": "Traveller",
+                    "subtitle": "Taisuke Lee"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmdpwf",
+                        "key": "Full Name",
+                        "value": "Taisuke Lee"
+                    },
+                    {
+                        "id": "lfuf8rmd1idw",
+                        "key": "Alias(es)",
+                        "value": "Traveller"
+                    },
+                    {
+                        "id": "lfuf8rmd1seh",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmdm13",
+                        "key": "Gender",
+                        "value": "[Male]"
+                    },
+                    {
+                        "id": "lfuf8rmd1kdf",
+                        "key": "Nationality",
+                        "value": "[Japanese]"
+                    },
+                    {
+                        "id": "lfuf8rmd1zyo",
+                        "key": "Affiliation(s)",
+                        "value": "[Imperial Japanese Army] (Formerly)\n[CAST]"
+                    },
+                    {
+                        "id": "lfuf8rmdkir",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd1p8s",
+                        "key": "Occupation(s)",
+                        "value": "Unemployed"
+                    },
+                    {
+                        "id": "lfuf8rmdmhx",
+                        "key": "Status",
+                        "value": "Active ([2025])"
+                    },
+                    {
+                        "id": "lfuf8rmd19ju",
+                        "key": "Born",
+                        "value": "June 17, [1909],\n[Hokkaidō], [Japan], [Earth]\n"
+                    },
+                    {
+                        "id": "lfuf8rmdzwp",
+                        "key": "Disappeared",
+                        "value": "December [1940] (Timejump)\nReturned [2020]"
+                    },
+                    {
+                        "id": "lfuf8rmd1xph",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmdq2a",
+                        "key": "Power(s)",
+                        "value": "[Teleportation Gas] Creation"
+                    },
+                    {
+                        "id": "lfuf8rmd13rx",
+                        "key": "Enhanced Power(s)",
+                        "value": "Short-Range [Gravity Manipulation]"
+                    },
+                    {
+                        "id": "lfuf8rmd141o",
+                        "key": "Skills",
+                        "value": "Military Weapons Training\nFirst Aid Training"
+                    },
+                    {
+                        "id": "lfuf8rmd1wyy",
+                        "key": "Gear",
+                        "value": "[Shock Glove]\nCybernetic Arm (Left)"
+                    },
+                    {
+                        "id": "lfuf8rmd1x4h",
+                        "key": "Father",
+                        "value": "[Taisuke's Father]"
+                    },
+                    {
+                        "id": "lfuf8rmd148q",
+                        "key": "Mother",
+                        "value": "[Taisuke's Mother]"
+                    },
+                    {
+                        "id": "lfuf8rmd1gb4",
+                        "key": "Sibling(s)",
+                        "value": "[Hisaki Lee] ([Brother])"
+                    },
+                    {
+                        "id": "lfuf8rmdkqj",
+                        "key": "Other Relatives",
+                        "value": ""
+                    },
+                    {
+                        "id": "lfuf8rmd1les",
+                        "key": "Partner(s)",
+                        "value": "[Nozomu Ryoko] ([Girlfriend])"
+                    },
+                    {
+                        "id": "lfuf8rmdp95",
+                        "key": "Children",
+                        "value": ""
+                    },
+                    {
+                        "id": "lfuf8rmdbhs",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmd1ppp",
+                        "key": "Likeness",
+                        "value": "Brian Tee (Appearance)"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmd1m87",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmdgli",
+                        "type": "paragraph",
+                        "text": "Test [Nozomu Ryoko]"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [
+            {
+                "id": "lfuf8rmd154t",
+                "title": "Traveller's Facility",
+                "text": "Engineered with [Amplex]\n\nWeak suction vent tubes used to collect [Traveller's gas].\nAir filtered out, compressed into storage tanks for use.\n\nGas used for gateways, is like just a thick standalone door frame - similar to some metal detectors.\nWill have a sensor at the bottom and a location sign on top.\nPossibly a voice/touch interface accompanied.\nThe frame will spray the gas at the person within the frame and transport them.\nSimilar systems can be used in other places such as [The Library].\nGas canisters can be teleported to these other locations to supply them.\nThe canisters can be automatically 'docked' into the system.\nAny time a canister becomes empty, the gas from another canister can be used to transport it back to this facility where it will be automatically refilled and sent back.\nFacility would also be looking at trying to replicate the [teleportation gas] without having to rely on Traveller.",
+                "author": "Cool Person (Placeholder)",
+                "date": "29/03/2023, 00:51:12",
+                "talk": []
+            }
+        ],
+        "categories": [
+            "Humans",
+            "Heroes",
+            "Males",
+            "Members of CAST"
+        ],
+        "tags": [],
+        "redirects": [
+            "Traveller"
+        ]
+    },
+    {
+        "id": "lfuf8rme19g6",
+        "class": "Info",
+        "title": "Nozomu Ryoko",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmebgp",
+                "type": "infobox",
+                "banner": {
+                    "title": "TBD",
+                    "subtitle": "Nozomu Ryoko"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rme1hjd",
+                        "key": "Full Name",
+                        "value": "Nozomu Ryoko"
+                    },
+                    {
+                        "id": "lfuf8rmenlh",
+                        "key": "Alias(es)",
+                        "value": "TBD"
+                    },
+                    {
+                        "id": "lfuf8rme197o",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmek7k",
+                        "key": "Gender",
+                        "value": "[Female]"
+                    },
+                    {
+                        "id": "lfuf8rmegkc",
+                        "key": "Nationality",
+                        "value": "[Japanese]"
+                    },
+                    {
+                        "id": "lfuf8rme1am2",
+                        "key": "Affiliation(s)",
+                        "value": "[Realm Team]"
+                    },
+                    {
+                        "id": "lfuf8rme1g8q",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme1r71",
+                        "key": "Occupation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme1keo",
+                        "key": "Status",
+                        "value": "Active ([2025])"
+                    },
+                    {
+                        "id": "lfuf8rme1ktt",
+                        "key": "Born",
+                        "value": "Unknown"
+                    },
+                    {
+                        "id": "lfuf8rmekj8",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmef57",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmeyk9",
+                        "key": "Power(s)",
+                        "value": "[Concussion Beam]\n[Sword Beam Emmission]"
+                    },
+                    {
+                        "id": "lfuf8rmek5k",
+                        "key": "Enhanced Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme1k5v",
+                        "key": "Skills",
+                        "value": "Blade Combat"
+                    },
+                    {
+                        "id": "lfuf8rme1hyu",
+                        "key": "Gear",
+                        "value": "[Ryoko's Sword|Sword] (Presumed)"
+                    },
+                    {
+                        "id": "lfuf8rmeagu",
+                        "key": "Father",
+                        "value": "Unknown"
+                    },
+                    {
+                        "id": "lfuf8rmeq5r",
+                        "key": "Mother",
+                        "value": "Unknown"
+                    },
+                    {
+                        "id": "lfuf8rme1s6n",
+                        "key": "Sibling(s)",
+                        "value": "[Ryoko's Brother] ([Brother])"
+                    },
+                    {
+                        "id": "lfuf8rmemp7",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme1vtl",
+                        "key": "Partner(s)",
+                        "value": "[Taisuke Lee] ([Boyfriend])"
+                    },
+                    {
+                        "id": "lfuf8rme1lm8",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme1law",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme16lc",
+                        "key": "Likeness",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rme1g3b",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmejxv",
+                        "type": "paragraph",
+                        "text": "She has [Dragon] based powers. Concussion Beams: Release beams of solidified [Dragon Energy]/elements. She can [Magic Embedding|empower] her weapons with [Dragon Energy]. Sword Beam Emission: Release [Dragon Energy]/elements blasts from swords and other such bladed weapons."
+                    },
+                    {
+                        "id": "lfuf8rme1ko4",
+                        "type": "paragraph",
+                        "text": "[The Teacher] has [Realm|Realms] that contain other people who also escaped [the Pure] and [The Corrupt|corrupt] warfare Ryoko is among the descendants of some of these people. When the realms are taken over by [Zalgototh], they attempt to conquer the realms and convert [Category:Realm Inhabitants|it's people] (as opposed to just killing them) Ryoko has a [Ryoko's Brother|brother] that is 'seduced' by the [Furik|dark side] He is broken by them and turns to their side He struggles with redeeming himself [Skyshear] is the main one trying to conquer this realm btw. Ryoko struggles with the pressures of the conflict and personal hardship. They fight and both end up swapping allegiances. Her brother ends up helping Ryoko 'turn back' And they team up against Skyshear. Ryoko is tempted by the dark while her brother the light."
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [
+            "Characters",
+            "Females",
+            "Realms Inhabitants",
+            "Superhumans"
+        ],
+        "tags": [
+            "Dragon Energy",
+            "Dragon"
+        ],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rme24kg",
+        "class": "Info",
+        "title": "Samuel Harkans",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rme1vba",
+                "type": "infobox",
+                "banner": {
+                    "title": "Zalgototh",
+                    "subtitle": "Samuel Harkans"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmeo67",
+                        "key": "Full Name",
+                        "value": "Samuel Harkans"
+                    },
+                    {
+                        "id": "lfuf8rme1pn1",
+                        "key": "Alias(es)",
+                        "value": "Zalgototh\nZalgo"
+                    },
+                    {
+                        "id": "lfuf8rme17gd",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmeraw",
+                        "key": "Gender",
+                        "value": "[Male]"
+                    },
+                    {
+                        "id": "lfuf8rme1kmw",
+                        "key": "Nationality",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme1pxv",
+                        "key": "Affiliation(s)",
+                        "value": "[Furik]"
+                    },
+                    {
+                        "id": "lfuf8rme23ex",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme131g",
+                        "key": "Occupation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme1uod",
+                        "key": "Status",
+                        "value": "TBD"
+                    },
+                    {
+                        "id": "lfuf8rme1ykn",
+                        "key": "Born",
+                        "value": "Unknown"
+                    },
+                    {
+                        "id": "lfuf8rmedy6",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme9mj",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme1vjf",
+                        "key": "Power(s)",
+                        "value": "[Reality Manipulation]"
+                    },
+                    {
+                        "id": "lfuf8rmeo7j",
+                        "key": "Enhanced Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme18r2",
+                        "key": "Skills",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmeldb",
+                        "key": "Gear",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme1lsc",
+                        "key": "Father",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmej2a",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmeyzc",
+                        "key": "Sibling(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme1dzo",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme1ijs",
+                        "key": "Partner(s)",
+                        "value": "[Samuel's Wife] ([Widow|Widowed] to)"
+                    },
+                    {
+                        "id": "lfuf8rme1c2s",
+                        "key": "Children",
+                        "value": "[Taylor Harkans] ([Son])\n[Robert Harkans] ([Son])"
+                    },
+                    {
+                        "id": "lfuf8rmeag0",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rme1b4i",
+                        "key": "Likeness",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmemcf",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rme1uts",
+                        "type": "paragraph",
+                        "text": "He takes control of people and forces a strand of [The Virus] into his [Furik|\"servants\"] which warps their appearance. He has manipulated a lot of people including [Taylor Harkans|Libra's] [Robert Harkans|brother].\n\nHe was imprisoned there by Libra and his [Creep Crew|original team], but it cost their lives. Oh, I was thinking they would be trying to free their master from a [Teacher's Realm|dimensional prison] or something. True but this villain needs to be immensely powerful worth being locked up in an interdimensional prison. Why not something with [Reality Manipulation|dimension warping] powers or I got it A highly dangerous corrupt. he is supposed to be a villain of incredible power. If you mean twisted and evil, I guess. What if it also corrupts this individual's appearance? And it connects the corrupt thing and how his brother was corrupted. so, reality stone given human form? Well no corrupt based/ dimension bending stuff it can give the virus and is the same person who corrupted his brother. before the events of [CAST] forming and everything, this villain was trapped in another dimension by Libra and his original team, but the majority of said team was also trapped with them. his power twists him, making him want more, breaking his mind. he is quite powerful, but at the price of his mind and body. Father of Libra and Fury. To start with, I was thinking about integrating his want to punish reality into already established lore. Since the [Artifact] was used to disperse many things in order to cause the best outcome. Including strands of the virus. It would have caused his [Samuel's Wife|wife]'s death. In order to create Zalgototh and therefore Libra. So, if Zalgototh somehow knew that this is what happened. It would make his motivations more grounded. He has both the [Magic System] and the virus. a big battle with the Creep Crew against Zalgototh and the Furik which ended with the death of [Everlast] and [Nightdoll] and the imprisonment of Zalgototh alongside most of the Creep Crew. Did Zalgototh have a plan that brought about a sense of urgency for The Creep Crew? his whole reality wiping thing? news about something Zalgototh was going to use to vastly increase his powers to wipe reality could be the Artifact, could be something that doesn't exist and was a trap for the Creep Crew. Kinda of the same threat that he has later on Except they manage to stop him How do they imprison him. combination of their powers as well as a gift from the teacher that can't be repeated the earliest point of the [Apex] powers. What if Zalgototh was a fallen student of [The Teacher]?"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": [
+            "Zalgototh",
+            "Zalgo"
+        ]
+    },
+    {
+        "id": "lfuf8rmf24bp",
+        "class": "Info",
+        "title": "Jennifer Graves",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmf1rlp",
+                "type": "infobox",
+                "banner": {
+                    "title": "Volantis",
+                    "subtitle": "Dr. Graves"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmfd0d",
+                        "key": "Full Name",
+                        "value": "Dr. Jennifer Emma Graves"
+                    },
+                    {
+                        "id": "lfuf8rmf12t6",
+                        "key": "Alias(es)",
+                        "value": "Volantis"
+                    },
+                    {
+                        "id": "lfuf8rmflba",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmf24z3",
+                        "key": "Gender",
+                        "value": "[Female]"
+                    },
+                    {
+                        "id": "lfuf8rmfnvv",
+                        "key": "Nationality",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmf1k21",
+                        "key": "Affiliation(s)",
+                        "value": "[Article 15]"
+                    },
+                    {
+                        "id": "lfuf8rmfyzu",
+                        "key": "Rank/Title",
+                        "value": "[Doctor]"
+                    },
+                    {
+                        "id": "lfuf8rmfloa",
+                        "key": "Occupation(s)",
+                        "value": "A15 Researcher,\nTechnician\n[Unnamed Base 001]"
+                    },
+                    {
+                        "id": "lfuf8rmf1hwk",
+                        "key": "Status",
+                        "value": "Presumed Active ([2025])"
+                    },
+                    {
+                        "id": "lfuf8rmf1ggj",
+                        "key": "Born",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmfvn0",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmf1dyt",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmf10s5",
+                        "key": "Power(s)",
+                        "value": "[Phasing]\n[Flight]\n[Enhanced Strength]"
+                    },
+                    {
+                        "id": "lfuf8rmf1vvq",
+                        "key": "Enhanced Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmf1plk",
+                        "key": "Skills",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmf1pmi",
+                        "key": "Gear",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmf13ey",
+                        "key": "Father",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmf1psm",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmf93q",
+                        "key": "Sibling(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmf1qe2",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmff2v",
+                        "key": "Partner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmfpj6",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmfidl",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmf1ii5",
+                        "key": "Likeness",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmf23gf",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmf1x7n",
+                        "type": "paragraph",
+                        "text": "Her powers involve the ability to [Phasing|phase] through solid objects, [flight] and [enhanced strength].\nShe can also 'phase' objects or people.\nShe's not exactly the most stable of people either, hehe\n\nJennifer was a technician who worked at a [Unnamed Base 001|base] somewhere. There is a powerful item there related to the [Dirijat]/[Salvage]\n\nGraves becomes exposed to [TBD|the item] and she gets powers as well as going insane. Graves becomes obsessed with power and is revealed to be connected to [Arjan Dweck|Dweck].\n"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmf1ca0",
+        "class": "Info",
+        "title": "Uberto Romano",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmf1q1e",
+                "type": "infobox",
+                "banner": {
+                    "title": "Toxiceon",
+                    "subtitle": "Uberto Romano"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmf1qq8",
+                        "key": "Full Name",
+                        "value": "Uberto Romano"
+                    },
+                    {
+                        "id": "lfuf8rmf1nd4",
+                        "key": "Alias(es)",
+                        "value": "Toxiceon"
+                    },
+                    {
+                        "id": "lfuf8rmf1h30",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmf1nxw",
+                        "key": "Gender",
+                        "value": "[Male]"
+                    },
+                    {
+                        "id": "lfuf8rmflde",
+                        "key": "Nationality",
+                        "value": "[Italian]"
+                    },
+                    {
+                        "id": "lfuf8rmf15xv",
+                        "key": "Affiliation(s)",
+                        "value": "[Romano Family Mob]"
+                    },
+                    {
+                        "id": "lfuf8rmf9qr",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmf1h6q",
+                        "key": "Occupation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmf1fb3",
+                        "key": "Status",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmfqmc",
+                        "key": "Born",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmg15wg",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmg1zj2",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmg24pc",
+                        "key": "Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmgklr",
+                        "key": "Enhanced Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmg1f8c",
+                        "key": "Skills",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmgjd4",
+                        "key": "Gear",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmgu70",
+                        "key": "Father",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmguvn",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmh1kva",
+                        "key": "Sibling(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmh2483",
+                        "key": "Other Relatives",
+                        "value": "[Kel Romano] ([Cousin])"
+                    },
+                    {
+                        "id": "lfuf8rmh200v",
+                        "key": "Partner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmhakn",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmhcwl",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmh1eei",
+                        "key": "Likeness",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmh1cj1",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmhs7w",
+                        "type": "paragraph",
+                        "text": "Basically, somebody from [Flora Winters|Flora]'s past that replicated the conditions that gave Flora her powers and did it to himself. Highly intelligent pretty much her nemesis. someone to truly hate without it just being another cousin of [Cerebrum]'s.\n\nHe would be cold, and calculating and highly intelligent a worthy adversary.\nThe [Romanos Family Mob|Romanos] would be the only people who would have the footage of what happened on that fateful night of Flora's accident. "
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmh216l",
+        "class": "Info",
+        "title": "Kassandra Harkans",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmh99w",
+                "type": "infobox",
+                "banner": {
+                    "title": "Kassandra Harkans",
+                    "subtitle": "N/A"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmh1zql",
+                        "key": "Full Name",
+                        "value": "Kassandra Harkans"
+                    },
+                    {
+                        "id": "lfuf8rmh1sxh",
+                        "key": "Alias(es)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmh1dnd",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmh1cwh",
+                        "key": "Gender",
+                        "value": "[Female]"
+                    },
+                    {
+                        "id": "lfuf8rmhfcr",
+                        "key": "Nationality",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmh1y6d",
+                        "key": "Affiliation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmh1oky",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmh90x",
+                        "key": "Occupation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmhe2y",
+                        "key": "Status",
+                        "value": "Presumed Active ([2025])"
+                    },
+                    {
+                        "id": "lfuf8rmh10yo",
+                        "key": "Born",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmhzby",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmh1p33",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmh1otw",
+                        "key": "Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmh9rz",
+                        "key": "Enhanced Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmherj",
+                        "key": "Skills",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmha1o",
+                        "key": "Gear",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmh1wz0",
+                        "key": "Father",
+                        "value": "[Taylor Harkans] ([Adoption|Adoptive])"
+                    },
+                    {
+                        "id": "lfuf8rmh1tpg",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmh1bfn",
+                        "key": "Sibling(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmhyv7",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmhib3",
+                        "key": "Partner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmhvm9",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmh1ls1",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmhuax",
+                        "key": "Likeness",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmhqvf",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmhdbi",
+                        "type": "paragraph",
+                        "text": "[Libra]’s [Adoption|adopted] [daughter].\n\nshe has powers similar to [Everlast].\nKassandra is someone who keeps Libra human. someone who he cares for and has a need to protect.\nwhen Libra gets captured he sends her to [Fury's realm] and gives her a phrase and tells her to be afraid, but keep going anyway.\nshe's someone who doesn't need to be a hero because she can help without using her powers.\n\nduring the Nightmare event, during the timeskip Libra is teaching her things needed for survival, be it how to hunt to how to cook.\nshe begins asking questions about him and his old friends, and she eventually is able to help him realise that he needs to help take down [Zalgototh|his father]. he asks [the Teacher] to look after her while he is doing this and promises to come back afterwards, and after takes her with him to find the [Creep Crew].\n"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmhwib",
+        "class": "Info",
+        "title": "Miles Lexington",
+        "description": "Mr Stretchy Techno Reporter",
+        "header": [
+            {
+                "id": "lfuf8rmh1xlm",
+                "type": "infobox",
+                "banner": {
+                    "title": "Amplex",
+                    "subtitle": "Miles Lexington"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmh174m",
+                        "key": "Full Name",
+                        "value": "Miles Andrew Lexington"
+                    },
+                    {
+                        "id": "lfuf8rmh12tz",
+                        "key": "Alias(es)",
+                        "value": "Amplex"
+                    },
+                    {
+                        "id": "lfuf8rmirbe",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmi1on6",
+                        "key": "Gender",
+                        "value": "[Male]"
+                    },
+                    {
+                        "id": "lfuf8rmiqv0",
+                        "key": "Nationality",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmi1az4",
+                        "key": "Affiliation(s)",
+                        "value": "[CAST]"
+                    },
+                    {
+                        "id": "lfuf8rmi1u4l",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmi11y2",
+                        "key": "Occupation(s)",
+                        "value": "[Reporter]"
+                    },
+                    {
+                        "id": "lfuf8rmicgk",
+                        "key": "Status",
+                        "value": "[Deceased] (Unknown)"
+                    },
+                    {
+                        "id": "lfuf8rmi231w",
+                        "key": "Born",
+                        "value": "October 28, [1993]"
+                    },
+                    {
+                        "id": "lfuf8rmi1r41",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmi1udt",
+                        "key": "Died",
+                        "value": "Suffocation,\nTeleported inside a (wall?) by [Article 15].\n[Volantis] is framed for his murder."
+                    },
+                    {
+                        "id": "lfuf8rmi1w8j",
+                        "key": "Power(s)",
+                        "value": "[Cellular Manipulation] (Internally)"
+                    },
+                    {
+                        "id": "lfuf8rmi23f1",
+                        "key": "Enhanced Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmilq4",
+                        "key": "Skills",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmi12zo",
+                        "key": "Gear",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmi1g9v",
+                        "key": "Father",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmi1y22",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmi1opc",
+                        "key": "Sibling(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmi1me4",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmijwv",
+                        "key": "Partner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmi14nd",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmi1bz3",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmi1f70",
+                        "key": "Likeness",
+                        "value": "Joe Keery (Appearance)"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmi1ces",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmi1bu1",
+                        "type": "paragraph",
+                        "text": "He was a young ambitious aspiring [reporter] who chased a wrong story. This isn't venom hear me out.\nSo there's this [Chang Enterprises|sus organization] who's been doing some sus things. Possibly in connection with the Romanos, could be. Evil experiments.\nWhile they were giving a tour to the public of their research facility 'the good side' Miles sneaks off into a room he isn't supposed to. Some security guy finds him. They tie him up after he records a sus conversation. They turn on a machine expecting to kill him, rather it warps his cells giving him his powers. Everyone thinks he's dead and he changes his Identity to keep himself safe from this organization while trying to stop them with his newfound powers and alias. He can change the shape and size of any part of his body. Due to this he can also heal at incredible speeds.\n\nCan also run very fast but still a lot less than the speed of sound. Amplex tech guy. I want his character to focus more on the corporate espionage side of the supe universe. And he's taking over on the tech side over from Cerebrum. He would also be recruited into [article 15] at some point. He owns a media company by day. He's gonna be involved in the [Volantis] story. As a journalist and leading up to that event he's used to exposing ur big bad corporations. I'd say that in his nature he'd be a little skeptical of Article 15 just that little tingle of sus. At some point he'd be the first to discover Article 15's dark secret that Volantis is trying to get revenge for that I explained a bit back. He would never get his chance to expose them though. Because he would be killed. His death would kick off the Volantis event and what would draw in [CAST|CST] to investigate. As you know Article 15 push CST away. But it wasn't Volantis who killed him Article 15 did as a cover up. But it'd be a twist reveal later. I'd say they'd make it look like a Volantis kill. How does Article 15 make it look like Volantis did it? I'd say they'd make it look like a Volantis kill. That's how it would look. They could have stolen some [Traveller] [Teleportation Gas|gas] from somewhere and done something similar. Teleport him inside something. Since her powers are related to phasing through solid objects/being able to phase things though solid objects."
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": [
+            "Amplex"
+        ]
+    },
+    {
+        "id": "lfuf8rmid0j",
+        "class": "Info",
+        "title": "Leah Simons",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmj173n",
+                "type": "infobox",
+                "banner": {
+                    "title": "Chasmia",
+                    "subtitle": "Leah Simons"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmj1q4f",
+                        "key": "Full Name",
+                        "value": "Leah Simons"
+                    },
+                    {
+                        "id": "lfuf8rmj10nh",
+                        "key": "Alias(es)",
+                        "value": "Chasmia"
+                    },
+                    {
+                        "id": "lfuf8rmj1gx3",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmj1yme",
+                        "key": "Gender",
+                        "value": "[Female]"
+                    },
+                    {
+                        "id": "lfuf8rmj1we6",
+                        "key": "Nationality",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmjunj",
+                        "key": "Affiliation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmjmqa",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk1mm4",
+                        "key": "Occupation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk14gk",
+                        "key": "Status",
+                        "value": "Active ([2025])"
+                    },
+                    {
+                        "id": "lfuf8rmkd25",
+                        "key": "Born",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk1t12",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk1241",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk1ynn",
+                        "key": "Power(s)",
+                        "value": "[Reality Breaker]"
+                    },
+                    {
+                        "id": "lfuf8rmk1jku",
+                        "key": "Enhanced Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmkw1s",
+                        "key": "Skills",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk1f1h",
+                        "key": "Gear",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmkd8q",
+                        "key": "Father",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmkrou",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmkukp",
+                        "key": "Sibling(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk1lrd",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk1x8m",
+                        "key": "Partner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmki9q",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmkhb2",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk1f34",
+                        "key": "Likeness",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmk1vv7",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmkg3n",
+                        "type": "paragraph",
+                        "text": "She would probably fight the supes since her mind is pretty much broken from the accident/ her time in solitude but as I mentioned earlier she would later become an anti-hero.\nShe would become a messenger like character and she would be able to sense changes in reality and warn everyone before they happen.\nShe would attempt to warn everyone before The [Crisis event] but it would eventually be too late before it begins. \nShe'd either be imprisoned or killed by [Melantha] as she wouldn't want any reality breakers interfering with her plans that's why [Zalgo] isn't brought from the past.\n10-20 years but she'd be around late 20s to early 30s and in the [Void Dimension|dimension] she is trapped in she would'nt age\nShe can only manifest in our reality for a limited time before she is forced away\nShe'll probably have a home reality or dimension of her own likely the one she's trapped in\nShe's kind of takes the role of guardian of our reality\nIf Apex could punch a hole just big enough for your \"Guardian\" to slip through...Kinda but there'd be also a dark purple affect\n\n\nHer powers are like a dark purple glow Her's is like a broken glass affect Technically she is like a glitch. Chasmia has her own dimension, but she isn't a [Furik]. It's called The Void or The Other Could be similar to [Arcadia]'s, in a way. But it could be the unused space the [ancient aliens] didn't use when creating the [Realm|realms]? Just a realm designed for consciousnesses. It'd feel like darkness buy she'd only have her own mind to keep her company. Could be kinda like a holodeck, the creator normally 'loads' in other stuff for practicing without harm But of course, she'd be alone in there. Could have been made by the Ancient Aliens, prepping for the war Which would also explain why it's empty/unused."
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": [
+            "Chasmia"
+        ]
+    },
+    {
+        "id": "lfuf8rmk1ctl",
+        "class": "Info",
+        "title": "Jack Royale",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmke5b",
+                "type": "infobox",
+                "banner": {
+                    "title": "Dealer",
+                    "subtitle": "Jack Royale"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmk23j2",
+                        "key": "Full Name",
+                        "value": "Jack Royale"
+                    },
+                    {
+                        "id": "lfuf8rmk137d",
+                        "key": "Alias(es)",
+                        "value": "Dealer"
+                    },
+                    {
+                        "id": "lfuf8rmk1y5n",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmk1jmg",
+                        "key": "Gender",
+                        "value": "[Male]"
+                    },
+                    {
+                        "id": "lfuf8rmk1jbz",
+                        "key": "Nationality",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmkef1",
+                        "key": "Affiliation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmkj12",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk15vx",
+                        "key": "Occupation(s)",
+                        "value": "[Casino] worker"
+                    },
+                    {
+                        "id": "lfuf8rmkc58",
+                        "key": "Status",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmks05",
+                        "key": "Born",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmkett",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk1lt4",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk18xu",
+                        "key": "Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk23eh",
+                        "key": "Enhanced Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk1b6s",
+                        "key": "Skills",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk21lc",
+                        "key": "Gear",
+                        "value": "[Dealer's Cards]"
+                    },
+                    {
+                        "id": "lfuf8rmkdly",
+                        "key": "Father",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmknaf",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmkaj3",
+                        "key": "Sibling(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmketk",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk155q",
+                        "key": "Partner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk160o",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmk2545",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmlx0y",
+                        "key": "Likeness",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmlp0a",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmlbvz",
+                        "type": "paragraph",
+                        "text": "He would have a [Dealer's Cards|special deck of cards] with images that he can summon to him by drawing the card, but it would look like a standard deck.\nJack was a [casino] worker.\nDealer could have a problem with the effects of his cards trying to break out"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rml24e5",
+        "class": "Info",
+        "title": "Benjamin Riverson",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmliqi",
+                "type": "infobox",
+                "banner": {
+                    "title": "Drowned",
+                    "subtitle": "Benjamin Riverson"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rml1o4b",
+                        "key": "Full Name",
+                        "value": "Benjamin Riverson"
+                    },
+                    {
+                        "id": "lfuf8rml1ssf",
+                        "key": "Alias(es)",
+                        "value": "Drowned"
+                    },
+                    {
+                        "id": "lfuf8rml11ku",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rml12rm",
+                        "key": "Gender",
+                        "value": "[Male]"
+                    },
+                    {
+                        "id": "lfuf8rml17nc",
+                        "key": "Nationality",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rml15do",
+                        "key": "Affiliation(s)",
+                        "value": "[Creep Crew]"
+                    },
+                    {
+                        "id": "lfuf8rml13n2",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rml24n2",
+                        "key": "Occupation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rml1y62",
+                        "key": "Status",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmlsfj",
+                        "key": "Born",
+                        "value": "November 27, [1992]"
+                    },
+                    {
+                        "id": "lfuf8rml1gp6",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rml10ws",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rml1n33",
+                        "key": "Power(s)",
+                        "value": "[Mask Creation]"
+                    },
+                    {
+                        "id": "lfuf8rmlz6o",
+                        "key": "Enhanced Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rml19pb",
+                        "key": "Skills",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmltab",
+                        "key": "Gear",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rml1lfz",
+                        "key": "Father",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmlhtx",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rml1rfs",
+                        "key": "Sibling(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rml1l6y",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rml1o1w",
+                        "key": "Partner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmleal",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rml1z10",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rml20be",
+                        "key": "Likeness",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmlegr",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmlrca",
+                        "type": "paragraph",
+                        "text": "Benjamin was born on the 27th of November 1992.\nSometime between 1997 and 2008 Benjamin meets [Taylor Harkans], [Derek Slandeeson], [Ally Grierson], [Jane Woodsow], [Ryan Ibarra], [Brianna Ainsworth] and [Michelle Danson].\nThey all became very good friends.\n\nIn 2008 all of their powers awoke and they all went missing without a trace.\nIn 2010, Taylor Harkans founds a team named ‘[The Creep Crew]’.\nThe team consists of their old group of friends. The Creep Crew’s first major goal was freeing [Fury] from [Zalgototh]. After fighting The [Furik], (the loyal servants of Zalgototh) they are successful and Fury joins The Creep Crew.\n\nBenjamin creates the [mask of transform] for Fury, the mask allows Fury to appear in his human-form. For the next five years The Creep Crew deal with a wide range of threats. They fight The Furik, as well as freeing people who are under Zalgototh’s control.\n\nIn 2015, the Creep Crew discover [Ephialtes] who has been kidnapping individuals with the virus in order to turn them into Furik. They manage to defeat him in battle. \n\nOn the 16th of August 2015, The Creep Crew successfully imprison Zalgototh in a pocket dimension during a battle. In the process of this, [Everlast] and [Nightdoll] are killed. The rest of The Creep Crew are trapped alongside Zalgototh, however, and Libra believes they are dead.\n\nFive years later, Zalgototh now escapes from the pocket dimension in which he was held. Zalgototh takes the Creep Crew with him and imprisons them in his fortress. During 2028, A former member of [The Authority] reveals to Libra that The Creep Crew are not in fact dead as he believed, but locked away in a former fortress of the now deceased Zalgototh.\nLibra and the [Truthinatores] go on a quest to find them."
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rml1ge7",
+        "class": "Info",
+        "title": "Robert Harkans",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rml93c",
+                "type": "infobox",
+                "banner": {
+                    "title": "Fury",
+                    "subtitle": "Robert Harkans"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rml1a13",
+                        "key": "Full Name",
+                        "value": "Robert Harkans"
+                    },
+                    {
+                        "id": "lfuf8rmlrgs",
+                        "key": "Alias(es)",
+                        "value": "Fury"
+                    },
+                    {
+                        "id": "lfuf8rml1jeg",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rml1x6k",
+                        "key": "Gender",
+                        "value": "[Male]"
+                    },
+                    {
+                        "id": "lfuf8rmlsv0",
+                        "key": "Nationality",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rml1qtn",
+                        "key": "Affiliation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmljs9",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmlpck",
+                        "key": "Occupation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rml1qqn",
+                        "key": "Status",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmlgg7",
+                        "key": "Born",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm1cpi",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmmpdj",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm1mgr",
+                        "key": "Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm1wf6",
+                        "key": "Enhanced Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmmg1f",
+                        "key": "Skills",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmmiq1",
+                        "key": "Gear",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmmlvr",
+                        "key": "Father",
+                        "value": "[Samuel Harkans]"
+                    },
+                    {
+                        "id": "lfuf8rmmekt",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm203x",
+                        "key": "Sibling(s)",
+                        "value": "[Taylor Harkans] ([Brother])"
+                    },
+                    {
+                        "id": "lfuf8rmm1tvp",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm1cq7",
+                        "key": "Partner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm1te5",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm1rgb",
+                        "key": "Pet(s)",
+                        "value": "[Phantom (Dog)|Phantom] ([Dog])"
+                    },
+                    {
+                        "id": "lfuf8rmm1zta",
+                        "key": "Likeness",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmmons",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmm1lm0",
+                        "type": "paragraph",
+                        "text": "AKA Robert Harkans: Fear Based Powers. Was Corrupted by [Zalgototh|Libras villain] and [Furik|unwillingly controlled].\nHe was not completely loyal as he already had a strand of the virus running through him, but the villains one caused his physical form to change to appear like a skeleton with skin tight around his head.\nWears a robe to contain his power, as anyone who looks him in the eye without the hood will fall into a coma of fear.\n\nSo Libra's brother is a servant of [Elphiliates]? Power revolves around fear. Is the embodiment of fear.\nAs long as even a single person is afraid of something, Fury has power. Power takes the form of semi-sentient beings called “[Fearlings]”.\nTrusted fearlings are [Pythos] and [Arrachnos], the fear of snakes and the fear of spiders.\nIs a foodie. Is technically immortal. Wears a red robe/cloak with a hood that covers his face in a magical shadow, with only a glow visible from its depths.\nThe glow is from his blind eye which is a semi focus for his powers. He can technically see through it but it is difficult. With the use of the mask of transform, created by [Ben Riverson], AKA Drowned, he is able to take a semi-normal appearance. This appearance is how he would truly look if he was not transformed into “Fury”, and wears a dark red suit.\n\nWas the leader of the “Furik”, the servants of [Zalgototh]. Specialises in psychological warfare, and never truly stops moving in a fight. Main weapon is his voice, as he can worm his way into your head to expose your fears and weaknesses. note: Fury is not good against the truly brave. People who fight his fears without being aware or caring for themselves. people who lash out, or are inherently fearless, are incredibly vulnerable. the longer a fight is drawn out, the more fury gains in power. as people often lose hope if a fight goes on long enough.\n\nFury follows some abstract thing he calls the \"World's Script\", which dictates who he is allowed or not to kill. fury is aware of the fourth wall and calls it the \"worlds script.\" but he is a different thing, as he is outside what people may call normal. he knows things people shouldn't and he keeps a lot of his knowledge under wraps. he knows of the worlds script, but he can not directly interact with it. he can't see it, he can't permanently alter it. he likes finding things out, and just has it if needed. His power is fear embodiment, right? primarily alongside being fear itself, he has minions who are individual fears. he knows what people are afraid of. bringing the fears to reality. \n\nHis main minions are the fear of snakes and fear of spiders. Just a Major character at first. would be funny how [CAST] would react to him at first.\nI see it as a series of murders committed by him, and [Flora] has difficulty finding evidence for it, only to link it to a cold case from years ago with a similar MO, which Taylor points out at the Furious Vengeance Killer Fury has a particular set of Victims, and an MO. he draws it out, makes them paranoid, makes them afraid bad people, murderers, rapists, pedophiles, these types of people are his victims\n\nThe Fearlings are semi-sentient creatures made by fury that he controls which have minor abilities based around what they are the fear of. Fury can create them if he choses to, but it's easier to summon pre-created ones. if they are destroyed, he can recreate them, but it's more difficult to create than to summon, uses more energy after creating a few, he needs to sleep. summoning, he doesn't.\nHe knows all the fears out there, and can tell what a person is scared of by looking in their eyes. He can summon the fears as well into reality and gets faster and stronger the more afraid of him his opponent is. And is alive so long as fear exists in the world. That weakness is built into his powers.\n\nWhy not that he just can't use his powers because he has no fear to work with. So, the less people who are afraid the less powerful he is. He loves dogs and has a pet one which is akin to a ghost, called [Phantom (Dog)|phantom]. Separate from his fearlings. Fury's powers are being able to discover someone's worst fear and manifest that fear through taking that form or psychic hallucinations.\n\nFlora at her police job is called onto a case where various criminals have been found dead supposedly from fear-induced stress cardiomyopathy. Still, too many are turning up like this for it to be a coincidence Fury's powers are being able to discover someone's worst fear and manifest that fear through taking that form or psychic hallucinations. I thought the realms stuff worked nicely. Spider and snake are there own conscious beings loyal to Fury. Yeah they'd be real. But a lot of what people would see would be Fury messing with their head. Housed in his realm and he can transport them via the realm. That's where his fearlings come from. They are real. But he can induce psychic hallucinations. I'd say he'd torture them by their worst fears and then scare them to death. fear-induced stress cardiomyopathy. He's continuing the [Creep Crew]'s mission while doing his hunts"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmmrqu",
+        "class": "Info",
+        "title": "Medicus Hunter",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmmvdt",
+                "type": "infobox",
+                "banner": {
+                    "title": "Judge",
+                    "subtitle": "Medicus Hunter"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmm18yy",
+                        "key": "Full Name",
+                        "value": "Medicus Hunter"
+                    },
+                    {
+                        "id": "lfuf8rmm15ah",
+                        "key": "Alias(es)",
+                        "value": "Judge"
+                    },
+                    {
+                        "id": "lfuf8rmm17ix",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmmxmh",
+                        "key": "Gender",
+                        "value": "[Male]"
+                    },
+                    {
+                        "id": "lfuf8rmm1d8g",
+                        "key": "Nationality",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmmk5r",
+                        "key": "Affiliation(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmmpsl",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm11vr",
+                        "key": "Occupation(s)",
+                        "value": "[Doctor]"
+                    },
+                    {
+                        "id": "lfuf8rmmnj8",
+                        "key": "Status",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmmhro",
+                        "key": "Born",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm1mec",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm20na",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm1pwg",
+                        "key": "Power(s)",
+                        "value": "[Bone Creation] + [Bone Manipulation|Manipulation]"
+                    },
+                    {
+                        "id": "lfuf8rmm1t2r",
+                        "key": "Enhanced Power(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm1mpu",
+                        "key": "Skills",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm1vli",
+                        "key": "Gear",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm1qg5",
+                        "key": "Father",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm1t6q",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm1paj",
+                        "key": "Sibling(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm9sw",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm1cpf",
+                        "key": "Partner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmm24pt",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmmiyn",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmn1j3j",
+                        "key": "Likeness",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmn1wdo",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmn1fhm",
+                        "type": "paragraph",
+                        "text": "N/A"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmnl9w",
+        "class": "Info",
+        "title": "Taylor Harkans",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmnk3d",
+                "type": "infobox",
+                "banner": {
+                    "title": "Libra",
+                    "subtitle": "Taylor Harkans"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmn1mxu",
+                        "key": "Full Name",
+                        "value": "Taylor John Harkans"
+                    },
+                    {
+                        "id": "lfuf8rmnxye",
+                        "key": "Alias(es)",
+                        "value": "Libra"
+                    },
+                    {
+                        "id": "lfuf8rmndfn",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmnehz",
+                        "key": "Gender",
+                        "value": "[Male]"
+                    },
+                    {
+                        "id": "lfuf8rmn1rbc",
+                        "key": "Nationality",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmn8o3",
+                        "key": "Affiliation(s)",
+                        "value": "[Creep Crew]\n[Trutinatores]\n"
+                    },
+                    {
+                        "id": "lfuf8rmn1o91",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmn11ao",
+                        "key": "Occupation(s)",
+                        "value": "Coffee Shop Owner,\nBarista,\nCook"
+                    },
+                    {
+                        "id": "lfuf8rmn21b8",
+                        "key": "Status",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmn24hp",
+                        "key": "Born",
+                        "value": "September 24, [1992]"
+                    },
+                    {
+                        "id": "lfuf8rmn1rvw",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmn1ppp",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmnobn",
+                        "key": "Power(s)",
+                        "value": "[Light and Dark Control]\n[Power Negation]\n[Beastial Transformation] (See [Apex]) [Enhanced Reflexes]\n"
+                    },
+                    {
+                        "id": "lfuf8rmntt7",
+                        "key": "Enhanced Power(s)",
+                        "value": "[Power Mimicry]"
+                    },
+                    {
+                        "id": "lfuf8rmn1kqe",
+                        "key": "Skills",
+                        "value": "[Combat Training]\n[Parkour]\n[Power Knowledge]"
+                    },
+                    {
+                        "id": "lfuf8rmn1hdw",
+                        "key": "Gear",
+                        "value": "[Libra's Mask]\n[Libra's Cloak]\n[Libra's Pistols]\n[Libra's Swords]\n"
+                    },
+                    {
+                        "id": "lfuf8rmn16t1",
+                        "key": "Father",
+                        "value": "[Samuel Harkans]"
+                    },
+                    {
+                        "id": "lfuf8rmnoqo",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmnisz",
+                        "key": "Sibling(s)",
+                        "value": "[Robert Harkans] ([Brother])"
+                    },
+                    {
+                        "id": "lfuf8rmn1u86",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmnndn",
+                        "key": "Partner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmn22su",
+                        "key": "Children",
+                        "value": "[Kassandra Harkans] ([Adoptive] [Daughter])"
+                    },
+                    {
+                        "id": "lfuf8rmn2128",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmn24k0",
+                        "key": "Likeness",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmnblo",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmn102v",
+                        "type": "paragraph",
+                        "text": "Taylor was born with a [The Virus|virus]. This virus effected his brain structure and added new physiological systems to his body.\nHowever, these new systems were dormant during their creation until 15 years later.\nthe virus parasite had activated the new systems, changed his body, and became; this new form is known as [Apex].\n\n\nOne year later Apex had consumed mints, the main chemical in mints react with the cell wall of the virus cells thus making the virus must replace cells to defend itself.\nThis majorly weakens the virus and eventually allows Taylor to regain control again with the help of his willpower.\n\n\nLibra’s villain attacked killing his family and corrupting [Fury|libra's brother] strain.\nhis original team might tie into his trouble sleeping PTSD. So that is why at the start he likes to be alone Because he does not want to lose more lives.\n[Salvage] will be the love interest for libra.\n[Flora] would be like a rival in the supe mode, but eventual friend.\nThen she saves him and from then on, she is a supe\n\n\nwould Libra have a panic attack after finding out that the villain he imprisoned is free?\nWhat if they have strong willpower eyes glow slightly when used Does, he waves his hands around to focus or something I assume Shadowbloom can resist?\nwhat if Libra had a cat before his current that helped with the battle against the villain.\n\n\nI HAD A THOUGHT! what if...\ninstead of being dead... Taylor's original team were also imprisoned, but he does not know this in\nthe battle against that villain What if the original team is corrupted and libra must face his past by\nfighting them but does my guy \"purify\" them to help them? but one managed to escape and got age\nregressed imprisoned with the villain? It would be more shocking if Libra did not know they survived\nif he did, he would try everything to free them, made younger also lost her memories the girl he\nadopted maybe? she is the key she is the one needed to free them, but she did lose her memories,\nwas turned into a child, and to top it off just happens to be a key to an inter-dimensional prison\nwhat if the joint power of light, darkness and justice is required to destroy them? the villain I mean.\nplus, the original team this also explains why Libra does not see himself as a hero this makes him\nmuch more tragic, he was not able to save his friends, his family he has actively used powers in\nconflict against a greater threat and imprisoned him but that came at the cost of his friends as well\nYes did he use their joint powers to defeat him. he has severe anxiety as well his team is not made\nuntil after [CAST] has been around for a while still has nightmares about his friends, he owns a coffee\nshop. Taylor has major trust issues, this comes from the many betrayals of his storyline (It keeps\nchanging so that will do it for now, trust issues leads to civil war because the team 'dies' and he\nbelieves they could get killed or become corrupt with power, since he only trusts himself then he\nbelieves he should be a lone hero)\nLibra Power: Upgraded power: counter-balance Description: allows the user to make a mirrorlike\ncopy of any powers or abilities they come across, almost a direct opposite. Can be exact power. Gets\nstronger with age. Limits: unknown You know how we had an idea that someone could give the virus\nto a bunch of people that would work for them. And how there was an idea that someone could\ncontrol people with electrodes in their brains to make them addicted to killing and stuff. What if\nthey were the same person? What if they are also the one who killed Libra's family? Maybe libras\nbrother is one of the people they control. Leader of the trutinatores Libra’s personalities explained:\nHarkans: The Main personality of Libra, full name is Taylor Harkans. Is full of secrets and is great at\nhiding them. Quite an enigmatic individual as not even his friend Flora can get much of his past out\nof him. Spent 8 years travelling and learning how his power worked. Picked up a few skills like\nLibra (Taylor Harkans)\nSunday, 6 March 2022 12:47 pm\n Heroes Page 488\nof him. Spent 8 years travelling and learning how his power worked. Picked up a few skills like\ncooking and card tricks along the way. Owns a coffee shop. Noctis: Full name [Noctis Umbra], the\n\"dark\" aspect of Harkans. Quite polite and civil, is quite like a guardian angel.. Sanguis: Full name\n[Sanguis Libidine], the \"Light\" aspect of Taylor Harkans. Is streetsmart and violent when provoked,\nsort of like a guardian demon. Apex was born in (Harkans birth +15 years) The \"Hyde\" to Harkans'\n\"Jekyll\".\nApex is the name of the form and mind of the parasite virus inside Libra.\nThe virus modified Libra's brain structure and added physiological systems to Libra's body.\nThese systems were dormant until completion when Libra reached the age of 15. Apex took control\nof Libra for around a year until he ingested Mint. Apex is Indestructible to almost any form of attack.\nApex however is vulnerable to Mint and Chocolate. HOWEVER THEY WILL ONLY WEAKEN APEX.\nApex's control of Libra can only be removed by Harkans. Apex cannot be mind-controlled because\nthe virus cells automatically terminate corrupt brain cells and will replace the cell as the virus can\nreproduce cells rapidly.\nThis is also how Apex is almost Indestructible. Power revolves around adaption to a situation. First\nexperience was the creation of the “Apex” Form, second major experience was with Zalgatoth\nresulting in the formation of the “Noctis” Persona and granted control of darkness and shadow, third\nmajor experience was when the “Noctis” Persona was removed from him by Zalgatoth and resulted\nin the creation of the “Sanguis” Persona and granted control of the power of light. Noctis Persona\nwas later returned. Fourth major experience was over a time of suppression and nearness to the\npower of Reality Breaking led to the Apex form developing a consciousness of its own, and the\npower of reality breaking.\nHow good is Libra at picking up on things. Depends on the individual thing. good at picking up on\nweaknesses, body language, if a person has a power. not what the power is, but if they have one. I\nrealised what one of Taylors fears are: Being Controlled the others with him usually help with\nanything like that, but powers which allow someone to directly control another scare him. He has a\nmotorbike. Areas of intelligence? Combat, books, weapons, random things, secrets, details. Pretty\nhigh level of intelligence depending on what it is. Not great at social situations. Not really an\ninventor type but can use stuff given to him. Drowned and Brine were the inventors of the creep\ncrew and the more tech based intelligent. Decent at maths, due to some schooling from the teacher.\nNot full detective work, closer to problem solving and strategy. He was the co-leader of the creep\ncrew and knew how powers interact with each other, like mist and madness. Jane was the other\nleader of course.\nApex manipuates different chains that appear, symbolic of Harkans' connections to the world\naround him. by manipulating these chains he can manipulate the fabric of reality by breaking or\ncreating them, and can use the powers of others whos connections Harkans has made. only Apex\ncan use these other powers, as it's too powerful otherwise, and may destroy the mind of someone\nnot built to handle it.this is how I want Apex to defeat Zalgototh: by using the powers of the\ncollective Creep Crew. as specified, Libra can not use this power, this is Apex specific. Libra might get\na significantly weaker version, such as one or two other poeples powers, but not the reality altering\nlevel of Apex\nNoctis is a thinker, planner, tactician. he keeps his opponents at a distance and only gets close if\nnecessary Sanguis, however, is a berserker. a barbarian. he gets as close as possible with his axe, he\nbites, he claws, and he keeps going. Apex, is the most complex of the three others. with his chains,\nhe can fight at any range he wants. he adapts to a plan, similar to Taylor. but he is about\npreservation of the self, keeping taylor safe. Taylor, is reckless. he fights crazy, but also ordered. he\nfights paradoxial, in a manner that shouldn't be possible, yet he makes it work, he adapts against\nFurik, he is his most feral, as he fights to kill during the main time up till the Zalgototh stuff, that is a\nTaylor that pulls his punches against his opponents Taylor uses what he can in a fight, creates\nopenings to draw an opponent in so he can strike. he fights how he sees necessary, and depending\non his opponent how much he goes feral. Sanguis is a hungry beast that feeds of conflict and blood,\nNoctis feeds of knowledge and safety, and Apex feeds of existence the feeds parts are not important\nstorywise, just describing how their personalities come off\nthe sky gets covered in pure black, no trace of a sky apart from an endless void then, a single point in\nthe sky shines, tracing an image of a single eye through the sky, held in chains this allows Taylor's\nothers to take a physical form away from his body its bringing them in it requires alot of power, and\nhas only happened once before, and the world noticed. the death of Jane was the last time. allowing\nthe others out and empower them. it creates the perfect battleground for them. Jane died and the\n Heroes Page 489\nthe others out and empower them. it creates the perfect battleground for them. Jane died and the\nsky became covered in black a time of grief and rage\nFirst, his powers was the transformation into a creature meant to be the Apex of living creatures, the\npredator above predators however, with the addition of powered people, this form is not the\nhighest point. This form was an adaption of humanity as a self preservation mechanism keep the self\nalive. Taylor's fear of this form led to his deal with [Zalgototh] to remove it, leading to a \"void\" in his\npowers filled with his darkness manipulation. after an event in which he made another deal with\nZalgototh to save his team, he temporarily lost his darkness powers and they were replaced with his\nLight powers, essentially just able to weaponize light eventually he got his darkness powers back\nafter enough time, having his powers lash out quite violently while training under the teacher, he\ndeveloped an immunity to power negation and gained negation of his own as a safety mechanism\nalso, after enough exposure to various alterations on reality, his powers developed a \"reality\nbreaker\" aspect of their own, due to the dangers such things might have on him, specializing in his\nchains which also symbolise the bonds he has with his allies and enemies. Libra himself would only\never probably use two chains, being his bond with his brother and Jane these chains let him use\nabilities the bonded have, such as Jane's blood manipulation Apex himself uses the chains of many\nmore, including Zalgotoths own chain. His enhanced powers are just his current ones with larger\nuses shadow constructs on large scale quantity/quality, like a dragon for example that's too complex\nanyway able to tap into the Chains easier, at least. So he doesn't copy people's powers anymore.\nOnly those under the chains? nah, thats only with the chain activated its not really a physical chain\nunless he's using his opponents chain anyway. his powers are keeping him alive, I think? that's likely\nan adaption they did, as he has no care for his own life.\nThe chains are more a representation of his reality breaking power, linked to the bonds of people.\nchains are the easiest way for them to appear and differentiate between other reality breakers. I\nimagine his virus strand is the perfect strand, and due to the fact that the teacher, with some of our\nrecent developments, is also the pioneer of our magic system some of his powers could be his style\nof magic. I do need a refresher on the magic system though. Taylor Harkans as himself isn't able to\nuse his other powers straight away, the \"Personalities\" are built to be able to use them immediately,\nwhile taylor has to fully grow into those powers eventually, Taylor as himself would be able to tap\ninto those powers, but that will not happen within the viewed timeline at least fully with the reality\nones he can use his Dark and Light powers as himself decently, but Noctis and Sanguis are capable of\nusing them in ways Taylor himself cannot. The Virus has been in him since birth as the timeline\nstates and his personalities lay dormant. The stress of his fathers death would activate his powers\nboth light and dark And he is all about the balance so he doesn't tip to far to one side. His powers\nand emotions have to be kept in balance I assume that's something he would have to learn. In the\nmirror is an example of what happens when he didn't. But in main continuity with his personal battle\nevery day and the strengths of the others he maintains this fine balance yes. Taylor Harkans sees\ndarkness differently than other people to him, it is not inherently good or evil it simply is as is light\nhe and the others are a quartet the darkness is the fallen angel, the light is the risen demon, he is\nthe man who walks the line, and Apex is the beast within the mind. They wouldn't go anywhere his\ndarkness powers but when training with the teacher they might be talking or he might get angry\nthinking about his past which might cause darkness outbursts Darkness is the one Taylor is the most\ncomfortable with, as it has been around the longest utility wise. Anyways what you said about The\nTeacher could be interesting I propose that The Teacher sees himself in Libra fears he might be going\ndown the same path he once did so is training him to keep in the balance and not stray to one side\nlike him and his people once did. He could even see Taylor as an example of true balance. Something\nthat his people could learn from. When Apex sacrifices himself, Taylor becomes out of Balance again\nthat is why he has to merge with Predator during The Crisis. The Teacher could see Libra as the key.\nThe Teachers fight is over as his guilt won't allow him to get involved but by training Libra he can\nhave an example 'A New Hope' as such as an example of true balance to help his people reunite as\ntheir fighting over their differences has caused nothing but destruction it becomes a visible link and\nallows Apex to use the abilities of the other person Janes chain wraps around his arm and connects\nto a dagger. Just Apex at first. eventually Taylor would be able to, but at first only Apex can safely.\nWould it work with anyone who has powers Say Flora or Taisuke. anyone he has a bond with a bond\nis ridiculously simple, as well merely knowing each others name, or an identity given between two is\na bond. So once a bond as been established he can just call on those powers whenever? some bonds\nare easier to tap into others require a bit of force people he is closer to, family for example, are\nmuch easier than near strangers. Any examples of when he uses it? Apex, in the final battle against\n Heroes Page 490\nmuch easier than near strangers. Any examples of when he uses it? Apex, in the final battle against\nZalgototh, would use his bonds with the Creep Crew to fight him. It never was meant to be a normal\npower, but something to work to. In the beginning of it all, Taylor himself cannot access it at all. He\ndoesn't even know about it until he has to deal with Apex, which he did not know had gained\nsentience, even then he would be hesitant to use it seeing how something too powerful can change\na person in fear of becoming like his father. Idk, I don't think that quite works I think both together\nwould be good, because of that shard anyway Like it's a power that's a result of Apex, but it's still an\nenhanced power.\nGot Remnant, that future version of Libra,Libra doesn't trust the Article He has probably came up\nagainst them before when the Creep Crew were active, trying to get artifacts, taking out threats, The\nArticle are too powerful, Libra thinks Have so many artifacts kept locked away that are probably\nexperimented on, trying to recreate effects They don't do human experimentation for recreating\neffects That's the other group But why do they not destroy the items? Things just anyone who can\nwalk in can get their hands on He's meant to trust the word of a global governmental body not to\nuse them? And that some of the captives aren't just innocent powered people? People who\ndisagreed with the way the Article thinks or works? How many are political prisoners? He don't trust\nthem. So when CAST works with them what then? He doesn't know what to think, so he holds them\nat arms length to figure out whether or not he trusts CAST. What does he think of CAST members in\nthis situation Depends how often they interact Probably thinks best of Cerebrum, as he understands\nwanting to separate who you are from someone you are related to Amplex, probably doesn't\ninteract much with as I don't even know much, due to how much we focus on others typically\nShadowbloom, he's okay with until she starts listening too much to a governmental body Taisuke, he\nfeels sorry for, a man outside time from world War two, but also doesn't know whether or not he\ncan trust him dye to the fact he was an army man from ww2 on the losing side\nLibra's powers. How the void part happens I don't quite get. A part of the beastial transformation\nwas removed, and the ability to use it for a long time. He hasn't accessed it up to the events of the\ncurrent, so it has had time to change. He has the memory of the transformation but is still got that\ntrauma, which results in Apex as an individual, as a new form of that transformation. Individual? You\nmean like a personality, not just a form? Yes. Leftover grief from his mother dying manifesting as the\nability. Could do, but then explaining how it would manifest is pretty much just explaining it by\nmaking it caused by something else that would be unexplained and more complex I'd say his\n'darkness' powers were just a newly discovered use of the powers he already had It's just that he\nonly now was able to harness them. I’m fine with that. And with the chains, like the ability to just to\nbe able to use someone else's powers because he has a bond with them (which you have explained)\nis still quite OP for a standard power it probably should be his enhanced powers over just better\nusage of his standard powers. Apex is the only one really able to use them. Definitely not one out of\nthe gate. Even though it is Apex could we maybe have it be in connection to the usage of the artifact\n(Einstein Machine)? He does have a shard in him As far as I am aware Maybe that should have\nsomething to do with it?. Einstein machine allows greater access to the chains, and blurs the line for\nthe bond. Regular is a very close bond, family and loved ones. What is defined as a \"loved one\"?\nFury, Creep Crew, Truthinatores?. Primarily Fury and Jane Others may over time Creep crew is a\nheavy possibility, as they were a family of sorts. The artifact could definitely let him access the\npowers of others, but that wouldn't explain why the bond is important. And Noctis and Sanguis.\nThey do need to be sorted also, with their origin and also that they aren't involved much at all. Fight\nor flight response. Sanguis is fight. Noctis is flight while taking potshots behind him. Fight or flight\nare just instances of the same thing. Primal instinct, which is what Apex would be. You mentioned\nsomething about grief when he was broken do you think Maybe the virus could of fed off of his greif\nand these personalities were the result of that? For comfort. Self preservation mechanism. It's\nalways been there but he just learns to use it then. Something he didn't know he had since one side\nis absent. Dark and light powers could just have been given directly through his powers. Created that\nway. And his personalities could help him control and use them. Something would still need to\nsegment the powers and create personalities, but yes. Depends on Could have the shard behind that\nSince he would have the ability to control how his mind can separate control of his powers and make\nnew personalities. Yet it seems to not be something he can really control. Or else he could certainly\ndo much bigger stuff than what he has done. Sure, yeah, fine. Apex is the only one able to actually\nuse his full power with the chains. Apex could have also prevented more from being made to\nprevent mental overload from too many subconsciously. Apex could be like the mental\nrepresentation of the shard which ties back to what Tristan was saying with the shard being behind\n Heroes Page 491\nrepresentation of the shard which ties back to what Tristan was saying with the shard being behind\nthings. Which would explain his control over things like what you said. That's an interesting point,\nApex could literally be the shard's AI. They do serve the same purpose. An ai that wants to protect its\nhost. Well, the AI for the artifact is made to protect it, and control it. Since you can give it fairly\nsimple commands which it can perform\nBut I want Libra to be the character to kick off the universe. Like him being the Iron Man of the supe\nuniverse. I want it to be Libra as he is such an important peice the story like with his father and\neverything.\nWhat if Libra's primary powers are based around The Virus system He does'nt have access to The\nMagic system but. He has The Magic System infused weapons. His shard could be where he gets\nnegation and suppression. Because his would have to be made in a different way Most of the\ncreators of the viruses would still be alive We would just need to know why it was made and how it\nmade it's way to Libra. Could have been planned for him, but not necessary. His virus would be\nunique, special. All we would need is for one/some of the virus makers to become a part of the\nneutral party that escapes to the realms and makes their way to Earth. That's enough of a link to\nstart with I suppose. It would link well into the overthrow of the Magic system with the return of the\nCorrupt Because that would mean that not all people went with them to escape the war, but to have\naccess to the tech and the Magic system that they are leaving with.\nLibra wanted to be imprisoned to cause a jail break for Arcadia and Nightflare. wrongful\nimprisonment for Arcadia, and to help Nightflare. he had been talking to Nightflare to understand.\nthe Teacher has bound himself to his realm, and can't really leave. He has to break her out so he can\ntake her to The Teacher? he can't open a gate without physically taking her through. Got the events\nof Libra finding the creep crew with the Trutinatorres and his brother. in the end, Libra doesn't trust\ngovernments to deal with powered things, especially the ones more likely to wage war the article is\na global thing, but still doesn't trust what would happen if the good, friendly leader would get\nreplaced with the tyrannical madman.\nThe Teacher/ Magic System:\nA reality Breaker of unknown age (very old) who lives in a semi-isolation within a realm of his own\ncreation that appears to those who are lost and need help. Has \"Servants\" who he took in that\nwanted to stay that work for him and gets to live there, safely. his home touches every forest of the\nworld and small \"gateways\" can be permanently made with his permission. cares deeply for his\nstudents and gets hurt a bit whenever they die or become \"monsters\", or horrible individuals. still\ncares however, and that makes the pain worse. afraid of his own power, but doesn't know what\nwould happen if he \"emerged\" from his home, and so stays there. afraid of dying cause is unsure\nwhat his power could do if he died due to the very long charge up. tries to use as much as possible to\nhelp his students gain control of their own abilities, learn new things and live there safely. however,\nif someone wishes to leave, he can not stop them from doing so. Is human. he is a fairly neutral\nperson, who cares for the continued existence of reality. Libra is the latest student, and he is aware\nof it he didn't allow it, control was forced away from him he's kind of a pacifist himself. I'm not\nthinking of Magic in a mystical way But as a system programmed into reality. By an Artifact. I'm\nthinking a universal base system. Here's my \"magic\" system. Basically it's kinda like the force. Certain\npeople can tap into so it's not like Flora can suddenly learn magical abilities for example. Anyways\npeople who have access to it are able to learn consistent abilities like when you have connection to\nthis system each individual doesn't gain different powers like if you have the virus but everyone is\nable to learn certain abilities. It would all be scientific btw. Some may be more powerful than others\nwhich may make it easier for them to learn certain abilities quicker. Yeah These individuals would be\nable to channel their \"magic\" into weapons/amour. The Teacher is an Immortal Reality Breaker who\nhas been alive since ancient times, with one of his first alterations being to become immortal. His\nlocation is a realm of his own creation, a forest surrounding a mansion where he and his \"servants\"\nlive. The idea will tie up some other things in a fairly neat bow. Mainly involving the magic system,\nThe Teacher, and Curtana. The Teacher's origin is a mysteryHe is ancient and is very knowledgeable\nabout magic What if that's because he created the magic system. Many many years ago. I propose\nthat The Teacher was an ex-corrupt Turned away from his people and their ways. He used an artifact\nshard to create 'programs' or what others would call magic Linking objects and people to it, allowing\nthem to bend the laws of physics to do magic stuff. But, with his power, he wants more knowledge\nThis leads him to the realization that turns him away from the corrupt The would then seek refuge\non Earth, taking a group of people with him At this time he would still be pretty weak, but he'll\ncreate his realms at some point after that The group of people would also be magic (other ex-\n Heroes Page 492\ncreate his realms at some point after that The group of people would also be magic (other excorrupt), and with them, they would have tools and objects imbued with magic One of these is metal\nwhich ends up being forged by Curtana Into her armor. Could be found many years after they had\narrived We could the twist revealed either during or after crisis. Since he'd leave his old life behind.\nHe'd probably know that the pure and corrupt are back That doesn't mean he'd tell anybody that he\nused to be one And that he would have indirectly caused the deaths of many and the continuation of\ntheir war. Why would Libra trust the Teacher and do stuff for him? he helped him and hasn't lied at\nany questions asked, but if not asked he won't say The Teacher also supplies Libra with necessities.\nHis home is a little different than the other realms, as he did make his one Because his original magic\nwas terrible until later versions So it harmed him, but the realms can take the 'toll' when he's in\nthem. Yeah, most of the realms were created using magic, just not all of them. When the Furik\ninvade the realms and each take their own during The Nightmare event why does he do nothing. He\nis linked with each realm Not every realm represents an element either, they take over the best\nsuited ones. He created the realms, them each having control of their element inside the realms\nwon't change that I agree they have better control over the contents, but not the realms\nthemselves. The Teachers realm could be a sort of housing for the magic system. Any changes to the\nsystem would have to be made while in the realm. What about hacking that can be done anywhere\nthough. You have to travel to the realm to remove or give access. Which gives another limitation. I\nthink it should be that way, yes. It could be that it's just the council, but this seems like a good\nlimitation. You have to capture them. The ancient aliens had the realms, that's why no-one could\nfind them. The Teacher just used that technology until the magic system was made Which would\nexplain why he needs to stay inside the realms to live. Because the Teacher discovers these realms\nwith the alien species living inside them, and we just have a jump from them arriving and them all in\na stable societal kinda structure It is possible that they do meet one of the species beforehand, but\nthat wouldn't change much Another note would be about the Teacher's magic system and the\nforeign realms. Between the humans and the species living in the realms The realms were a joint\nventure, so it's just one \"first contact\" event. They could bargain, war, set up tribes countries,\nconquest alliances anything and everything would have happened.\nThe Teachers splinter group settle in the realms discover the other aliens. I don't want to go into too\nmuch detail with first contact. I just want to have a detailed understanding of each realm not too\nmuch unnecessary backstory. They also start families. The Teacher is probably the only one who is\nprobably immortal and stays alive from the original setlers could be more idk. The original settlers\nsettle in various different realms and through the years their descendants eventually forget their\npast and set up their tribes e.g. Nomuzo Ryoko's people. They don't know much about \"the old\nones\" but their would be some understanding similar to us and many of our ancient civilizations like\nEgypt and such.\nGenetic engineering would need to have been achieved through advanced tech, which we'd made as\nthe \"Pure's thing\". Since the Teacher already had made an early form of the magic system, we could\njust replace it with that. As long as there is that \"light\" \"dark\" look aesthetic They would probably\nuse the same methods the teacher uses to keep himself alive. Yeah, they'd still be damaged because\nthis system, like the artifact, would require energy to do things. The Teacher has his own realms to\ncompensate for this, but their system wouldn't The pure probably couldn't do much more for\nextending there lives, but they could use a form of stasis If they did, then it would have to be from\nbefore they even made it to the prime universe"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": [
+            "Libra"
+        ]
+    },
+    {
+        "id": "lfuf8rmn1xk8",
+        "class": "Info",
+        "title": "Flora Winters",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmns1k",
+                "type": "infobox",
+                "banner": {
+                    "title": "Shadowbloom",
+                    "subtitle": "Detective Winters"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmn1bp9",
+                        "key": "Full Name",
+                        "value": "Flora Haley Winters"
+                    },
+                    {
+                        "id": "lfuf8rmn1clu",
+                        "key": "Alias(es)",
+                        "value": "Shadowbloom"
+                    },
+                    {
+                        "id": "lfuf8rmnw2k",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmouxy",
+                        "key": "Gender",
+                        "value": "[Female]"
+                    },
+                    {
+                        "id": "lfuf8rmop2k",
+                        "key": "Nationality",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmo1wxv",
+                        "key": "Affiliation(s)",
+                        "value": "[CAST]\n[Unknown Police Department]"
+                    },
+                    {
+                        "id": "lfuf8rmod78",
+                        "key": "Rank/Title",
+                        "value": "[Detective]"
+                    },
+                    {
+                        "id": "lfuf8rmo1dyn",
+                        "key": "Occupation(s)",
+                        "value": "[Detective]"
+                    },
+                    {
+                        "id": "lfuf8rmo1e7u",
+                        "key": "Status",
+                        "value": "Active ([2025])"
+                    },
+                    {
+                        "id": "lfuf8rmoyyn",
+                        "key": "Born",
+                        "value": "April 14, [1995]"
+                    },
+                    {
+                        "id": "lfuf8rmo14bw",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmo1sga",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmo9gr",
+                        "key": "Power(s)",
+                        "value": "[Botanokinesis]\n[Cellular Regeneration]\n[Poison Immunity]\n[Pigment Manipulation] (Internal)\n[Enhanced Strength]"
+                    },
+                    {
+                        "id": "lfuf8rmomqf",
+                        "key": "Enhanced Power(s)",
+                        "value": "[Biokinesis]"
+                    },
+                    {
+                        "id": "lfuf8rmoqkn",
+                        "key": "Skills",
+                        "value": "Police Training\nAthletic Training\nForensic Investigation\nInterrogation\nLeadership"
+                    },
+                    {
+                        "id": "lfuf8rmojeu",
+                        "key": "Gear",
+                        "value": "Standard Police Issue Equipment "
+                    },
+                    {
+                        "id": "lfuf8rmog4f",
+                        "key": "Father",
+                        "value": "[Arthur Winters] ([Biological])\n[Leo Williams] ([Adoptive])"
+                    },
+                    {
+                        "id": "lfuf8rmorub",
+                        "key": "Mother",
+                        "value": "[Maria Winters]"
+                    },
+                    {
+                        "id": "lfuf8rmo18ed",
+                        "key": "Sibling(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmo1wck",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmo1azx",
+                        "key": "Partner(s)",
+                        "value": "[Kel Romano] ([Husband])"
+                    },
+                    {
+                        "id": "lfuf8rmo1t7e",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmonko",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmouto",
+                        "key": "Likeness",
+                        "value": "Emma Mackey (Appearance)"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmo1hwj",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmokhj",
+                        "type": "paragraph",
+                        "text": "N/A"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [
+            "Humans",
+            "Females",
+            "Heroes",
+            "Members of CAST",
+            "Detectives",
+            "Police Officers"
+        ],
+        "tags": [],
+        "redirects": [
+            "Shadowbloom",
+            "Flora",
+            "Detective Winters"
+        ]
+    },
+    {
+        "id": "lfuf8rmo1gsy",
+        "class": "Info",
+        "title": "Building Template",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmo19yb",
+                "type": "infobox",
+                "banner": {
+                    "title": "N/A",
+                    "subtitle": "N/A"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmo1dwd",
+                        "key": "Name",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmo1ehk",
+                        "key": "Type",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmo13lg",
+                        "key": "Owner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmo1qnm",
+                        "key": "Role(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmo13kq",
+                        "key": "Status",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmo24oz",
+                        "key": "Location",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmo1ehd",
+                        "key": "Constructed",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmosr1",
+                        "key": "Destroyed",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmogkx",
+                        "key": "Notable Areas",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmp20ao",
+                        "key": "Features",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmp1wc1",
+                        "key": "Inhabitants",
+                        "value": "N/A"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [
+            "Templates"
+        ],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmp1fcv",
+        "class": "Info",
+        "title": "The Library",
+        "description": "Base for CAST",
+        "header": [
+            {
+                "id": "lfuf8rmp1sba",
+                "type": "infobox",
+                "banner": {
+                    "title": "The Library",
+                    "subtitle": "N/A"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmp1kmt",
+                        "key": "Name",
+                        "value": "The Library"
+                    },
+                    {
+                        "id": "lfuf8rmp1hnk",
+                        "key": "Type",
+                        "value": "[Library]\n[Base]"
+                    },
+                    {
+                        "id": "lfuf8rmpyxh",
+                        "key": "Owner(s)",
+                        "value": "[Flora Winters]\n[CAST]"
+                    },
+                    {
+                        "id": "lfuf8rmp12dv",
+                        "key": "Role(s)",
+                        "value": "Public Library\nSecret Base ([CAST])"
+                    },
+                    {
+                        "id": "lfuf8rmpx4a",
+                        "key": "Status",
+                        "value": "Active ([2025])"
+                    },
+                    {
+                        "id": "lfuf8rmp1vhh",
+                        "key": "Location",
+                        "value": "TBD"
+                    },
+                    {
+                        "id": "lfuf8rmpy83",
+                        "key": "Constructed",
+                        "value": ""
+                    },
+                    {
+                        "id": "lfuf8rmp9vq",
+                        "key": "Destroyed",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmpclz",
+                        "key": "Notable Areas",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmpwy7",
+                        "key": "Features",
+                        "value": "[Teleportation Gas Distribution System]\n[Teleportation Gas Storage]\n[Teleportation Gas Gateways]\nFloral Decorations"
+                    },
+                    {
+                        "id": "lfuf8rmp1utb",
+                        "key": "Inhabitants",
+                        "value": "[Flora Winters]\n[CAST]\n[Library Staff]"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmpn5i",
+        "class": "Info",
+        "title": "Kel Romano",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmp1zwc",
+                "type": "infobox",
+                "banner": {
+                    "title": "Cerebrum",
+                    "subtitle": "Kel Romano"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmp22yt",
+                        "key": "Full Name",
+                        "value": "Kel Lucia Romano"
+                    },
+                    {
+                        "id": "lfuf8rmp1o9b",
+                        "key": "Alias(es)",
+                        "value": "Cerebrum"
+                    },
+                    {
+                        "id": "lfuf8rmpyq0",
+                        "key": "Species",
+                        "value": "[Human]"
+                    },
+                    {
+                        "id": "lfuf8rmped6",
+                        "key": "Gender",
+                        "value": "[Male]"
+                    },
+                    {
+                        "id": "lfuf8rmp145w",
+                        "key": "Nationality",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmp181v",
+                        "key": "Affiliation(s)",
+                        "value": "[Romano Family Mob] (formerly)"
+                    },
+                    {
+                        "id": "lfuf8rmpy9d",
+                        "key": "Rank/Title",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmpu86",
+                        "key": "Occupation(s)",
+                        "value": "Self-owned pizza shop"
+                    },
+                    {
+                        "id": "lfuf8rmpqia",
+                        "key": "Status",
+                        "value": "Active ([2025])"
+                    },
+                    {
+                        "id": "lfuf8rmpsfz",
+                        "key": "Born",
+                        "value": "September 21, [1992]"
+                    },
+                    {
+                        "id": "lfuf8rmpwgs",
+                        "key": "Disappeared",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmp1g05",
+                        "key": "Died",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmp1641",
+                        "key": "Power(s)",
+                        "value": "Fast brain\n[Mind reading]\n[Telepathy]\nCan slow other's cognitive abilities\n[Mind control]\nBrain can resits foreign drug effects\nResistance against weaker mind-control"
+                    },
+                    {
+                        "id": "lfuf8rmp1faf",
+                        "key": "Enhanced Power(s)",
+                        "value": "[Telekinesis]\n[Force-Field] creation"
+                    },
+                    {
+                        "id": "lfuf8rmpro0",
+                        "key": "Skills",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmq1s5r",
+                        "key": "Gear",
+                        "value": "[Cryptogoggles]"
+                    },
+                    {
+                        "id": "lfuf8rmqujq",
+                        "key": "Father",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmq1duv",
+                        "key": "Mother",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmq1rct",
+                        "key": "Sibling(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmq24wk",
+                        "key": "Other Relatives",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmq1yug",
+                        "key": "Partner(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmqjkl",
+                        "key": "Children",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmq12aw",
+                        "key": "Pet(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmq1jxm",
+                        "key": "Likeness",
+                        "value": "N/A"
+                    }
+                ]
+            },
+            {
+                "id": "lfuf8rmqwuc",
+                "type": "section",
+                "title": "Notes Text Dump",
+                "content": [
+                    {
+                        "id": "lfuf8rmq1r5h",
+                        "type": "paragraph",
+                        "text": "Kel has an initiation ceremony to [Romano Family Mob|the family mob]. One of the tests required Kel to kill someone with a bag on their head, Kel gets stressed because he will not do it and is being forced to. This causes something in his brain to unlock and he becomes comatose for a long time.\n\n(Is it possible that Kel got the same [The Virus|virus] as Taylor but a different variant. He could have had hidden physiological systems like Taylor, and these became activated with the stress. This makes sense because comas can be caused by viruses and a virus would need a cure).\n\nSince Kel has been brought up by a mob then logically he should think like a villain and evil acts/people would seem normal to him as he grew up seeing it. He tries to be a good person as he doesn't like his family but since he grew up with a mob he is cunning and violent (He has anger issues and is very good at strategies) Kel has an initiation ceremony to the family mob. One of the tests required Kel to kill someone with a bag on their head, Kel gets stressed because he won't do it and is being forced to. This causes something in his brain to unlock and he becomes comatose for a long time. In other words, the virus is activated. His body puts itself in a coma to protect itself from the virus, during his coma the virus changes his brain.\n\nCerebrum a classic Italian car that's been gadgeted up closes thing to it is 007 cars. Are they all going to have integrated [Teleportation Gas|TP gas]?. I proposed it last time we talked about vehicles, but I don't think we even picked a vehicle."
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [
+            "Romano Family Members",
+            "Members of CAST",
+            "Heroes",
+            "Humans",
+            "Males"
+        ],
+        "tags": [],
+        "redirects": [
+            "Cerebrum",
+            "Kel"
+        ]
+    },
+    {
+        "id": "lfuf8rmq1tww",
+        "class": "Info",
+        "title": "Species Template",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmqxmj",
+                "type": "infobox",
+                "banner": {
+                    "title": "N/A",
+                    "subtitle": "N/A"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmq222o",
+                        "key": "Name",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmq1vyn",
+                        "key": "Type",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmq24om",
+                        "key": "Language(s)",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmq21fu",
+                        "key": "Origin",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmqq6m",
+                        "key": "Features",
+                        "value": "N/A"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [
+            "Templates"
+        ],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmq1nfu",
+        "class": "Info",
+        "title": "Human",
+        "description": "An intelligent species that are the dominant species on Earth.\nThey are known to be pretty funky.",
+        "header": [
+            {
+                "id": "lfuf8rmq1g7i",
+                "type": "infobox",
+                "banner": {
+                    "title": "Human",
+                    "subtitle": "N/A"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmq1idk",
+                        "key": "Name",
+                        "value": "Human (Homo Sapiens)"
+                    },
+                    {
+                        "id": "lfuf8rmq12xy",
+                        "key": "Type",
+                        "value": "[Humanoid]"
+                    },
+                    {
+                        "id": "lfuf8rmq1ey7",
+                        "key": "Language(s)",
+                        "value": "Numerous"
+                    },
+                    {
+                        "id": "lfuf8rmq12dr",
+                        "key": "Origin",
+                        "value": "[Earth], [Sol System]"
+                    },
+                    {
+                        "id": "lfuf8rmq1rqk",
+                        "key": "Features",
+                        "value": "N/A"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmq1u90",
+        "class": "Info",
+        "title": "Organization/Faction/Government Template",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmq1x2k",
+                "type": "infobox",
+                "banner": {
+                    "title": "N/A",
+                    "subtitle": "N/A"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmrlnf",
+                        "key": "Affiliations",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmr1wlt",
+                        "key": "Status",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmr1xaw",
+                        "key": "Capital/Headquarters",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmr1fmn",
+                        "key": "Locations",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmr1l68",
+                        "key": "Founded",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmr1r6y",
+                        "key": "Dissolved",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmr1puj",
+                        "key": "Leaders",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmr1lhd",
+                        "key": "Notable Members",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmr1agq",
+                        "key": "Missions",
+                        "value": "N/A"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [
+            "Templates"
+        ],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmr1753",
+        "class": "Info",
+        "title": "CAST",
+        "description": "A group of kewl supes.\n",
+        "header": [
+            {
+                "id": "lfuf8rmr8vv",
+                "type": "infobox",
+                "banner": {
+                    "title": "CAST",
+                    "subtitle": "N/A"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rmr10f4",
+                        "key": "Affiliations",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmr1pv1",
+                        "key": "Status",
+                        "value": "Active ([2025])"
+                    },
+                    {
+                        "id": "lfuf8rmrprm",
+                        "key": "Headquarters",
+                        "value": "[The Library]"
+                    },
+                    {
+                        "id": "lfuf8rmrlm9",
+                        "key": "Locations",
+                        "value": "[Traveller's Facility]"
+                    },
+                    {
+                        "id": "lfuf8rmr1j0s",
+                        "key": "Founded",
+                        "value": "[2020] by [Flora Winters]"
+                    },
+                    {
+                        "id": "lfuf8rmrqwn",
+                        "key": "Dissolved",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmr2376",
+                        "key": "Leader",
+                        "value": "[Flora Winters]"
+                    },
+                    {
+                        "id": "lfuf8rmr1rbq",
+                        "key": "Members",
+                        "value": "[Flora Winters]\n[Kel Romano]\n[Miles Lexington]\n[Taisuke Lee]"
+                    },
+                    {
+                        "id": "lfuf8rmr1ife",
+                        "key": "Missions",
+                        "value": "N/A"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmr15ts",
+        "class": "Info",
+        "title": "The Orb of the Ancients",
+        "description": "Splits timelines, allowing for research, reconnaissance, and testing",
+        "header": [],
+        "content": [],
+        "talk": [
+            {
+                "id": "lfuf8rmr1cg6",
+                "title": "Orb Facility (Either [Article 15] or [Chang Enterprises])",
+                "text": "Used to test plans and research in alt timelines before applying to the main timeline.\nSupplies would only be delivered to the base when between missions (could be used to aid infiltration)\nInfo coming in to the station would be purely digital without any real-time communication.\nInfo leaving would be highly controlled and reproducible (digital communiques only, with set content and time between timelines)\n\nInstructions will be tested in one timeline, taking all info in from agents and only communicating when strictly needed.\nIn worst case scenarios, the test can be purged to avoid the base being taken over and used to relay false info to the main timeline.\nAll info from agents and outside sources will be used by them to analyse the outcome.\nInformation decay means that short missions are preferable, as long-term results are less reliable and harder to reproduce in the main timeline.\nThis does mean that any long-term consequences will go unnoticed, could be a problem if these can also not be addressed later with this system.\n\nFacility would be somewhere secluded, such as underwater, in Antarctica, or even somewhere deep underground or in space (if [Traveller]'s [Teleportation Gas|gas] is involved).\n\nMost problems would come if detected or confronted.\nThe base would be careful and slow with information to keep it's impact as reproducible as possible.\nSecrecy is key, they are basically unstoppable in cases where the starting conditions could allow for determinable success.",
+                "author": "Cool Person (Placeholder)",
+                "date": "3/28/2023, 8:54:41 PM",
+                "talk": []
+            }
+        ],
+        "categories": [],
+        "tags": [
+            ""
+        ],
+        "redirects": []
+    },
+    {
+        "id": "lfuf8rmr1irt",
+        "class": "Info",
+        "title": "Article 15",
+        "description": "Short description...",
+        "header": [
+            {
+                "id": "lfuf8rmraii",
+                "type": "infobox",
+                "banner": {
+                    "title": "Article 15",
+                    "subtitle": "N/A"
+                },
+                "content": [
+                    {
+                        "id": "lfuf8rms1ol7",
+                        "key": "Affiliations",
+                        "value": "[CAST]"
+                    },
+                    {
+                        "id": "lfuf8rms1y9o",
+                        "key": "Status",
+                        "value": "Active ([2025])"
+                    },
+                    {
+                        "id": "lfuf8rmsl9t",
+                        "key": "Capital/Headquarters",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rmsd60",
+                        "key": "Locations",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rms1zce",
+                        "key": "Founded",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rms8ub",
+                        "key": "Dissolved",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rms11la",
+                        "key": "Leaders",
+                        "value": "N/A"
+                    },
+                    {
+                        "id": "lfuf8rms11wc",
+                        "key": "Notable Members",
+                        "value": "[Hui Chang] (Formerly)\n[Jennifer Graves] (Formerly)\n[Stephanie Haywood]\n[Aram Kishan]\n[Arthur Powell]\n"
+                    },
+                    {
+                        "id": "lfuf8rms1rcd",
+                        "key": "Missions",
+                        "value": "N/A"
+                    }
+                ]
+            }
+        ],
+        "content": [],
+        "talk": [],
+        "categories": [
+            "Organisations"
+        ],
+        "tags": [],
+        "redirects": [
+            "A15",
+            "A-15"
+        ]
+    },
+    {
+        "id": "lfuf8rmsqxi",
+        "class": "Info",
+        "title": "2020s",
+        "description": "The 2020s is the current decade, which began on January 1, 2020, and will end on December 31, 2029.",
+        "header": [],
+        "content": [],
+        "talk": [],
+        "categories": [],
+        "tags": [],
+        "redirects": [
+            "2020",
+            "2021",
+            "2022",
+            "2023",
+            "2024",
+            "2025",
+            "2026",
+            "2027",
+            "2028",
+            "2029"
+        ]
+    }
+]

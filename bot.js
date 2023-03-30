@@ -14,8 +14,36 @@ const minutesBot = discordBotkit(minutes_config);
 require("./skills/data.js")(dataBot);
 require("./skills/minutes.js")(minutesBot);
 module.exports = {
-    dataBot,
-    minutesBot
+  dataBot,
+  minutesBot
+}
+
+// Import firebase
+const { initializeApp } = require('firebase/app');
+const { getFirestore, collection, getDocs } = require('firebase/firestore');
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCRrxXRbbyCbDh06oFKoDwZgd4Ucd0nXyk",
+  authDomain: "supe-db.firebaseapp.com",
+  projectId: "supe-db",
+  storageBucket: "supe-db.appspot.com",
+  messagingSenderId: "414925832647",
+  appId: "1:414925832647:web:04e6b82a8fc2dd48bf99e2",
+  measurementId: "G-FCEP73WM0G"
+};
+
+// Load firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function getData(id) {
+  // Get the timeline with the given document ID
+  const docRef = collection(db, "timelines");
+  const docSnap = await getDocs(docRef);
+  const doc = docSnap.docs.find(doc => doc.id == id);
+  const final = JSON.parse(doc.data().map)
+  return final;
 }
 
 var linesdata = ""
@@ -224,7 +252,7 @@ const dataActivities = [ // Array of random activities
     condition: () => shift !== "night" // Worf won't play during the night as he will be unavailable
   },
   {
-    name: "ACTIVITY: Watching a performance of Bevery Crusher's play, \"Something for Breakfast\" in Ten Forward.",
+    name: "ACTIVITY: Watching a performance of Beverly Crusher's play, \"Something for Breakfast\" in Ten Forward.",
     duration: 1000 * 60 * 60 * 2, // 2.1 hours, average time for this activity
     variance: 1000 * 60 * 10, // 10 minutes, variance for this activity, so it can be between 1.9 and 2.1 hours long
     condition: () => shift !== "night" // Performance will only happen during the day
@@ -296,7 +324,7 @@ const interupts = [
   },
   {
     class: "task",
-    name: ["TASK: In a meeting with the senior staff.", "TASK: Aiding Geordi in Main Engineering.", "TASK: Monitoring probe readings.", "TASK: Analysing asteroid sample.", "TASK: Contacting liason aboard Starbase 4514.", "TASK: Giving an Ambassador a tour of the Enterprise.", "TASK: Reviewing sensor logs from recovered shuttle.", "TASK: Reviewing Delta radiation readings in this sector.", "TASK: Analyzing nebula composition.", "TASK: Helping the Doctor synthesize a cure for a disease.", "TASK: Commanding the Bridge while Picard and Riker are absent.", "TASK: In the landing party investigating a planet.", "TASK: Orbiting a star in a shuttlecraft."],
+    name: ["TASK: In a meeting with the senior staff.", "TASK: Aiding Geordi in Main Engineering.", "TASK: Monitoring probe readings.", "TASK: Analyzing asteroid sample.", "TASK: Contacting liaison aboard Starbase 4514.", "TASK: Giving an Ambassador a tour of the Enterprise.", "TASK: Reviewing sensor logs from recovered shuttle.", "TASK: Reviewing Delta radiation readings in this sector.", "TASK: Analyzing nebula composition.", "TASK: Helping the Beverly Crusher synthesize a cure for a disease.", "TASK: Commanding the Bridge while Picard and Riker are absent.", "TASK: In the landing party investigating a planet.", "TASK: Orbiting a star in a shuttlecraft."],
     duration: 1000 * 60 * 60 * 1.5, // 1.5 hours, average time for this activity
     variance: 1000 * 60 * 60 * 0.5, // 0.5 hours, variance for this activity, so it can be between 1 and 2 hours long
     condition: () => true // Can occur at any time
@@ -306,20 +334,23 @@ const interupts = [
 // Login to minutesBot and dataBot with discord.js
 // Require discord.js
 const { Client, GatewayIntentBits } = require('discord.js');
-const { time } = require("console");
 
 // Create the new clients instances including the intents needed for the bots like presence and guild messages
-const minutesClient = new Client( { intents: [
-  GatewayIntentBits.Guilds,
-  GatewayIntentBits.GuildMessages,
-  GatewayIntentBits.GuildPresences
-] } );
+const minutesClient = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildPresences
+  ]
+});
 
-const dataClient = new Client( { intents: [
-  GatewayIntentBits.Guilds,
-  GatewayIntentBits.GuildMessages,
-  GatewayIntentBits.GuildPresences
-] } );
+const dataClient = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildPresences
+  ]
+});
 
 // Log in to Discord with your clients tokens
 minutesClient.login(process.env.MINUTES_DISCORD_TOKEN)
@@ -327,210 +358,217 @@ dataClient.login(process.env.DATA_DISCORD_TOKEN)
 
 
 // Generate southern greetings
-function genGreeting(plural = true) {
-    var greets = ["howdy", "mornin'", "hello", "hiya", "hey", "good morning"]
-    var subjects = [null, "there"]
-    var users = [null];
+function genGreeting(plural = true, user = null) {
+  var greets = ["howdy", "mornin'", "hello", "hiya", "hey", "good morning"]
+  var subjects = [null, "there"]
 
-    if (plural) {
-        subjects.push("folks");
-        subjects.push("y'all");
-        subjects.push("guys");
-        subjects.push("everybody");
-    }
-    else {
-        subjects.push("partner");
-        subjects.push("friend");
-        subjects.push("pal");
-        subjects.push("buddy");
-        // subjects.push("USERNAME"); // Will be used in DMs in the future
-    }
+  if (plural) {
+    subjects.push("folks");
+    subjects.push("y'all");
+    subjects.push("guys");
+    subjects.push("everybody");
+  }
+  else {
+    subjects.push("partner");
+    subjects.push("friend");
+    subjects.push("pal");
+    subjects.push("buddy");
+  }
 
-    // Get the parts of the greeting
-    var g = greets[Math.floor(Math.random() * greets.length)];
-    var s = subjects[Math.floor(Math.random() * subjects.length)];
-    var u = users[Math.floor(Math.random() * users.length)];
+  // Get the parts of the greeting (1 in 3 chance of the subject being the user's name)
+  var g = greets[Math.floor(Math.random() * greets.length)];
+  var s = (user && Math.floor(Math.random() * 3) == 0) ? user : subjects[Math.floor(Math.random() * subjects.length)];
 
-    // Check for exceptions
-    // "hiya" can't be used with "y'all", it will just be "hi"
-    if (g == "hiya" && s == "y'all") g = "hi";
+  // Check for exceptions
+  // "hiya" can't be used with "y'all", it will just be "hey"
+  if (g == "hiya" && s == "y'all") g = "hey";
 
-    // Generate the greeting
-    var greeting = g + (s ? " " + s : "") + (u ? " " + u : "") + "!";
+  // Generate the greeting
+  var greeting = g + (s ? " " + s : "");
 
-    // Return the greeting with the first letter capitalized
-    return greeting.charAt(0).toUpperCase() + greeting.slice(1);
+  // Return the greeting with the first letter capitalized
+  return greeting.charAt(0).toUpperCase() + greeting.slice(1);
 }
 
 // Run when each client is ready
 minutesClient.on("ready", () => {
-    // Run the timer loop right away, but after ten seconds it will begin to run just over every second
+  // Run the timer loop right away, but after ten seconds it will begin to run just over every second
 
-    // Run the timer loop right away
-    timer(true);
+  // Run the timer loop right away
+  timer(true);
 
-    // Set a timeout to wait 1.111 seconds for every timer in "timecheck.json" to be set
-    var timecheck = JSON.parse(fs.readFileSync("./timecheck.json")).length;
-    console.log("Waiting " + timecheck + " seconds for timers to be set...")
+  // Set a timeout to wait 1.111 seconds for every timer in "timecheck.json" to be set
+  var timecheck = JSON.parse(fs.readFileSync("./timecheck.json")).length;
+  console.log("Waiting " + timecheck + " seconds for timers to be set...")
 
-    setTimeout(() => {
-        // Run the timer loop just over every second
-        setInterval(timer, 800);
-        console.log("Timers set and are being checked every 800ms.")
-    }, timecheck * 1111);
+  setTimeout(() => {
+    // Run the timer loop just over every second
+    setInterval(timer, 800);
+    console.log("Timers set and are being checked every 800ms.")
+  }, timecheck * 1111);
 
-    // Set the bot's presence
-    minutesClient.user.setPresence({
-        activities: [{
-            name: "over the Sacred Timelines",
-            type: 3,
-        }]
-    })
-    
-    // Send a greeting to the channel provided by the api
-    minutesClient.channels.cache.get(process.env.MINUTES_ID).send(genGreeting());
+  // Set the bot's presence
+  minutesClient.user.setPresence({
+    activities: [{
+      name: "over the Sacred Timelines",
+      type: 3,
+    }]
+  })
 
-    // Also send an embed test message
-    // The embed timestamp depends on the time and weekday as the conditions below:
-    // 1. Voting always closes on at 3pm on a weekday, never on a weekend
-    // 2. The time between submitting a proposal and voting closing is always at least 72 hours (3 days)
+  // Send a greeting to the channel provided by the api
+  minutesClient.channels.cache.get(process.env.MINUTES_ID).send(genGreeting());
 
-    // Get the current time and date
-    var now = new Date();
+  // Also send an embed test message
+  // The embed timestamp depends on the time and weekday as the conditions below:
+  // 1. Voting always closes on at 3pm on a weekday, never on a weekend
+  // 2. The time between submitting a proposal and voting closing is always at least 72 hours (3 days)
 
-      // Add 13 hours to the time due to the time zone difference
-    now.setHours(now.getHours() + 13);
+  // Get the current time and date
+  var now = new Date();
 
-    // Shift the date three days into the future
-    now.setDate(now.getDate() + 3);
+  // Add 13 hours to the time due to the time zone difference
+  now.setHours(now.getHours() + 13);
 
-    // If this date is a weekend, shift it to the next Monday at 3pm
-    if (now.getDay() == 0) { now.setDate(now.getDate() + 1); now.setTime(15, 0, 0, 0) }
-    else if (now.getDay() == 6) { now.setDate(now.getDate() + 2); now.setTime(15, 0, 0, 0) }
-    // Otherwise, if time is before 3pm, set it to 3pm
-    else if (now.getHours() < 15) now.setTime(15, 0, 0, 0);
-    // Otherwise, if time is after 3pm, set it to 3pm on the next weekday
-    else if (now.getHours() >= 15 && now.getDay() != 5) { now.setDate(now.getDate() + 1); now.setTime(15, 0, 0, 0) }
-    // Otherwise, if time is after 3pm on a Friday, set it to 3pm on the next Monday
-    else if (now.getHours() >= 15 && now.getDay() == 5) {now.setDate(now.getDate() + 3); now.setTime(15, 0, 0, 0) }
+  // Shift the date three days into the future
+  now.setDate(now.getDate() + 3);
 
-    var closeTime = now.toISOString();
+  // If this date is a weekend, shift it to the next Monday at 3pm
+  if (now.getDay() == 0) { now.setDate(now.getDate() + 1); now.setTime(15, 0, 0, 0) }
+  else if (now.getDay() == 6) { now.setDate(now.getDate() + 2); now.setTime(15, 0, 0, 0) }
+  // Otherwise, if time is before 3pm, set it to 3pm
+  else if (now.getHours() < 15) now.setTime(15, 0, 0, 0);
+  // Otherwise, if time is after 3pm, set it to 3pm on the next weekday
+  else if (now.getHours() >= 15 && now.getDay() != 5) { now.setDate(now.getDate() + 1); now.setTime(15, 0, 0, 0) }
+  // Otherwise, if time is after 3pm on a Friday, set it to 3pm on the next Monday
+  else if (now.getHours() >= 15 && now.getDay() == 5) { now.setDate(now.getDate() + 3); now.setTime(15, 0, 0, 0) }
+
+  var closeTime = now.toISOString();
 
 
-    var embed = {
-        "content": `New proposal \"title\"`,
-        "tts": false,
+  var embed = {
+    "content": `New proposal \"title\"`,
+    "tts": false,
+    "components": [
+      {
+        "type": 1,
         "components": [
           {
-            "type": 1,
-            "components": [
-              {
-                "style": 3,
-                "label": `Accept`,
-                "custom_id": `accept`,
-                "disabled": false,
-                "type": 2
-              },
-              {
-                "style": 4,
-                "label": `Reject`,
-                "custom_id": `reject`,
-                "disabled": false,
-                "type": 2
-              }
-            ]
-          }
-        ],
-        "embeds": [
+            "style": 3,
+            "label": `Accept`,
+            "custom_id": `accept`,
+            "disabled": false,
+            "type": 2
+          },
           {
-            "type": "rich",
-            "title": `Proposal Title`,
-            "description": `Short description`,
-            "color": 0xb2f703,
-            "fields": [
-              {
-                "name": "0/3 votes",
-                "value": "\u200b"
-              }
-            ],
-            "timestamp": closeTime,
-            "footer": {
-              "text": `Voting close`
-            },
-            "url": `https://transit-lumber.github.io/supedb`
+            "style": 4,
+            "label": `Reject`,
+            "custom_id": `reject`,
+            "disabled": false,
+            "type": 2
           }
         ]
-    };
+      }
+    ],
+    "embeds": [
+      {
+        "type": "rich",
+        "title": `Proposal Title`,
+        "description": `Short description`,
+        "color": 0xb2f703,
+        "fields": [
+          {
+            "name": "0/3 votes",
+            "value": "\u200b"
+          }
+        ],
+        "timestamp": closeTime,
+        "footer": {
+          "text": `Voting close`
+        },
+        "url": `https://transit-lumber.github.io/supedb`
+      }
+    ]
+  };
 
-    minutesClient.channels.cache.get(process.env.MINUTES_ID).send(embed).then(msg => {
-      // Create a function to handle the button clicks
+  minutesClient.channels.cache.get(process.env.MINUTES_ID).send(embed).then(msg => {
+    // Create a function to handle the button clicks
 
-      var votes = []
+    var votes = []
 
-      function buttonHandler(interaction) {
-        if (interaction.message.id !== msg.id) return;
+    function buttonHandler(interaction) {
+      if (interaction.message.id !== msg.id) return;
 
-        var reply = ``
+      var reply = ``
 
-        // Check if the user has already voted
-        if (!votes.find(vote => vote.user == interaction.user.id)) {
-          // If they haven't, add their vote to the array
-          votes.push({ user: interaction.user.id, vote: interaction.customId });
-          reply = `You voted to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
-        }
-        // If they have, then check if they are changing their vote
-        else if (votes.find(vote => vote.user == interaction.user.id).vote !== interaction.customId) {
-          // If they are, change their vote
-          votes.find(vote => vote.user == interaction.user.id).vote = interaction.customId;
-          reply = `You changed your vote to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
-        }
-        else {
-          // Remove their vote from the array
-          votes.splice(votes.findIndex(vote => vote.user == interaction.user.id), 1);
-          reply = `You removed your vote to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
-        }
-
-        // DM the user with the message and delete it after 5 seconds
-        interaction.user.send(reply).then(msg => { setTimeout(() => { msg.delete() }, 5000) });
-
-        // Get the total number of votes
-        var total = votes.length;
-        embed.embeds[0].fields[0].name = `${total}/3 votes`;
-        
-        // Now, check if the vote is over (three users have voted)
-        if (votes.length >= 3) {
-          // If it is over, then disable the buttons
-          embed.components[0].components.forEach(button => { button.disabled = true; });
-
-          // Get the results
-          var accept = votes.filter(vote => vote.vote == "accept").length;
-          var reject = votes.filter(vote => vote.vote == "reject").length;
-
-          reply = `Results:\n    Accept: ${accept}\n    Reject: ${reject}\n\n`
-          reply += accept > reject ? `Proposal accepted!` : `Proposal rejected.`;
-
-          // Reply to the proposal with the results
-          interaction.message.reply(reply);
-        }
-
-        msg.edit(embed);
-
-        // Acknowledge the interaction
-        interaction.deferUpdate();
+      // Check if the user has already voted
+      if (!votes.find(vote => vote.user == interaction.user.id)) {
+        // If they haven't, add their vote to the array
+        votes.push({ user: interaction.user.id, vote: interaction.customId });
+        reply = `You voted to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
+      }
+      // If they have, then check if they are changing their vote
+      else if (votes.find(vote => vote.user == interaction.user.id).vote !== interaction.customId) {
+        // If they are, change their vote
+        votes.find(vote => vote.user == interaction.user.id).vote = interaction.customId;
+        reply = `You changed your vote to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
+      }
+      else {
+        // Remove their vote from the array
+        votes.splice(votes.findIndex(vote => vote.user == interaction.user.id), 1);
+        reply = `You removed your vote to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
       }
 
-      // Create a listener for the button clicks
-      minutesClient.on("interactionCreate", buttonHandler);
-    });
+      // DM the user with the message and delete it after 5 seconds
+      interaction.user.send(reply).then(msg => { setTimeout(() => { msg.delete() }, 5000) });
 
+      // Get the total number of votes
+      var total = votes.length;
+      embed.embeds[0].fields[0].name = `${total}/3 votes`;
+
+      // Now, check if the vote is over (three users have voted)
+      if (votes.length >= 3) {
+        // If it is over, then disable the buttons
+        embed.components[0].components.forEach(button => { button.disabled = true; });
+
+        // Get the results
+        var accept = votes.filter(vote => vote.vote == "accept").length;
+        var reject = votes.filter(vote => vote.vote == "reject").length;
+
+        reply = `Results:\n    Accept: ${accept}\n    Reject: ${reject}\n\n`
+        reply += accept > reject ? `Proposal accepted!` : `Proposal rejected.`;
+
+        // Reply to the proposal with the results
+        interaction.message.reply(reply);
+      }
+
+      msg.edit(embed);
+
+      // Acknowledge the interaction
+      interaction.deferUpdate();
+    }
+
+    // Create a listener for the button clicks
+    minutesClient.on("interactionCreate", buttonHandler);
   });
 
+  // Get the next Monday at 8am
+  var reportTime = new Date();
+  reportTime.setDate(reportTime.getDate() + (1 + 7 - reportTime.getDay()) % 7);
+  reportTime.setHours(8, 0, 0, 0);
+  // Get the ms until then
+  reportTime = reportTime - Date.now();
+
+  // Set a timeout to run the 'sendReport' function
+  setTimeout(sendReport, reportTime);
+
+});
+
 dataClient.on("ready", () => {
-    // Run the presence function
-    dataPresence();
-  
-    // Run the interupt function
-    interuptEvent();
+  // Run the presence function
+  dataPresence();
+
+  // Run the interupt function
+  interuptEvent();
 });
 
 function dataPresence(trigger = "reset") {
@@ -562,20 +600,20 @@ function dataPresence(trigger = "reset") {
 
   // Check if Data can change shifts (not in an emergency)
   if (oldShift !== shift && !activity.startsWith("EMERGENCY: ")) {
-      // Run shift change checks
+    // Run shift change checks
 
-      // Day shift has a 75% chance of being rostered on
-      if (shift == "day" && Math.random() < 0.95) {
-        onDuty = true;
-      }
-      // Night shift has a 50% chance of being rostered on
-      else if (shift == "night" && Math.random() < 0.5) {
-        onDuty = true;
-      }
-      // Data will be off duty otherwise
-      else {
-        onDuty = false;
-      }
+    // Day shift has a 75% chance of being rostered on
+    if (shift == "day" && Math.random() < 0.95) {
+      onDuty = true;
+    }
+    // Night shift has a 50% chance of being rostered on
+    else if (shift == "night" && Math.random() < 0.5) {
+      onDuty = true;
+    }
+    // Data will be off duty otherwise
+    else {
+      onDuty = false;
+    }
   }
 
   // Set up to repeat the function after the shift ends (with trigger "shift")
@@ -659,7 +697,7 @@ function dataPresence(trigger = "reset") {
   // If not then pick a random activity
   else {
     // Start by filtering out all available activities (all activities with conditions returning true)
-    var activities = dataActivities.filter(activity => { return activity.condition() } );
+    var activities = dataActivities.filter(activity => { return activity.condition() });
 
     // Now filter out all activities that are not the same as Data's current activity
     activities = activities.filter(activity => {
@@ -788,11 +826,11 @@ function timer(sort = false) {
 
     // Send a brief message to each channel
     channels.forEach(channel => {
-        // Get the channel
-        var channel = minutesClient.channels.cache.get(channel);
-    
-        // Send a message
-        channel.send("-".repeat(50));
+      // Get the channel
+      var channel = minutesClient.channels.cache.get(channel);
+
+      // Send a message
+      channel.send("-".repeat(50));
     });
   }
 
@@ -865,7 +903,7 @@ function timer(sort = false) {
           // Update the event in the json file
           event.id = res.id;
           event.channel = res.channelId;
-          
+
           fs.writeFileSync("./timecheck.json", JSON.stringify(timecheck));
         });
       }
@@ -874,4 +912,380 @@ function timer(sort = false) {
 
   // If the json file needs to be updated, then update it
   if (update) fs.writeFileSync("./timecheck.json", JSON.stringify(timecheck));
+}
+
+async function sendReport() {
+  var config = [
+    // name: "{Someone's name}", // e.g. "John Smith"
+    // email: "{Their email}", // e.g. "john1045@gmail.com"
+    // discord: "{Their discord}", // e.g. "John#1045"
+    // watching: ["{timeline id}, {timeline id}, ..."], // e.g. ["dE2xh0Xb8l4", "6Dh-RL__uN4"]
+  ]
+
+  // List the data from all files in the 'firebase' folder
+  var files = fs.readdirSync("./firebase");
+  var data = {};
+  files.forEach(file => {
+    // If the file is a json file, then read it
+    if (file !== "config.json") {
+      data[file] = JSON.parse(fs.readFileSync("./firebase/" + file).toString());
+    }
+    else {
+      // If the file is the config file, then read it and add it to the config
+      config = JSON.parse(fs.readFileSync("./firebase/" + file).toString());
+    }
+  });
+
+  console.log(config)
+
+  // Generate reports for each person and send them
+  const reportPromises = config.map(person => generateReport(person, data));
+  const reports = await Promise.all(reportPromises);
+  console.log(reports); // an array of reports
+
+  // Send the reports
+  reports.forEach(report => {
+    if (report.email) {
+      // Send an email
+      emailReport(report);
+    }
+    if (report.discord) {
+      // Send a DM
+      discordReport(report);
+    }
+  });
+}
+
+async function generateReport(person, data) {
+  const dataPromises = person.watching.map(id => getData(id, data));
+  const resolvedData = await Promise.all(dataPromises);
+
+  var reportData = {
+    name: person.name,
+    email: person.email || null,
+    discord: person.discord || null,
+    old: person.watching.map(id => data[id + ".json"]),
+    new: resolvedData,
+    ids: person.watching
+  };
+
+  return reportData;
+}
+
+sendReport();
+
+function emailReport(data) {
+  const emailjs = import("emailjs").then(emailjs => {
+    var textLog = []
+
+    // Compare the files
+    data.old.forEach((old, i) => {
+      compare(textLog, old, data.new[i]);
+    });
+
+    if (textLog.length === 0) textLog.push("No changes were detected.");
+
+    // Send an email with this content
+    const client = new emailjs.SMTPClient({
+      user: 'miss_minutes@outlook.com',
+      password: process.env.MINUTES_EMAIL_PASSWORD,
+      host: 'smtp-mail.outlook.com',
+      tls: {
+        ciphers: 'SSLv3',
+      }
+    });
+
+    // Get the current year and which week it is of that year
+    const date = new Date();
+
+    const year = date.getFullYear();
+
+    const week = Math.ceil((Math.floor((date - new Date(year, 0, 1)) / 86400000) + new Date(year, 0, 1).getDay() + 1) / 7);
+
+    // Pick a color checking how many weeks it has been over time
+    var color = ["#084298", "#432874", "#801f4f", "#842029", "#984c0c", "#0f5132", "#087990"][Math.floor(date.getTime() / 1000 / 60 / 60 / 24 / 7) % 7];
+
+    console.log(data.email)
+
+    const message = new emailjs.Message({
+      text: textLog.join("\n"),
+      from: "Miss Minutes <miss_minutes@outlook.com>",
+      to: data.email,
+      subject: `SupeDB - Weekly Update\n(Week ${week}, ${year})`,
+      attachment: [
+        {
+          data: `
+          <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+          <html>
+            <head>
+              <!-- Compiled with Bootstrap Email version: 1.3.1 --><meta http-equiv="x-ua-compatible" content="ie=edge">
+              <meta name="x-apple-disable-message-reformatting">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+              <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+              <style type="text/css">
+                body,table,td{font-family:Helvetica,Arial,sans-serif !important}.ExternalClass{width:100%}.ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div{line-height:150%}a{text-decoration:none}*{color:inherit}a[x-apple-data-detectors],u+#body a,#MessageViewBody a{color:inherit;text-decoration:none;font-size:inherit;font-family:inherit;font-weight:inherit;line-height:inherit}img{-ms-interpolation-mode:bicubic}table:not([class^=s-]){font-family:Helvetica,Arial,sans-serif;mso-table-lspace:0pt;mso-table-rspace:0pt;border-spacing:0px;border-collapse:collapse}table:not([class^=s-]) td{border-spacing:0px;border-collapse:collapse}@media screen and (max-width: 600px){.w-full,.w-full>tbody>tr>td{width:100% !important}*[class*=s-lg-]>tbody>tr>td{font-size:0 !important;line-height:0 !important;height:0 !important}.s-2>tbody>tr>td{font-size:8px !important;line-height:8px !important;height:8px !important}.s-3>tbody>tr>td{font-size:12px !important;line-height:12px !important;height:12px !important}.s-5>tbody>tr>td{font-size:20px !important;line-height:20px !important;height:20px !important}.s-10>tbody>tr>td{font-size:40px !important;line-height:40px !important;height:40px !important}}
+              </style>
+            </head>
+            <body class="text-white" style="outline: 0; width: 100%; min-width: 100%; height: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-family: Helvetica, Arial, sans-serif; line-height: 24px; font-weight: normal; font-size: 16px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; color: #ffffff; margin: 0; padding: 0; border-width: 0;" bgcolor="${color}">
+              <table class="text-white body" valign="top" role="presentation" border="0" cellpadding="0" cellspacing="0" style="outline: 0; width: 100%; min-width: 100%; height: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-family: Helvetica, Arial, sans-serif; line-height: 24px; font-weight: normal; font-size: 16px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; color: #ffffff; margin: 0; padding: 0; border-width: 0;" bgcolor="${color}">
+                <tbody>
+                  <tr>
+                    <td valign="top" style="line-height: 24px; font-size: 16px; color: #ffffff; margin: 0;" align="left" bgcolor="${color}">
+                      <table class="container" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+                        <tbody>
+                          <tr>
+                            <td align="center" style="line-height: 24px; font-size: 16px; margin: 0; padding: 0 16px;">
+                              <!--[if (gte mso 9)|(IE)]>
+                                <table align="center" role="presentation">
+                                  <tbody>
+                                    <tr>
+                                      <td width="600">
+                              <![endif]-->
+                              <table align="center" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 600px; margin: 0 auto;">
+                                <tbody>
+                                  <tr>
+                                    <td style="line-height: 24px; font-size: 16px; margin: 0;" align="left">
+                                      <table class="s-10 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
+                                        <tbody>
+                                          <tr>
+                                            <td style="line-height: 40px; font-size: 40px; width: 100%; height: 40px; margin: 0;" align="left" width="100%" height="40">
+                                              &#160;
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                      <table class="card  bg-dark" role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-radius: 6px; border-collapse: separate !important; width: 100%; overflow: hidden; border: 1px solid #e2e8f0;" bgcolor="#1a202c">
+                                        <tbody>
+                                          <tr>
+                                            <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0;" align="left" bgcolor="#1a202c">
+                                              <table class="card-body" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+                                                <tbody>
+                                                  <tr>
+                                                    <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 20px;" align="left">
+                                                      <h1 class="h3  text-orange-500" style="color: #fd7e14; padding-top: 0; padding-bottom: 0; font-weight: 500; vertical-align: baseline; font-size: 28px; line-height: 33.6px; margin: 0;" align="left">
+                                                        Weekly Update
+                                                        <span class="h6  text-gray-400" style="color: #cbd5e0; padding-top: 0; padding-bottom: 0; font-weight: 500; text-align: left; vertical-align: baseline; font-size: 16px; line-height: 19.2px; margin: 0;">(Week ${week}, ${year})</span>
+                                                        <table class="s-2 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
+                                                          <tbody>
+                                                            <tr>
+                                                              <td style="line-height: 8px; font-size: 8px; width: 100%; height: 8px; margin: 0;" align="left" width="100%" height="8">
+                                                                &#160;
+                                                              </td>
+                                                            </tr>
+                                                          </tbody>
+                                                        </table>
+                                                      </h1>
+                                                      <table class="s-2 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
+                                                        <tbody>
+                                                          <tr>
+                                                            <td style="line-height: 8px; font-size: 8px; width: 100%; height: 8px; margin: 0;" align="left" width="100%" height="8">
+                                                              &#160;
+                                                            </td>
+                                                          </tr>
+                                                        </tbody>
+                                                      </table>
+                                                      <h6 class="text-red-200 text-xs" style="color: #f1aeb5; padding-top: 0; padding-bottom: 0; font-weight: 500; vertical-align: baseline; font-size: 12px; line-height: 14.4px; margin: 0;" align="left">
+                                                        ${genGreeting(false, data.name)}, Miss Minutes here with your weekly report.
+                                                        <br>
+                                                        <br>
+                                                        Here is a rundown of all that has changed in your projects over the last week.
+                                                      </h6>
+                                                      <table class="s-5 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
+                                                        <tbody>
+                                                          <tr>
+                                                            <td style="line-height: 20px; font-size: 20px; width: 100%; height: 20px; margin: 0;" align="left" width="100%" height="20">
+                                                              &#160;
+                                                            </td>
+                                                          </tr>
+                                                        </tbody>
+                                                      </table>
+                                                      <table class="hr" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+                                                        <tbody>
+                                                          <tr>
+                                                            <td style="line-height: 24px; font-size: 16px; border-top-width: 1px; border-top-color: #e2e8f0; border-top-style: solid; height: 1px; width: 100%; margin: 0;" align="left">
+                                                            </td>
+                                                          </tr>
+                                                        </tbody>
+                                                      </table>
+                                                      <table class="s-5 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
+                                                        <tbody>
+                                                          <tr>
+                                                            <td style="line-height: 20px; font-size: 20px; width: 100%; height: 20px; margin: 0;" align="left" width="100%" height="20">
+                                                              &#160;
+                                                            </td>
+                                                          </tr>
+                                                        </tbody>
+                                                      </table>
+                                                      <div class="space-y-3">
+                                                        <h2 class="h4 text-orange-300" style="color: #feb272; padding-top: 0; padding-bottom: 0; font-weight: 500; vertical-align: baseline; font-size: 24px; line-height: 28.8px; margin: 0;" align="left">Changes:</h2>
+                                                        <table class="s-3 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
+                                                          <tbody>
+                                                            <tr>
+                                                              <td style="line-height: 12px; font-size: 12px; width: 100%; height: 12px; margin: 0;" align="left" width="100%" height="12">
+                                                                &#160;
+                                                              </td>
+                                                            </tr>
+                                                          </tbody>
+                                                        </table>
+                                                        <ul class="list-disc list-inside" style="padding-left: 10px; font-size: x-small; line-height: 24px; margin: 0;">
+                                                          ${textLog.map(line => `<li>${line}</li>`).join("\n")}
+                                                        </ul>
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                      <table class="s-10 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
+                                        <tbody>
+                                          <tr>
+                                            <td style="line-height: 40px; font-size: 40px; width: 100%; height: 40px; margin: 0;" align="left" width="100%" height="40">
+                                              &#160;
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <!--[if (gte mso 9)|(IE)]>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                              <![endif]-->
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </body>
+          </html>
+          
+          `,
+          alternative: true,
+        },
+      ],
+    });
+
+    client.send(message, (err, message) => {
+      console.log(err || message);
+
+      // Now update the projects json file with the new data
+      data.ids.forEach((id, i) => {
+        // {id}.json is to be updated with data.new[i]
+        fs.writeFileSync(`./firebase/${id}.json`, JSON.stringify(data.new[i], null, 2));
+      });
+    });
+  }, 1000);
+}
+
+function log(arr, text) {
+  // Only add up to 100 chars then a ellipsis if needed
+  arr.push(text.length > 100 ? text.slice(0, 100) + "..." : text);
+}
+
+function compare(output, oldObj, newObj, path = "") {
+  // Check if an array, return "a" if true or just the first letter of it's typeof result
+  switch ((Array.isArray(oldObj) ? "a" : (typeof oldObj).charAt(0)) + (Array.isArray(newObj) ? "a" : (typeof newObj).charAt(0))) {
+    case "aa": // Comparing two arrays
+      if (JSON.stringify(oldObj) == JSON.stringify(newObj)) {
+        return;
+      }
+
+      log(output, `'.${path}' MODIFIED`);
+
+      // Check what we can use for comparison
+      var compAttr = ['id', 'title', 'key'].find(attr => newObj.concat(oldObj).every(obj => obj[attr] !== undefined));
+
+      if (compAttr != undefined) { // If we can, use it to compare the two arrays
+        for (var i = 0; i < oldObj.length; i++) { // Check for additions and modifications
+          // Check if it exists in the new array
+          var index = newObj.findIndex(obj => obj[compAttr] == oldObj[i][compAttr]);
+          if (index != -1) { // If it does, compare the two objects
+            compare(output, oldObj[i], newObj[index], path + "[" + i + "]");
+          } else { // If it doesn't, it was deleted
+            log(output, `'.${path}[${i}]' DELETED`);
+          }
+        }
+
+        for (var i = 0; i < newObj.length; i++) { // Check for additions
+          // Check if the id exists in the old array
+          var index = oldObj.findIndex(obj => obj[compAttr] == newObj[i][compAttr]);
+          if (index == -1) { // If it doesn't, it was added
+            log(output, `'.${path}[${i}]' ADDED`);
+          }
+        }
+        // If all are strings/numbers, check for additions and deletions only
+      } else if (newObj.concat(oldObj).every(obj => typeof obj == 'string' || typeof obj == 'number')) {
+        for (var i = 0; i < oldObj.length; i++) { // Check for deletions
+          // Check if it exists anywhere in the new array
+          var index = newObj.findIndex(obj => obj == oldObj[i]);
+          if (index == -1) { // If it doesn't, it was deleted
+            log(output, `'.${path}[${i}]' DELETED: '${oldObj[i]}'`);
+          }
+        }
+
+        for (var i = 0; i < newObj.length; i++) { // Check for additions
+          // Check if it exists anywhere in the old array
+          var index = oldObj.findIndex(obj => obj == newObj[i]);
+          if (index == -1) { // If it doesn't, it was added
+            log(output, `'.${path}[${i}]' ADDED: '${newObj[i]}'`);
+          }
+        }
+      } else { // If we can't, compare the two arrays as strings
+        if (JSON.stringify(oldObj) == JSON.stringify(newObj)) {
+          return;
+        }
+
+        log(output, `'.${path}' MODIFIED: '${JSON.stringify(oldObj)}' -> '${JSON.stringify(newObj)}'`);
+      }
+      break;
+    case "oo": // Comparing two objects
+      if (JSON.stringify(oldObj) == JSON.stringify(newObj)) {
+        return;
+      }
+
+      log(output, `'.${path}' MODIFIED`)
+
+      // Run though each key in the old object
+      for (var key in oldObj) {
+        // Check if the key exists in the new object
+        if (newObj.hasOwnProperty(key)) {
+          // If it does, compare the two values
+          compare(output, oldObj[key], newObj[key], path + "." + key);
+        } else { // If it doesn't, it was deleted
+          log(output, `'.${path}.${key}' DELETED (or renamed)`);
+        }
+      }
+
+      // Run though each key in the new object
+      for (var key in newObj) {
+        // Check if the key exists in the old object
+        if (!oldObj.hasOwnProperty(key)) { // If it doesn't, it was added
+          log(output, `'.${path}.${key}' ADDED (or renamed)`);
+        }
+      }
+
+      break;
+    case "ss": // Comparing two strings or
+    case "nn": // Comparing two numbers
+      if (oldObj == newObj) {
+        return;
+      }
+
+      log(output, `'.${path}' MODIFIED: '${oldObj}' -> '${newObj}'`);
+      break;
+    default:
+      // State the type of the two values
+      log(output, `Trying to compare a${Array.isArray(oldObj) ? "n array" : (typeof oldObj == 'string' ? " string" : ` ${typeof oldObj}`)} and a${Array.isArray(newObj) ? "n array" : (typeof newObj == 'string' ? " string" : ` ${typeof newObj}`)} at path '${path}'`);
+  }
 }
