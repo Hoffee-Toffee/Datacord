@@ -465,6 +465,13 @@ minutesClient.on("ready", () => {
             "custom_id": `reject`,
             "disabled": false,
             "type": 2
+          },
+          {
+            "style": 1,
+            "label": `See Full Report`,
+            "custom_id": `report`,
+            "disabled": false,
+            "type": 2
           }
         ]
       }
@@ -500,26 +507,34 @@ minutesClient.on("ready", () => {
 
       var reply = ``
 
-      // Check if the user has already voted
-      if (!votes.find(vote => vote.user == interaction.user.id)) {
-        // If they haven't, add their vote to the array
-        votes.push({ user: interaction.user.id, vote: interaction.customId });
-        reply = `You voted to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
+      // Check if they are wanting the report
+      if (interaction.customId == "report") {
+        // Send the report
+        sendReport();
+        reply = `Sending report...`
       }
-      // If they have, then check if they are changing their vote
-      else if (votes.find(vote => vote.user == interaction.user.id).vote !== interaction.customId) {
-        // If they are, change their vote
-        votes.find(vote => vote.user == interaction.user.id).vote = interaction.customId;
-        reply = `You changed your vote to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
-      }
-      else {
-        // Remove their vote from the array
-        votes.splice(votes.findIndex(vote => vote.user == interaction.user.id), 1);
-        reply = `You removed your vote to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
+      else {    
+        // Check if the user has already voted
+        if (!votes.find(vote => vote.user == interaction.user.id)) {
+          // If they haven't, add their vote to the array
+          votes.push({ user: interaction.user.id, vote: interaction.customId });
+          reply = `You voted to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
+        }
+        // If they have, then check if they are changing their vote
+        else if (votes.find(vote => vote.user == interaction.user.id).vote !== interaction.customId) {
+          // If they are, change their vote
+          votes.find(vote => vote.user == interaction.user.id).vote = interaction.customId;
+          reply = `You changed your vote to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
+        }
+        else {
+          // Remove their vote from the array
+          votes.splice(votes.findIndex(vote => vote.user == interaction.user.id), 1);
+          reply = `You removed your vote to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
+        }
       }
 
-      // DM the user with the message and delete it after 5 seconds
-      interaction.user.send(reply).then(msg => { setTimeout(() => { msg.delete() }, 5000) });
+      // DM the user with the message and delete it after 15 seconds
+      interaction.user.send(reply).then(msg => { setTimeout(() => { msg.delete() }, 15000) });
 
       // Get the total number of votes
       var total = votes.length;
