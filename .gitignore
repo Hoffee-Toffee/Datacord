@@ -1,8 +1,4 @@
 .glitchdotcom.json
 .node-gyp
-<<<<<<< HEAD
 node_modules
 .env
-=======
-node_modules
->>>>>>> 304cf2cd486a20dae622c8008580d47e619949bb

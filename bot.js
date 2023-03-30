@@ -972,8 +972,6 @@ async function generateReport(person, data) {
   return reportData;
 }
 
-sendReport();
-
 function emailReport(data) {
   const emailjs = import("emailjs").then(emailjs => {
     var textLog = []
