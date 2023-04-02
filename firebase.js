@@ -1,4 +1,5 @@
 // Import firebase
+console.log('Importing firebase.js...');
 const { initializeApp } = require("firebase/app");
 const { getFirestore, collection, getDocs } = require("firebase/firestore");
 

@@ -1,5 +1,6 @@
 const discordBotkit = require("botkit-discord");
 const firebase = require("./firebase.js");
+console.log(firebase.supedb)
 
 const data_config = {
   token: process.env.DATA_DISCORD_TOKEN
