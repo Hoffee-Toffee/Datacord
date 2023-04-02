@@ -984,15 +984,17 @@ async function sendReport() {
 
 async function generateReport(person) {
   const newPromises = person.watching.map(id => getSupeData(id));
+  const resolvedNew = await Promise.all(newPromises);
+
   const oldPromises = person.watching.map(id => getSupeBackupData(id));
-  const resolvedData = await Promise.all({new: newPromises, old: oldPromises});
+  const resolvedOld = await Promise.all(oldPromises);
 
   var reportData = {
     name: person.name,
     email: person.email || null,
     discord: person.discord || null,
-    old: resolvedData.old,
-    new: resolvedData.new,
+    old: resolvedOld,
+    new: resolvedNew,
     ids: person.watching
   };
 
