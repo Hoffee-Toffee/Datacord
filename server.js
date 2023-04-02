@@ -2,9 +2,6 @@ var checkdate = new Date("August 30 2022 18:13");
 var eventname = "Something Boring"
 var timezoneoffset = 12 * 1000 * 3600
 
-global.firebase = require("./firebase.js");
-
-const fs = require("fs");
 const express = require("express");
 const discordBotkit = require("botkit-discord");
 const discordBot = require("./bot");

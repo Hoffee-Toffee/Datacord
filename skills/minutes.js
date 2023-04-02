@@ -33,7 +33,7 @@ function genGreeting(plural = true) {
     // Return the greeting with the first letter capitalized
     return greeting.charAt(0).toUpperCase() + greeting.slice(1);
 }
-const firebase = require("./firebase.js");
+const firebase = require("../firebase.js");
 
 module.exports = function(controller) {
     /*
