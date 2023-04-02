@@ -34,112 +34,6 @@ function genGreeting(plural = true) {
     return greeting.charAt(0).toUpperCase() + greeting.slice(1);
 }
 
-var fs = require('fs');
-
-const fetchUrl = require("fetch").fetchUrl;
-
-var gifPrompts = [
-    "dead space",
-    // "marvel",
-    // "space",
-    // "star trek",
-    // "soma",
-    // "the stanley parable",
-    // "return of the obra dinn",
-    // "doom",
-    // "tenet",
-    // "saw",
-    // "the simpsons",
-    // "the big bang theory",
-    // "the office",
-    // "rick and morty",
-    // "the imitation game",
-    // "the martian",
-    // "wargames",
-    // "inception",
-    // "back to the future",
-    // "memento",
-    // "veritasium",
-    // "kurzgesagt",
-    // "vsauce",
-    // "elon musk",
-    // "spacex",
-    // "nasa",
-    // "neuralink",
-    // "tesla",
-    // "starlink"
-]
-
-// get the contents of each {prompt}.txt file as an array
-// each line is an element
-
-var gifUrls = {}
-
-gifPrompts.forEach(prompt => {
-    try {
-        var promptUrls = fs.readFileSync(prompt + ".txt", "utf8").split("\n");
-    }
-    catch (err) {
-        var promptUrls = [];
-    }
-
-    gifUrls[prompt] = promptUrls;
-});
-
-var urlPrefix = "https://tenor.googleapis.com/v2/search?q=";
-var urlSuffix = "&key=AIzaSyDpNHxZEKMMZd-9m6Av4nbAglk0fEw_M0U&media_filter=minimal";
-
-function gifloop() {
-    // Will get the urls of every gif for each prompt
-    // and store them in the gifUrls array
-    // since tenor only allows 50 gifs per request, the 'next' parameter will be used to get the next 50 gifs    
-
-    console.log("Getting gifs...")
-
-    gifPrompts.forEach(prompt => {
-        var url = urlPrefix + prompt + urlSuffix;
-    
-        getGifs(url, prompt);
-    });
-}
-
-function getGifs(url, prompt, next = "") {
-    fetchUrl(url + next, function(error, meta, body) {
-        var json = JSON.parse(body.toString());
-        var results = json.results.map(result => {
-            return {
-                prompt: prompt,
-                url: result.itemurl
-            }
-        });
-
-        // Add the urls to the array (if it doesn't already exist)
-        results.forEach(result => {
-            if (!gifUrls[prompt].includes(result.url)) {
-                gifUrls[prompt].push(result.url);
-            }
-        }); 
-
-        if (json.next != "") {
-            getGifs(url, prompt, "&pos=" + json.next);
-        }
-        else {
-            console.log(prompt + " done!");
-
-            // Save the gif urls to a file
-            saveGifs(prompt);
-        }
-    });
-}
-
-function saveGifs(prompt) {
-    var txt = gifUrls[prompt].join("\n");txt
-    fs.writeFile(prompt + ".txt", "txt", function(err) {
-        if (err) return console.log(err);
-        console.log(prompt + " saved!");
-    });
-}
-
 module.exports = function(controller) {
     /*
     .greet                        - Replies with a random greeting.
@@ -166,7 +60,7 @@ module.exports = function(controller) {
     });
 
     // Add a timer to the list
-    controller.hears(".add", ["ambient", "direct_message", "mention"], (bot, message) => {
+    controller.hears(".add", ["ambient", "direct_message", "mention"], (bot, message) => async function() {
         // Exit if the message doesn't start with ".add "
         if (!message.text.startsWith(".add ")) return;
 
@@ -188,8 +82,7 @@ module.exports = function(controller) {
             datetime = datetime.substring(1);
         }
 
-        // Get the contents of timecheck.json
-        // It will be in the following format:
+        // Data will be in the following format:
         // [
         //   {
         //     "id": (string), // The ID of the message that will be updated
@@ -201,7 +94,7 @@ module.exports = function(controller) {
         //   ...
         // ]
         
-        var timers = JSON.parse(fs.readFileSync("timecheck.json", "utf8"));
+        var timers = await getData("timers")
 
         // Exit if the title is already in the list for this channel
         if (timers.some(timer => timer.title == title && timer.channel == message.channel.id)) {
@@ -232,9 +125,7 @@ module.exports = function(controller) {
             });
 
             // Save the list
-            fs.writeFile("timecheck.json", JSON.stringify(timers), function(err) {
-                if (err) return console.log(err);
-            });
+            setData("timers", timers);
 
             // Delete the message that started the countdown (sent by the user)
             bot.api.chat.delete({
@@ -248,7 +139,7 @@ module.exports = function(controller) {
     });
 
     // Remove/delete a timer from the list
-    controller.hears([".remove", ".delete"], ["ambient", "direct_message", "mention"], (bot, message) => {
+    controller.hears([".remove", ".delete"], ["ambient", "direct_message", "mention"], (bot, message) => async function() {
         // Exit if the message doesn't start with ".remove " or ".delete "
         if (!message.text.startsWith(".remove ") && !message.text.startsWith(".delete ")) return;
 
@@ -261,8 +152,7 @@ module.exports = function(controller) {
         // Get the title from the message
         var title = message.text.split('"')[1];
 
-        // Get the contents of timecheck.json
-        // It will be in the following format:
+        // Data will be in the following format:
         // [
         //   {
         //     "id": (string), // The ID of the message that will be updated
@@ -274,7 +164,7 @@ module.exports = function(controller) {
         //   ...
         // ]
         
-        var timers = JSON.parse(fs.readFileSync("timecheck.json", "utf8"));
+        var timers = await getData("timers")
 
         // Exit if the title is not in the list for this channel
         if (!timers.some(timer => timer.title == title && timer.channel == message.channel.id)) {
@@ -286,16 +176,14 @@ module.exports = function(controller) {
         timers = timers.filter(timer => timer.title != title || timer.channel != message.channel.id);
 
         // Save the list
-        fs.writeFile("timecheck.json", JSON.stringify(timers), function(err) {
-            if (err) return console.log(err);
-        });
+        setData("timers", timers);
 
         // Reply with a confirmation
         bot.reply(message, "Timer removed!");
     });
 
     // Edit a timer in the list
-    controller.hears(".edit", ["ambient", "direct_message", "mention"], (bot, message) => {
+    controller.hears(".edit", ["ambient", "direct_message", "mention"], (bot, message) => async function() {
         // Exit if the message doesn't start with ".edit "
         if (!message.text.startsWith(".edit ")) return;
 
@@ -333,8 +221,7 @@ module.exports = function(controller) {
             estimated = false;
         }
 
-        // Get the contents of timecheck.json
-        // It will be in the following format:
+        // Data will be in the following format:
         // [
         //   {
         //     "id": (string), // The ID of the message that will be updated
@@ -346,7 +233,7 @@ module.exports = function(controller) {
         //   ...
         // ]
         
-        var timers = JSON.parse(fs.readFileSync("timecheck.json", "utf8"));
+        var timers = await getData("timers")
 
         // Exit if the title is not in the list for this channel
         if (!timers.some(timer => timer.title == title && timer.channel == message.channel.id)) {
@@ -377,20 +264,19 @@ module.exports = function(controller) {
         });
 
         // Save the list
-        fs.writeFile("timecheck.json", JSON.stringify(timers), function(err) {
-            if (err) return console.log(err);
-        });
+        setData("timers", timers);
 
         // Reply with a confirmation
         bot.reply(message, "Timer edited!");
     });
 
     // List all timers for this channel
-    controller.hears(".list", ["ambient", "direct_message", "mention"], (bot, message) => {
+    controller.hears(".list", ["ambient", "direct_message", "mention"], (bot, message) => async function() {
         if (message.text != ".list") return;
 
-        // Get the contents of timecheck.json for this channel
-        var timers = JSON.parse(fs.readFileSync("timecheck.json", "utf8")).filter(timer => timer.channel == message.channel.id);
+        // Get the timers for this channel
+        var timers = await getData("timers")
+        timers = timers.filter(timer => timer.channel == message.channel.id);
 
         // Exit if the list is empty
         if (timers.length == 0) {
@@ -423,14 +309,15 @@ module.exports = function(controller) {
     });
 
     // Show the full amount of time left for a timer
-    controller.hears(".full", ["ambient", "direct_message", "mention"], (bot, message) => {
+    controller.hears(".full", ["ambient", "direct_message", "mention"], (bot, message) => async function() {
         if (!message.text.startsWith(".full ")) return;
 
         // Get the title from the message (first double quote to second double quote after the command)
         var title = message.text.substring(6).split('"')[1];
 
-        // Get the contents of timecheck.json
-        var timers = JSON.parse(fs.readFileSync("timecheck.json", "utf8"));
+        // Get the timers for this channel
+        var timers = await getData("timers")
+        timers = timers.filter(timer => timer.channel == message.channel.id);
 
         // Exit if the title is not in the list for this channel
         if (!timers.some(timer => timer.title == title && timer.channel == message.channel.id)) {
@@ -478,14 +365,14 @@ module.exports = function(controller) {
     });
 
     // Movie command (.pick/.spin/.movie/.wheel)
-    controller.hears([".pick", ".spin", ".movie", ".wheel"], ["ambient", "direct_message", "mention"], (bot, message) => {
+    controller.hears([".pick", ".spin", ".movie", ".wheel"], ["ambient", "direct_message", "mention"], (bot, message) => async () => {
         // Exit if the command is not an exact match
         if (![".pick", ".spin", ".movie", ".wheel"].includes(message.text)) return;
 
-        // Get the contents of movies.json
+        // Get the movies list
         // It contains an array of movie series', each of which contains an array of movies
         // Most however, only contain one movie
-        var movies = JSON.parse(fs.readFileSync("movies.json", "utf8"));
+        var movies = await getData("movies");
 
         // Exit if the list is empty
         if (movies.length == 0) {
@@ -516,8 +403,22 @@ module.exports = function(controller) {
         }
 
         // Save the movies list
-        fs.writeFile("movies.json", JSON.stringify(movies), function(err) {
-            if (err) return console.log(err);
-        });
+        setData("movies", movies);
     });
+}
+
+async function getData(field) {
+    // Get the data from the firebase
+    const docRef = global.firebase.collection(global.firebase.datacord, "data");
+    const docSnap = await docRef.get();
+    const doc = docSnap.docs.find(doc => doc.id == field);
+    const final = JSON.parse(doc.data().data);
+    return final;
+  }
+
+function setData(field, data) {
+    // Set the data to the firebase
+    const docRef = global.firebase.collection(global.firebase.datacord, "data");
+    const docSnap = docRef.doc(field);
+    docSnap.set({ data: JSON.stringify(data) });
 }

@@ -18,32 +18,47 @@ module.exports = {
   minutesBot
 }
 
-// Import firebase
-const { initializeApp } = require('firebase/app');
-const { getFirestore, collection, getDocs } = require('firebase/firestore');
+async function getData(field) {
+  // Get the data from the firebase
+  const docRef = global.firebase.collection(global.firebase.datacord, "data");
+  const docSnap = await docRef.get();
+  const doc = docSnap.docs.find(doc => doc.id == field);
+  const final = JSON.parse(doc.data().data);
+  return final;
+}
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCRrxXRbbyCbDh06oFKoDwZgd4Ucd0nXyk",
-  authDomain: "supe-db.firebaseapp.com",
-  projectId: "supe-db",
-  storageBucket: "supe-db.appspot.com",
-  messagingSenderId: "414925832647",
-  appId: "1:414925832647:web:04e6b82a8fc2dd48bf99e2",
-  measurementId: "G-FCEP73WM0G"
-};
+function setData(field, data) {
+  // Set the data to the firebase
+  const docRef = global.firebase.collection(global.firebase.datacord, "data");
+  const docSnap = docRef.doc(field);
+  docSnap.set({ data: JSON.stringify(data) });
+}
 
-// Load firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-async function getData(id) {
+async function getSupeData(id) {
   // Get the timeline with the given document ID
-  const docRef = collection(db, "timelines");
-  const docSnap = await getDocs(docRef);
+  const docRef = global.firebase.collection(global.firebase.supedb, "timelines");
+  const docSnap = await global.firebase.getDocs(docRef);
   const doc = docSnap.docs.find(doc => doc.id == id);
   const final = JSON.parse(doc.data().map)
+  console.log(final)
   return final;
+}
+
+async function getSupeBackupData(id) {
+  // Get the timeline with the given document ID
+  const docRef = global.firebase.collection(global.firebase.datacord, "timelines");
+  const docSnap = await global.firebase.getDocs(docRef);
+  const doc = docSnap.docs.find(doc => doc.id == id);
+  const final = JSON.parse(doc.data().map)
+  console.log(final)
+  return final;
+}
+
+function setSupeBackupData(id, map) {
+  // Set the timeline with the given document ID
+  const docRef = global.firebase.collection(global.firebase.datacord, "timelines");
+  const docSnap = docRef.doc(id);
+  docSnap.set({ map: JSON.stringify(map) });
 }
 
 var linesdata = ""
@@ -391,14 +406,14 @@ function genGreeting(plural = true, user = null) {
 }
 
 // Run when each client is ready
-minutesClient.on("ready", () => {
+minutesClient.on("ready", async () => {
   // Run the timer loop right away, but after ten seconds it will begin to run just over every second
 
   // Run the timer loop right away
   timer(true);
 
-  // Set a timeout to wait 1.111 seconds for every timer in "timecheck.json" to be set
-  var timecheck = JSON.parse(fs.readFileSync("./timecheck.json")).length;
+  // Set a timeout to wait 1.111 seconds for every timer to be set
+  var timecheck = await getData("timers").then((timers) => { return timers.length });
   console.log("Waiting " + timecheck + " seconds for timers to be set...")
 
   setTimeout(() => {
@@ -803,8 +818,8 @@ function interuptEvent() {
   }
 }
 
-function timer(sort = false) {
-  // Get the contents of timecheck.json
+async function timer(sort = false) {
+  // Get the timers
   // It will be in the following format:
   // [
   //   {
@@ -817,10 +832,9 @@ function timer(sort = false) {
   //   ...
   // ]
 
-  // Read the file
-  var timecheck = JSON.parse(fs.readFileSync("./timecheck.json"));
+  var timecheck = await getData("timers")
 
-  // Store if the json file needs to be updated
+  // Store if the timers need to be updated
   var update = false;
 
   // If sort is true, then sort the events by datetime
@@ -830,7 +844,7 @@ function timer(sort = false) {
       return new Date(b.datetime) - new Date(a.datetime);
     });
 
-    // If the sorted array is different to the original array, then update the json file
+    // If the sorted array is different to the original array, then update the timers
     if (JSON.stringify(sorted) !== JSON.stringify(timecheck)) {
       update = true;
       timecheck = sorted;
@@ -869,7 +883,7 @@ function timer(sort = false) {
     // Minus 13 hours due to timezone difference
     difference -= 13 * 60 * 60 * 1000;
 
-    // If the event has already happened, then delete the message and the event from the json file
+    // If the event has already happened, then delete the message and the event from the array
     if (difference <= 0) {
       try {
         message.delete();
@@ -907,7 +921,7 @@ function timer(sort = false) {
 
       var text = `**${event.title}**\n... in ${(event.estimated ? "approximately " : "")}${diffmessage}`;
 
-      // Try to update the message, if that fails then send a new message and update the event in the json file
+      // Try to update the message, if that fails then send a new message and update the event in the array
       try {
         // Only update the message if the text is different, but not undefined
         if (message.content !== undefined && message.content !== text) message.edit(text);
@@ -915,46 +929,42 @@ function timer(sort = false) {
       catch (error) {
         // Send a new message in the channel that the event is in
         minutesClient.channels.cache.get(event.channel).send(text).then(res => {
-          // Update the event in the json file
+          // Update the event in the array
           event.id = res.id;
           event.channel = res.channelId;
 
-          fs.writeFileSync("./timecheck.json", JSON.stringify(timecheck));
+          setData("timers", timecheck);
         });
       }
     }
   });
 
-  // If the json file needs to be updated, then update it
-  if (update) fs.writeFileSync("./timecheck.json", JSON.stringify(timecheck));
+  // If the timers need to be updated, then update them
+  if (update) setData("timers", timecheck);
+}
+
+async function getPeople() {
+  // Get the 'notify' data from the users from firebase
+  const docRef = global.firebase.collection(global.firebase.supedb, "users");
+  const docSnap = await global.firebase.getDocs(docRef);
+  const docs = docSnap.docs.filter(doc => doc.data().notify);
+  const final = docs.map(doc => {
+    return {
+      name: doc.data().name,
+      email: doc.data().email,
+      discord: doc.data().discord || null,
+      watching: doc.data().notify
+    };
+  });
+  return final;
 }
 
 async function sendReport() {
-  var config = [
-    // name: "{Someone's name}", // e.g. "John Smith"
-    // email: "{Their email}", // e.g. "john1045@gmail.com"
-    // discord: "{Their discord}", // e.g. "John#1045"
-    // watching: ["{timeline id}, {timeline id}, ..."], // e.g. ["dE2xh0Xb8l4", "6Dh-RL__uN4"]
-  ]
-
-  // List the data from all files in the 'firebase' folder
-  var files = fs.readdirSync("./firebase");
-  var data = {};
-  files.forEach(file => {
-    // If the file is a json file, then read it
-    if (file !== "config.json") {
-      data[file] = JSON.parse(fs.readFileSync("./firebase/" + file).toString());
-    }
-    else {
-      // If the file is the config file, then read it and add it to the config
-      config = JSON.parse(fs.readFileSync("./firebase/" + file).toString());
-    }
-  });
-
-  console.log(config)
+  // Get all the people
+  const config = await getPeople();
 
   // Generate reports for each person and send them
-  const reportPromises = config.map(person => generateReport(person, data));
+  const reportPromises = config.map(person => generateReport(person));
   const reports = await Promise.all(reportPromises);
   console.log(reports); // an array of reports
 
@@ -971,16 +981,17 @@ async function sendReport() {
   });
 }
 
-async function generateReport(person, data) {
-  const dataPromises = person.watching.map(id => getData(id, data));
-  const resolvedData = await Promise.all(dataPromises);
+async function generateReport(person) {
+  const newPromises = person.watching.map(id => getSupeData(id));
+  const oldPromises = person.watching.map(id => getSupeBackupData(id));
+  const resolvedData = await Promise.all({new: newPromises, old: oldPromises});
 
   var reportData = {
     name: person.name,
     email: person.email || null,
     discord: person.discord || null,
-    old: person.watching.map(id => data[id + ".json"]),
-    new: resolvedData,
+    old: resolvedData.old,
+    new: resolvedData.new,
     ids: person.watching
   };
 
@@ -1192,10 +1203,9 @@ function emailReport(data) {
     client.send(message, (err, message) => {
       console.log(err || message);
 
-      // Now update the projects json file with the new data
+      // Now update the backups with the current data
       data.ids.forEach((id, i) => {
-        // {id}.json is to be updated with data.new[i]
-        fs.writeFileSync(`./firebase/${id}.json`, JSON.stringify(data.new[i], null, 2));
+        setSupeBackupData(id, data.new[i]);
       });
     });
   }, 1000);

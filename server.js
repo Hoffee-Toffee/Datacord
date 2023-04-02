@@ -2,6 +2,8 @@ var checkdate = new Date("August 30 2022 18:13");
 var eventname = "Something Boring"
 var timezoneoffset = 12 * 1000 * 3600
 
+global.firebase = require("./firebase.js");
+
 const fs = require("fs");
 const express = require("express");
 const discordBotkit = require("botkit-discord");
@@ -10,7 +12,6 @@ const app = express();
 const fetchUrl = require("fetch").fetchUrl;
 
 var gifSent = false
-var trisGifSent = false
 var gifQueries = [
     {
         "query": "dua lipa",
@@ -37,18 +38,6 @@ var gifQueries = [
         "weight": 12 // 2
     }
 ]
-
-// var faces = [":smiley:", ":grin:", ":blush:", ":innocent:", ":smiling_face_with_3_hearts:", ":heart_eyes:", ":star_struck:", ":kissing_heart:", ":relaxed:", ":kissing_closed_eyes:", ":hugging:", ":drooling_face:", ":hot_face:", ":sunglasses:", ":flushed:", ":pleading_face:", ":scream:", ":smiling_imp:"]
-var faces = [""] // Temporary
-var intervals = ["reset", "80 days", "69 days", "60 days", "50 days", "40 days", "30 days", "21 days", "14 days", "7 days", "5 days", "3 days", "2 days", "24 hours", "12 hours", "8 hours", "5 hours", "3 hours", "2 hours", "60 minutes", "30 minutes", "10 minutes", "5 minutes", "0 minutes"]
-
-try {
-    var update_stage = fs.readFileSync("./time_status.txt", "utf8");
-    var currentpos = intervals.indexOf(update_stage) + 1
-}
-catch (err) {
-    var currentpos = 0;
-}
 
 var gifLoop = setInterval(checkGIF, 40000); // Every 40 seconds, check if a gif should be sent
 
@@ -86,8 +75,8 @@ function sendMessage(message, hookname) {
 
 app.use(express.static("public"));
 app.get("/wakeup", function (request, response) {
-    response.send("Wakeup successful");
-    console.log("Pinged")
+    response.send("Wakeup successful.")
+    console.log(`Pinged at ${new Date()}`)
 });
 app.get("/notify", function (request, response) {
     // Send a message to the req
@@ -149,8 +138,6 @@ app.get("/vote", function (request, response) {
     response.send("Message sent")
 });
 
-
-
 const listener = app.listen(process.env.PORT, function () {
     console.log("Your app is listening on port " + listener.address().port);
 });
@@ -185,34 +172,4 @@ function checkGIF() {
     else {
         gifSent = false
     }
-
-    // Send a gif every 30 minutes from 7am till 1am (except for every 2 hours)
-    if ([18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].includes(currenttime.getHours())) {
-        // If the hour is even, only send a gif if the minute is 30 and the gif hasn't been sent yet
-        if (currenttime.getHours() % 2 == 0 && currenttime.getMinutes() == 30 && !trisGifSent) {
-            console.log("Time matches, sending gif")
-            trisGif()
-            trisGifSent = true
-        }
-        // If the hour is odd, only send a gif if the minute is 0 or 30 and the gif hasn't been sent yet
-        else if (currenttime.getHours() % 2 == 1 && [0, 30].includes(currenttime.getMinutes()) && !trisGifSent) {
-            console.log("Time matches, sending gif")
-            trisGif()
-            trisGifSent = true
-        }
-        // Reset the trisGifSent variable when a gif hasn't been sent
-        else {
-            trisGifSent = false
-        }
-    }
-}
-
-function trisGif() {
-    // Get a random url from the 'gifUrls.json' file
-    fs.readFile('gifUrls.json', 'utf8', function (err, data) {
-        if (err) throw err;
-        var urls = JSON.parse(data);
-        var random = Math.floor(Math.random() * urls.length);
-        sendMessage(urls[random], "TRISBOT")
-    });
 }
