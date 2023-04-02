@@ -19,8 +19,6 @@ var test = null;
 var text = null;
 var codes = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-
-
 var repeat2;
 var real = [];
 var test;

@@ -1,5 +1,5 @@
 const discordBotkit = require("botkit-discord");
-const fs = require("fs");
+const firebase = require("./firebase.js");
 
 const data_config = {
   token: process.env.DATA_DISCORD_TOKEN
@@ -20,7 +20,7 @@ module.exports = {
 
 async function getData(field) {
   // Get the data from the firebase
-  const docRef = global.firebase.collection(global.firebase.datacord, "data");
+  const docRef = firebase.collection(firebase.datacord, "data");
   const docSnap = await docRef.get();
   const doc = docSnap.docs.find(doc => doc.id == field);
   const final = JSON.parse(doc.data().data);
@@ -29,15 +29,15 @@ async function getData(field) {
 
 function setData(field, data) {
   // Set the data to the firebase
-  const docRef = global.firebase.collection(global.firebase.datacord, "data");
+  const docRef = firebase.collection(firebase.datacord, "data");
   const docSnap = docRef.doc(field);
   docSnap.set({ data: JSON.stringify(data) });
 }
 
 async function getSupeData(id) {
   // Get the timeline with the given document ID
-  const docRef = global.firebase.collection(global.firebase.supedb, "timelines");
-  const docSnap = await global.firebase.getDocs(docRef);
+  const docRef = firebase.collection(firebase.supedb, "timelines");
+  const docSnap = await firebase.getDocs(docRef);
   const doc = docSnap.docs.find(doc => doc.id == id);
   const final = JSON.parse(doc.data().map)
   console.log(final)
@@ -46,8 +46,8 @@ async function getSupeData(id) {
 
 async function getSupeBackupData(id) {
   // Get the timeline with the given document ID
-  const docRef = global.firebase.collection(global.firebase.datacord, "timelines");
-  const docSnap = await global.firebase.getDocs(docRef);
+  const docRef = firebase.collection(firebase.datacord, "timelines");
+  const docSnap = await firebase.getDocs(docRef);
   const doc = docSnap.docs.find(doc => doc.id == id);
   const final = JSON.parse(doc.data().map)
   console.log(final)
@@ -56,7 +56,7 @@ async function getSupeBackupData(id) {
 
 function setSupeBackupData(id, map) {
   // Set the timeline with the given document ID
-  const docRef = global.firebase.collection(global.firebase.datacord, "timelines");
+  const docRef = firebase.collection(firebase.datacord, "timelines");
   const docSnap = docRef.doc(id);
   docSnap.set({ map: JSON.stringify(map) });
 }
@@ -945,8 +945,8 @@ async function timer(sort = false) {
 
 async function getPeople() {
   // Get the 'notify' data from the users from firebase
-  const docRef = global.firebase.collection(global.firebase.supedb, "users");
-  const docSnap = await global.firebase.getDocs(docRef);
+  const docRef = firebase.collection(firebase.supedb, "users");
+  const docSnap = await firebase.getDocs(docRef);
   const docs = docSnap.docs.filter(doc => doc.data().notify);
   const final = docs.map(doc => {
     return {

@@ -33,6 +33,7 @@ function genGreeting(plural = true) {
     // Return the greeting with the first letter capitalized
     return greeting.charAt(0).toUpperCase() + greeting.slice(1);
 }
+const firebase = require("./firebase.js");
 
 module.exports = function(controller) {
     /*
@@ -409,7 +410,7 @@ module.exports = function(controller) {
 
 async function getData(field) {
     // Get the data from the firebase
-    const docRef = global.firebase.collection(global.firebase.datacord, "data");
+    const docRef = firebase.collection(firebase.datacord, "data");
     const docSnap = await docRef.get();
     const doc = docSnap.docs.find(doc => doc.id == field);
     const final = JSON.parse(doc.data().data);
@@ -418,7 +419,7 @@ async function getData(field) {
 
 function setData(field, data) {
     // Set the data to the firebase
-    const docRef = global.firebase.collection(global.firebase.datacord, "data");
+    const docRef = firebase.collection(firebase.datacord, "data");
     const docSnap = docRef.doc(field);
     docSnap.set({ data: JSON.stringify(data) });
 }
