@@ -421,5 +421,5 @@ function setData(field, data) {
     // Set the data to the firebase
     const docRef = firebase.collection(firebase.datacord, "data");
     const docSnap = firebase.doc(docRef, field);
-    docSnap.set({ data: JSON.stringify(data) });
+    firebase.setDoc(docSnap, { data: JSON.stringify(data) });
 }

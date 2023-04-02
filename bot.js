@@ -32,7 +32,7 @@ function setData(field, data) {
   // Set the data to the firebase
   const docRef = firebase.collection(firebase.datacord, "data");
   const docSnap = firebase.doc(docRef, field);
-  docSnap.set({ data: JSON.stringify(data) });
+  firebase.setDoc(docSnap, { data: JSON.stringify(data) });
 }
 
 async function getSupeData(id) {
@@ -59,7 +59,7 @@ function setSupeBackupData(id, map) {
   // Set the timeline with the given document ID
   const docRef = firebase.collection(firebase.datacord, "timelines");
   const docSnap = firebase.doc(docRef, id);
-  docSnap.set({ map: JSON.stringify(map) });
+  firebase.setDoc(docSnap, { map: JSON.stringify(map) });
 }
 
 var linesdata = ""
