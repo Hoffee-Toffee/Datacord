@@ -1,7 +1,7 @@
 // Import firebase
 console.log('Importing firebase.js...');
 const { initializeApp } = require("firebase/app");
-const { getFirestore, collection, getDocs } = require("firebase/firestore");
+const { getFirestore, collection, getDocs, doc, getDoc } = require("firebase/firestore");
 
 // SupeDB Firebase setup
 const supedbConfig = {
@@ -32,5 +32,7 @@ module.exports = {
     supedb: supedb,
     datacord: datacord,
     collection: collection,
-    getDocs: getDocs
+    getDocs: getDocs,
+    doc: doc,
+    getDoc: getDoc
 }
