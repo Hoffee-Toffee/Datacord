@@ -169,4 +169,10 @@ function checkGIF() {
     else {
         gifSent = false
     }
+
+    // Kill process if not the right build (for deployment)
+    if (process.env.BUILD != "579bc6637cc4ba1d20aa7df021c33d8f") {
+        console.log("Wrong build, killing process...")
+        process.exit(1)
+    }
 }
