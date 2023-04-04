@@ -2,6 +2,8 @@ const discordBotkit = require("botkit-discord");
 const firebase = require("./firebase.js");
 console.log(firebase.supedb)
 
+const fs = require("fs");
+
 const data_config = {
   token: process.env.DATA_DISCORD_TOKEN
 };
@@ -19,22 +21,6 @@ module.exports = {
   minutesBot
 }
 
-async function getData(field) {
-  // Get the data from the firebase
-  const docRef = firebase.collection(firebase.datacord, "data");
-  const docSnap = await firebase.getDocs(docRef);
-  const doc = docSnap.docs.find(doc => doc.id == field);
-  const final = JSON.parse(doc.data().data);
-  return final;
-}
-
-function setData(field, data) {
-  // Set the data to the firebase
-  const docRef = firebase.collection(firebase.datacord, "data");
-  const docSnap = firebase.doc(docRef, field);
-  firebase.setDoc(docSnap, { data: JSON.stringify(data) });
-}
-
 async function getSupeData(id) {
   // Get the timeline with the given document ID
   const docRef = firebase.collection(firebase.supedb, "timelines");
@@ -43,23 +29,6 @@ async function getSupeData(id) {
   const final = JSON.parse(doc.data().map)
   console.log(final)
   return final;
-}
-
-async function getSupeBackupData(id) {
-  // Get the timeline with the given document ID
-  const docRef = firebase.collection(firebase.datacord, "timelines");
-  const docSnap = await firebase.getDocs(docRef);
-  const doc = docSnap.docs.find(doc => doc.id == id);
-  const final = JSON.parse(doc.data().map)
-  console.log(final)
-  return final;
-}
-
-function setSupeBackupData(id, map) {
-  // Set the timeline with the given document ID
-  const docRef = firebase.collection(firebase.datacord, "timelines");
-  const docSnap = firebase.doc(docRef, id);
-  firebase.setDoc(docSnap, { map: JSON.stringify(map) });
 }
 
 var linesdata = ""
@@ -413,8 +382,8 @@ minutesClient.on("ready", async () => {
   // Run the timer loop right away
   timer(true);
 
-  // Set a timeout to wait 1.111 seconds for every timer to be set
-  var timecheck = await getData("timers").then((timers) => { return timers.length });
+  // Set a timeout to wait 1.111 seconds for every timer in "timecheck.json" to be set
+  var timecheck = JSON.parse(fs.readFileSync("./JSON/timecheck.json")).length;
   console.log("Waiting " + timecheck + " seconds for timers to be set...")
 
   setTimeout(() => {
@@ -819,8 +788,8 @@ function interuptEvent() {
   }
 }
 
-async function timer(sort = false) {
-  // Get the timers
+function timer(sort = false) {
+  // Get the contents of timecheck.json
   // It will be in the following format:
   // [
   //   {
@@ -833,9 +802,10 @@ async function timer(sort = false) {
   //   ...
   // ]
 
-  var timecheck = await getData("timers")
+  // Read the file
+  var timecheck = JSON.parse(fs.readFileSync("./JSON/timecheck.json"));
 
-  // Store if the timers need to be updated
+  // Store if the json file needs to be updated
   var update = false;
 
   // If sort is true, then sort the events by datetime
@@ -845,7 +815,7 @@ async function timer(sort = false) {
       return new Date(b.datetime) - new Date(a.datetime);
     });
 
-    // If the sorted array is different to the original array, then update the timers
+    // If the sorted array is different to the original array, then update the json file
     if (JSON.stringify(sorted) !== JSON.stringify(timecheck)) {
       update = true;
       timecheck = sorted;
@@ -884,7 +854,7 @@ async function timer(sort = false) {
     // Minus 13 hours due to timezone difference
     difference -= 13 * 60 * 60 * 1000;
 
-    // If the event has already happened, then delete the message and the event from the array
+    // If the event has already happened, then delete the message and the event from the json file
     if (difference <= 0) {
       try {
         message.delete();
@@ -922,7 +892,7 @@ async function timer(sort = false) {
 
       var text = `**${event.title}**\n... in ${(event.estimated ? "approximately " : "")}${diffmessage}`;
 
-      // Try to update the message, if that fails then send a new message and update the event in the array
+      // Try to update the message, if that fails then send a new message and update the event in the json file
       try {
         // Only update the message if the text is different, but not undefined
         if (message.content !== undefined && message.content !== text) message.edit(text);
@@ -930,18 +900,18 @@ async function timer(sort = false) {
       catch (error) {
         // Send a new message in the channel that the event is in
         minutesClient.channels.cache.get(event.channel).send(text).then(res => {
-          // Update the event in the array
+          // Update the event in the json file
           event.id = res.id;
           event.channel = res.channelId;
 
-          setData("timers", timecheck);
+          fs.writeFileSync("./JSON/timecheck.json", JSON.stringify(timecheck));
         });
       }
     }
   });
 
-  // If the timers need to be updated, then update them
-  if (update) setData("timers", timecheck);
+  // If the json file needs to be updated, then update it
+  if (update) fs.writeFileSync("./JSON/timecheck.json", JSON.stringify(timecheck));
 }
 
 async function getPeople() {
@@ -983,18 +953,15 @@ async function sendReport() {
 }
 
 async function generateReport(person) {
-  const newPromises = person.watching.map(id => getSupeData(id));
-  const resolvedNew = await Promise.all(newPromises);
-
-  const oldPromises = person.watching.map(id => getSupeBackupData(id));
-  const resolvedOld = await Promise.all(oldPromises);
+  const dataPromises = person.watching.map(id => getSupeData(id));
+  const resolvedData = await Promise.all(dataPromises);
 
   var reportData = {
     name: person.name,
     email: person.email || null,
     discord: person.discord || null,
-    old: resolvedOld,
-    new: resolvedNew,
+    old: person.watching.map(id => fs.readFileSync(`./JSON/${id}.json`)),
+    new: resolvedData,
     ids: person.watching
   };
 
@@ -1206,9 +1173,10 @@ function emailReport(data) {
     client.send(message, (err, message) => {
       console.log(err || message);
 
-      // Now update the backups with the current data
+      // Now update the projects json file with the new data
       data.ids.forEach((id, i) => {
-        setSupeBackupData(id, data.new[i]);
+        // {id}.json is to be updated with data.new[i]
+        fs.writeFileSync(`./JSON/${id}.json`, JSON.stringify(data.new[i], null, 2));
       });
     });
   }, 1000);

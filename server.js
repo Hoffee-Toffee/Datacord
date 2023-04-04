@@ -1,12 +1,6 @@
-var checkdate = new Date("August 30 2022 18:13");
-var eventname = "Something Boring"
-var timezoneoffset = 12 * 1000 * 3600
+const build = "579bc6637cc4ba1d20aa7df021c33d8f"
 
-const express = require("express");
-const discordBotkit = require("botkit-discord");
-const discordBot = require("./bot");
-const app = express();
-const fetchUrl = require("fetch").fetchUrl;
+var timezoneoffset = 12 * 1000 * 3600
 
 var gifSent = false
 var gifQueries = [
@@ -36,7 +30,18 @@ var gifQueries = [
     }
 ]
 
+const fs = require("fs");
+const express = require("express");
+const discordBotkit = require("botkit-discord");
+const app = express();
+const fetchUrl = require("fetch").fetchUrl;
+
 var gifLoop = setInterval(checkGIF, 40000); // Every 40 seconds, check if a gif should be sent
+
+// Only start the bots after the first check is done
+checkGIF().then(() => {
+    const discordBot = require("./bot");
+});
 
 function sendMessage(message, hookname) {
     console.log("Sending message \"" + message + "\" to " + hookname + " webhook")
@@ -134,7 +139,33 @@ app.get("/vote", function (request, response) {
     sendMessage(embed, "TEST")
     response.send("Message sent")
 });
+app.get("/build", function (request, response) {
+    response.send(build)
+});
+app.get("/import", function (request, response) {
+    // Convert the content into a JSON object
+    var content = request.query.content
+    var json = JSON.parse(content)
 
+    // Loop through each file, creating it with the given content (in the JSON folder)
+    for (var file in json) {
+        fs.writeFile(`./json/${file}.json`, json[file])
+    }
+    // Send a response
+    response.send("Import successful")
+});
+app.get("/export", function (request, response) {
+    // Convert the JSON folder into a JSON object
+    var json = {}
+    var files = fs.readdirSync("./json")
+    for (var file of files) {
+        var filePath = `./json/${file}`
+        var fileContent = fs.readFileSync(filePath, "utf8")
+        json[file] = fileContent
+    }
+    // Send a response with the JSON in the content param
+    response.send("<a href=\"https://datacord.onrender.com/import?content=" + encodeURIComponent(JSON.stringify(json)) + "\">Click here to import</a>")
+});
 const listener = app.listen(process.env.PORT, function () {
     console.log("Your app is listening on port " + listener.address().port);
 });
@@ -170,9 +201,15 @@ function checkGIF() {
         gifSent = false
     }
 
-    // Kill process if not the right build (for deployment)
-    if (process.env.BUILD != "579bc6637cc4ba1d20aa7df021c33d8f") {
-        console.log("Wrong build, killing process...")
-        process.exit(1)
+    // Update the new version of the site, then kill this instance
+    if (process.env.BUILD != build) {
+        console.log("New build detected, updating")
+
+        var toSend = {}
+        
+        // Loop through each file in the JSON folder, to send to the new version
+        fs.readdirSync("./JSON").forEach(file => {
+            toSend[file] = JSON.parse(fs.readFileSync("./JSON/" + file, "utf8"))
+        })
     }
 }
