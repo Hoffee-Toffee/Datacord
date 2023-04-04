@@ -1,4 +1,4 @@
-const build = "579bc6637cc4ba1d20aa7df021c33d8f"
+const build = "9e7fe96367d37f0a4ca69a0f216e822b"
 
 var timezoneoffset = 12 * 1000 * 3600
 
@@ -39,9 +39,9 @@ const fetchUrl = require("fetch").fetchUrl;
 var gifLoop = setInterval(checkGIF, 40000); // Every 40 seconds, check if a gif should be sent
 
 // Only start the bots after the first check is done
-checkGIF().then(() => {
-    const discordBot = require("./bot");
-});
+checkGIF()
+
+const discordBot = require("./bot");
 
 function sendMessage(message, hookname) {
     console.log("Sending message \"" + message + "\" to " + hookname + " webhook")
