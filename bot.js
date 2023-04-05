@@ -1,7 +1,5 @@
 const discordBotkit = require("botkit-discord");
 const firebase = require("./firebase.js");
-console.log(firebase.supedb)
-
 const fs = require("fs");
 
 const data_config = {
@@ -27,7 +25,6 @@ async function getSupeData(id) {
   const docSnap = await firebase.getDocs(docRef);
   const doc = docSnap.docs.find(doc => doc.id == id);
   const final = JSON.parse(doc.data().map)
-  console.log(final)
   return final;
 }
 
@@ -375,11 +372,59 @@ function genGreeting(plural = true, user = null) {
   return greeting.charAt(0).toUpperCase() + greeting.slice(1);
 }
 
+// Use order and depth to create a nested JSON
+// e.g. [{depth: 0, title: A, content:a}, {depth: 1, title: B, content: b}, {depth: 2, title: C, content: c}, {depth: 1, title: D, content: d}], becomes
+// {title: A, content: a, children: [{title: B, content: b, children: [{title: C, content: c}]}, {title: D, content: d}]}
+function createNestedJSON(data) {
+  var nestedJSON = {};
+  var stack = [];
+
+  data.forEach((item) => {
+    var current = nestedJSON;
+    while (stack.length > 0 && item.depth <= stack[stack.length - 1].depth) {
+      stack.pop();
+    }
+    for (var i = 0; i < stack.length; i++) {
+      current = current.children[current.children.length - 1];
+    }
+    var newItem = {};
+    Object.keys(item).forEach((key) => {
+      if (key !== "depth") newItem[key] = item[key];
+    });
+    if (!current.children) {
+      current.children = [];
+    }
+    current.children.push(newItem);
+    stack.push(item);
+  });
+
+  return nestedJSON.children ? nestedJSON.children : [];
+}
+
+function emailFormat(data, top = true) {
+  // Convert data into elements
+  // e.g. {title: A, content: a, children: [{title: B, content: b, children: [{title: C, content: c}]}, {title: D, content: d}]}, becomes
+  // <li><span>A</span><p>a</p><ul><li><span>B</span><p>b</p><ul><li><span>C</span><p>c</p></li></ul></li><li><span>D</span><p>d</p></li></ul></li>
+  var start = (top) ? "" : `<li><span>${data.title}</span><p>${data.content}</p>`;
+  var end = (top) ? "" : "</li>";
+
+  if (top) {
+    data.forEach((item) => {
+      if (item instanceof Array) start += emailFormat(item[0], false)
+    })
+  }
+  else if (data.children) {
+    start += "<ul>";
+    data.children.forEach((item) => { start += emailFormat(item, false) })
+    start += "</ul>";
+  }
+
+  return start + end;
+}
+
 // Run when each client is ready
 minutesClient.on("ready", async () => {
   // Run the timer loop right away, but after ten seconds it will begin to run just over every second
-
-  // Run the timer loop right away
   timer(true);
 
   // Set a timeout to wait 1.111 seconds for every timer in "timecheck.json" to be set
@@ -551,12 +596,14 @@ minutesClient.on("ready", async () => {
     minutesClient.on("interactionCreate", buttonHandler);
   });
 
-  // Get the next Monday at 8am
   var reportTime = new Date();
-  reportTime.setDate(reportTime.getDate() + (1 + 7 - reportTime.getDay()) % 7);
+  reportTime.setDate(reportTime.getDate() + (3 + 7 - reportTime.getDay()) % 7);
   reportTime.setHours(8, 0, 0, 0);
-  // Get the ms until then
+  // Get the ms until then, if negative then add a week
   reportTime = reportTime - Date.now();
+  if (reportTime < 0) reportTime += 604800000;
+
+  console.log("Report to be sent at " + new Date(Date.now() + reportTime).toLocaleString() + " (" + reportTime / 3600000 + " hours from now)");
 
   // Set a timeout to run the 'sendReport' function
   setTimeout(sendReport, reportTime);
@@ -619,8 +666,6 @@ function dataPresence(trigger = "reset") {
   // Set up to repeat the function after the shift ends (with trigger "shift")
   setTimeout(() => { dataPresence("shift") }, endTime);
   // Log the time Data's shift ends (hours, minutes and seconds)  
-  // console.log(`Shift: ${(onDuty ? shift : "off")} duty`);
-  // console.log(`Shift ends in ${Math.floor(endTime / 1000 / 60 / 60)} hours, ${Math.floor(endTime / 1000 / 60 % 60)} minutes and ${Math.floor(endTime / 1000 % 60)} seconds.`);
 
   // Set Data's activity if he is on duty, he will be doing his bridge dutys by default
   if (onDuty) {
@@ -656,7 +701,6 @@ function dataPresence(trigger = "reset") {
     var offset = Math.floor(Math.random() * (variance * 2)) - variance;
     setTimeout(() => { dataPresence("activity") }, duration + offset);
     // Log the time Data's activity ends (hours, minutes and seconds)
-    // console.log(`Activity ends in ${Math.floor((duration + offset) / 1000 / 60 / 60)} hours, ${Math.floor((duration + offset) / 1000 / 60 % 60)} minutes and ${Math.floor((duration + offset) / 1000 % 60)} seconds.`);
   }
   // If not then check if it's time for First Contact celebrations (on the 6th of April in the first 5 mins of 4pm and if not during an emergency)
   else if (time.getDate() == 6 && time.getMonth() == 3 && time.getHours() == 16 && time.getMinutes() < 5 && !activity.startsWith("EMERGENCY: ")) {
@@ -674,7 +718,6 @@ function dataPresence(trigger = "reset") {
     var offset = Math.floor(Math.random() * (variance * 2)) - variance;
     setTimeout(() => { dataPresence("activity") }, duration + offset);
     // Log the time Data's activity ends (hours, minutes and seconds)
-    // console.log(`Activity ends in ${Math.floor((duration + offset) / 1000 / 60 / 60)} hours, ${Math.floor((duration + offset) / 1000 / 60 % 60)} minutes and ${Math.floor((duration + offset) / 1000 % 60)} seconds.`);
   }
   // If not then check if it's time for the Captain Picard Day celebrations and competition (on the 17th of July in the first 5 mins of 4pm and if not during an emergency)
   else if (time.getDate() == 17 && time.getMonth() == 6 && time.getHours() == 16 && time.getMinutes() < 5 && !activity.startsWith("EMERGENCY: ")) {
@@ -692,7 +735,6 @@ function dataPresence(trigger = "reset") {
     var offset = Math.floor(Math.random() * (variance * 2)) - variance;
     setTimeout(() => { dataPresence("activity") }, duration + offset);
     // Log the time Data's activity ends (hours, minutes and seconds)
-    // console.log(`Activity ends in ${Math.floor((duration + offset) / 1000 / 60 / 60)} hours, ${Math.floor((duration + offset) / 1000 / 60 % 60)} minutes and ${Math.floor((duration + offset) / 1000 % 60)} seconds.`);
   }
   // If not then pick a random activity
   else {
@@ -730,7 +772,6 @@ function dataPresence(trigger = "reset") {
     var offset = Math.floor(Math.random() * (activity.variance * 2)) - activity.variance;
     setTimeout(() => { dataPresence("activity") }, activity.duration + offset);
     // Log the time Data's activity ends (hours, minutes and seconds)
-    // console.log(`Activity ends in ${Math.floor((activity.duration + offset) / 1000 / 60 / 60)} hours, ${Math.floor((activity.duration + offset) / 1000 / 60 % 60)} minutes and ${Math.floor((activity.duration + offset) / 1000 % 60)} seconds.`);
   }
 }
 
@@ -738,7 +779,6 @@ function dataPresence(trigger = "reset") {
 setInterval(interuptEvent, 100000);
 
 function interuptEvent() {
-  // console.log("Checking for interupts...");
   var interupt;
 
   // Emergencies will happen just over once a week, but will decrease as the day goes on
@@ -780,11 +820,6 @@ function interuptEvent() {
     var offset = Math.floor(Math.random() * (interupt.variance * 2)) - interupt.variance;
     setTimeout(() => { dataPresence("interupt") }, interupt.duration + offset);
     // Log the time Data's interupt ends (hours, minutes and seconds)
-    // console.log("Interupt event initiated.");
-    // console.log(`Interupt ends in ${Math.floor((interupt.duration + offset) / 1000 / 60 / 60)} hours, ${Math.floor((interupt.duration + offset) / 1000 / 60 % 60)} minutes and ${Math.floor((interupt.duration + offset) / 1000 % 60)} seconds.`);
-  }
-  else {
-    // console.log("No interupt event.");
   }
 }
 
@@ -937,7 +972,6 @@ async function sendReport() {
   // Generate reports for each person and send them
   const reportPromises = config.map(person => generateReport(person));
   const reports = await Promise.all(reportPromises);
-  console.log(reports); // an array of reports
 
   // Send the reports
   reports.forEach(report => {
@@ -953,15 +987,19 @@ async function sendReport() {
 }
 
 async function generateReport(person) {
-  const dataPromises = person.watching.map(id => getSupeData(id));
-  const resolvedData = await Promise.all(dataPromises);
+  const newPromises = person.watching.map(id => getSupeData(id));
+  const resolvedNew = await Promise.all(newPromises);
+
+  const oldPromises = person.watching.map(id => fs.promises.readFile(`./JSON/${id}.json`, 'utf8'));
+  const resolvedOldContents = await Promise.all(oldPromises);
+  const resolvedOld = resolvedOldContents.map(content => JSON.parse(content));
 
   var reportData = {
     name: person.name,
     email: person.email || null,
     discord: person.discord || null,
-    old: person.watching.map(id => fs.readFileSync(`./JSON/${id}.json`)),
-    new: resolvedData,
+    old: resolvedOld,
+    new: resolvedNew,
     ids: person.watching
   };
 
@@ -970,14 +1008,15 @@ async function generateReport(person) {
 
 function emailReport(data) {
   const emailjs = import("emailjs").then(emailjs => {
-    var textLog = []
 
     // Compare the files
+    var output = [];
+
     data.old.forEach((old, i) => {
-      compare(textLog, old, data.new[i]);
+      output.push(compare([], old, old, data.new[i]))
     });
 
-    if (textLog.length === 0) textLog.push("No changes were detected.");
+    if (output.length === 0) output.push("No changes were detected.");
 
     // Send an email with this content
     const client = new emailjs.SMTPClient({
@@ -999,10 +1038,10 @@ function emailReport(data) {
     // Pick a color checking how many weeks it has been over time
     var color = ["#084298", "#432874", "#801f4f", "#842029", "#984c0c", "#0f5132", "#087990"][Math.floor(date.getTime() / 1000 / 60 / 60 / 24 / 7) % 7];
 
-    console.log(data.email)
+    console.log(emailFormat(output))
 
     const message = new emailjs.Message({
-      text: textLog.join("\n"),
+      text: output.join("\n"),
       from: "Miss Minutes <miss_minutes@outlook.com>",
       to: data.email,
       subject: `SupeDB - Weekly Update\n(Week ${week}, ${year})`,
@@ -1018,7 +1057,7 @@ function emailReport(data) {
               <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
               <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
               <style type="text/css">
-                body,table,td{font-family:Helvetica,Arial,sans-serif !important}.ExternalClass{width:100%}.ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div{line-height:150%}a{text-decoration:none}*{color:inherit}a[x-apple-data-detectors],u+#body a,#MessageViewBody a{color:inherit;text-decoration:none;font-size:inherit;font-family:inherit;font-weight:inherit;line-height:inherit}img{-ms-interpolation-mode:bicubic}table:not([class^=s-]){font-family:Helvetica,Arial,sans-serif;mso-table-lspace:0pt;mso-table-rspace:0pt;border-spacing:0px;border-collapse:collapse}table:not([class^=s-]) td{border-spacing:0px;border-collapse:collapse}@media screen and (max-width: 600px){.w-full,.w-full>tbody>tr>td{width:100% !important}*[class*=s-lg-]>tbody>tr>td{font-size:0 !important;line-height:0 !important;height:0 !important}.s-2>tbody>tr>td{font-size:8px !important;line-height:8px !important;height:8px !important}.s-3>tbody>tr>td{font-size:12px !important;line-height:12px !important;height:12px !important}.s-5>tbody>tr>td{font-size:20px !important;line-height:20px !important;height:20px !important}.s-10>tbody>tr>td{font-size:40px !important;line-height:40px !important;height:40px !important}}
+                ul{padding: 0}ul p{margin:0; margin-left: 1em}body,table,td{font-family:Helvetica,Arial,sans-serif !important}.ExternalClass{width:100%}.ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div{line-height:150%}a{text-decoration:none}*{color:inherit}a[x-apple-data-detectors],u+#body a,#MessageViewBody a{color:inherit;text-decoration:none;font-size:inherit;font-family:inherit;font-weight:inherit;line-height:inherit}img{-ms-interpolation-mode:bicubic}table:not([class^=s-]){font-family:Helvetica,Arial,sans-serif;mso-table-lspace:0pt;mso-table-rspace:0pt;border-spacing:0px;border-collapse:collapse}table:not([class^=s-]) td{border-spacing:0px;border-collapse:collapse}@media screen and (max-width: 600px){.w-full,.w-full>tbody>tr>td{width:100% !important}*[class*=s-lg-]>tbody>tr>td{font-size:0 !important;line-height:0 !important;height:0 !important}.s-2>tbody>tr>td{font-size:8px !important;line-height:8px !important;height:8px !important}.s-3>tbody>tr>td{font-size:12px !important;line-height:12px !important;height:12px !important}.s-5>tbody>tr>td{font-size:20px !important;line-height:20px !important;height:20px !important}.s-10>tbody>tr>td{font-size:40px !important;line-height:40px !important;height:40px !important}}
               </style>
             </head>
             <body class="text-white" style="outline: 0; width: 100%; min-width: 100%; height: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-family: Helvetica, Arial, sans-serif; line-height: 24px; font-weight: normal; font-size: 16px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; color: #ffffff; margin: 0; padding: 0; border-width: 0;" bgcolor="${color}">
@@ -1080,7 +1119,9 @@ function emailReport(data) {
                                                         </tbody>
                                                       </table>
                                                       <h6 class="text-red-200 text-xs" style="color: #f1aeb5; padding-top: 0; padding-bottom: 0; font-weight: 500; vertical-align: baseline; font-size: 12px; line-height: 14.4px; margin: 0;" align="left">
-                                                        ${genGreeting(false, data.name)}, Miss Minutes here with your weekly report.
+                                                        ${genGreeting(false, data.name)}!
+                                                        <br>
+                                                        Miss Minutes here with your weekly report.
                                                         <br>
                                                         <br>
                                                         Here is a rundown of all that has changed in your projects over the last week.
@@ -1123,7 +1164,7 @@ function emailReport(data) {
                                                           </tbody>
                                                         </table>
                                                         <ul class="list-disc list-inside" style="padding-left: 10px; font-size: x-small; line-height: 24px; margin: 0;">
-                                                          ${textLog.map(line => `<li>${line}</li>`).join("\n")}
+                                                          ${emailFormat(output)}
                                                         </ul>
                                                       </div>
                                                     </td>
@@ -1182,12 +1223,7 @@ function emailReport(data) {
   }, 1000);
 }
 
-function log(arr, text) {
-  // Only add up to 100 chars then a ellipsis if needed
-  arr.push(text.length > 100 ? text.slice(0, 100) + "..." : text);
-}
-
-function compare(output, oldObj, newObj, path = "") {
+function compare(output, old, oldObj, newObj, path = "") {
   // Check if an array, return "a" if true or just the first letter of it's typeof result
   switch ((Array.isArray(oldObj) ? "a" : (typeof oldObj).charAt(0)) + (Array.isArray(newObj) ? "a" : (typeof newObj).charAt(0))) {
     case "aa": // Comparing two arrays
@@ -1195,44 +1231,56 @@ function compare(output, oldObj, newObj, path = "") {
         return;
       }
 
-      log(output, `'.${path}' MODIFIED`);
+      log(output, old, path, "M");
 
       // Check what we can use for comparison
-      var compAttr = ['id', 'title', 'key'].find(attr => newObj.concat(oldObj).every(obj => obj[attr] !== undefined));
+      var compAttr = ["id", "title", "key"].find((attr) =>
+        newObj.concat(oldObj).every((obj) => obj[attr] !== undefined)
+      );
 
-      if (compAttr != undefined) { // If we can, use it to compare the two arrays
-        for (var i = 0; i < oldObj.length; i++) { // Check for additions and modifications
+      if (compAttr != undefined) {
+        // If we can, use it to compare the two arrays
+        for (var i = 0; i < oldObj.length; i++) {
+          // Check for additions and modifications
           // Check if it exists in the new array
-          var index = newObj.findIndex(obj => obj[compAttr] == oldObj[i][compAttr]);
-          if (index != -1) { // If it does, compare the two objects
-            compare(output, oldObj[i], newObj[index], path + "[" + i + "]");
-          } else { // If it doesn't, it was deleted
-            log(output, `'.${path}[${i}]' DELETED`);
+          var index = newObj.findIndex(
+            (obj) => obj[compAttr] == oldObj[i][compAttr]
+          );
+          if (index != -1) {
+            // If it does, compare the two objects
+            compare(output, old, oldObj[i], newObj[index], path + "[" + i + "]");
+          } else {
+            // If it doesn't, it was deleted
+            log(output, old, `${path}[${i}]`, "D");
           }
         }
 
-        for (var i = 0; i < newObj.length; i++) { // Check for additions
+        for (var i = 0; i < newObj.length; i++) {
+          // Check for additions
           // Check if the id exists in the old array
-          var index = oldObj.findIndex(obj => obj[compAttr] == newObj[i][compAttr]);
-          if (index == -1) { // If it doesn't, it was added
-            log(output, `'.${path}[${i}]' ADDED`);
+          var index = oldObj.findIndex(
+            (obj) => obj[compAttr] == newObj[i][compAttr]
+          );
+          if (index == -1) {
+            // If it doesn't, it was added
+            log(output, old, `${path}[${i}]`, "A");
           }
         }
         // If all are strings/numbers, check for additions and deletions only
-      } else if (newObj.concat(oldObj).every(obj => typeof obj == 'string' || typeof obj == 'number')) {
+      } else if (newObj.concat(oldObj).every((obj) => typeof obj == "string" || typeof obj == "number")) {
         for (var i = 0; i < oldObj.length; i++) { // Check for deletions
           // Check if it exists anywhere in the new array
-          var index = newObj.findIndex(obj => obj == oldObj[i]);
+          var index = newObj.findIndex((obj) => obj == oldObj[i]);
           if (index == -1) { // If it doesn't, it was deleted
-            log(output, `'.${path}[${i}]' DELETED: '${oldObj[i]}'`);
+            log(output, old, `${path}[${i}]`, "D", oldObj[i]);
           }
         }
 
         for (var i = 0; i < newObj.length; i++) { // Check for additions
           // Check if it exists anywhere in the old array
-          var index = oldObj.findIndex(obj => obj == newObj[i]);
+          var index = oldObj.findIndex((obj) => obj == newObj[i]);
           if (index == -1) { // If it doesn't, it was added
-            log(output, `'.${path}[${i}]' ADDED: '${newObj[i]}'`);
+            log(output, old, `${path}[${i}]`, "A", newObj[i]);
           }
         }
       } else { // If we can't, compare the two arrays as strings
@@ -1240,7 +1288,7 @@ function compare(output, oldObj, newObj, path = "") {
           return;
         }
 
-        log(output, `'.${path}' MODIFIED: '${JSON.stringify(oldObj)}' -> '${JSON.stringify(newObj)}'`);
+        log(output, old, path, "M", JSON.stringify(oldObj), JSON.stringify(newObj));
       }
       break;
     case "oo": // Comparing two objects
@@ -1248,16 +1296,16 @@ function compare(output, oldObj, newObj, path = "") {
         return;
       }
 
-      log(output, `'.${path}' MODIFIED`)
+      log(output, old, path, "M");
 
       // Run though each key in the old object
       for (var key in oldObj) {
         // Check if the key exists in the new object
         if (newObj.hasOwnProperty(key)) {
           // If it does, compare the two values
-          compare(output, oldObj[key], newObj[key], path + "." + key);
+          compare(output, old, oldObj[key], newObj[key], path + "." + key);
         } else { // If it doesn't, it was deleted
-          log(output, `'.${path}.${key}' DELETED (or renamed)`);
+          log(output, old, `${path}.${key}`, "D", oldObj[key]);
         }
       }
 
@@ -1265,7 +1313,7 @@ function compare(output, oldObj, newObj, path = "") {
       for (var key in newObj) {
         // Check if the key exists in the old object
         if (!oldObj.hasOwnProperty(key)) { // If it doesn't, it was added
-          log(output, `'.${path}.${key}' ADDED (or renamed)`);
+          log(output, old, `${path}.${key}`, "A", newObj[key]);
         }
       }
 
@@ -1276,10 +1324,64 @@ function compare(output, oldObj, newObj, path = "") {
         return;
       }
 
-      log(output, `'.${path}' MODIFIED: '${oldObj}' -> '${newObj}'`);
+      log(output, old, `${path}`, "M", oldObj, newObj);
       break;
     default:
       // State the type of the two values
-      log(output, `Trying to compare a${Array.isArray(oldObj) ? "n array" : (typeof oldObj == 'string' ? " string" : ` ${typeof oldObj}`)} and a${Array.isArray(newObj) ? "n array" : (typeof newObj == 'string' ? " string" : ` ${typeof newObj}`)} at path '${path}'`);
+      log(output, old, path, "F", oldObj, newObj);
   }
+
+  if (path == "") {
+    return createNestedJSON(output)
+  }
+}
+
+function log(arr, old, path, type, mainObj = null, secObj = null) {
+  // Polishes the info ready for converting into it's final format (email, html, discord...)
+
+  // Break down the path, using it to get the data at the end
+  // Will be in format like '[23].content[7][1].content.title'
+  var obj = path.split('[').join('.').split(']').join('').split('.').filter((val) => val != "").reduce((obj, key) => obj[key], old)
+
+  // Get the final value in the path
+  // e.g. '[23].content[7][1].content.title' -> 'title'
+  var finalKey = path.split('.').pop().split('[').pop().split(']').shift()
+
+  var toAdd = {
+    depth: path.split('.').length + path.split('[').length - 2, // How deep the change is
+    title: (path == "") ? "PROJECT NAME" : (obj && obj.title) ? obj.title : (obj && obj.key) ? obj.key : (finalKey) ? (!isNaN(finalKey) ? th(parseInt(finalKey) + 1) : finalKey) : (obj && obj.id) ? obj.id : "Unknown", // The title of the change
+    type: (path == "") ? "Project" : (obj && obj.class) ? (obj.class == "Link" ? "Node Link" : `${obj.class} Node`) : (obj && obj.type) ? obj.type : "", // The type of the data
+    content: ""
+  }
+
+  switch (type) {
+    case "M": // Modified
+      toAdd.title = `${toAdd.title} (Modified)`
+      if (mainObj && secObj) toAdd.content = `Old: ${JSON.stringify(mainObj)}<br>New: ${JSON.stringify(secObj)}`
+      break;
+    case "A": // Added
+      toAdd.title = `${toAdd.title} (Added)`
+      if (mainObj) toAdd.content = `New: ${JSON.stringify(mainObj)}`
+      break;
+    case "D": // Deleted
+      toAdd.title = `${toAdd.title} (Deleted)`
+      if (mainObj) toAdd.content = `Old: ${JSON.stringify(mainObj)}`
+      break;
+    case "F": // Failed
+      toAdd.title = `${toAdd.title} (Failed)`
+      if (mainObj && secObj) toAdd.content = `Old: ${JSON.stringify(mainObj)}<br>New: ${JSON.stringify(secObj)}`
+      break;
+  }
+
+  arr.push(toAdd)
+}
+
+function th(i) {
+  return i + (
+    [11, 12, 13].includes(i % 100) ? 'th' :
+      i % 10 === 1 ? 'st' :
+        i % 10 === 2 ? 'nd' :
+          i % 10 === 3 ? 'rd' :
+            'th'
+  ) + " Entry"
 }

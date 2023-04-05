@@ -1,4 +1,6 @@
-const build = "9e7fe96367d37f0a4ca69a0f216e822b"
+require('dotenv').config();
+
+const build = "9500e3c52446c1b7399db9b67c632959"
 
 var timezoneoffset = 12 * 1000 * 3600
 

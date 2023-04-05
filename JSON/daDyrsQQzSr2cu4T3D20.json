@@ -1238,12 +1238,12 @@
           {
             "id": "lfuf8rmd141o",
             "key": "Skills",
-            "value": "Military Weapons Training\nFirst Aid Training"
+            "value": "Military Weapons Training\nFirst Aid Training\nBasic Engineering and Maintenance"
           },
           {
             "id": "lfuf8rmd1wyy",
             "key": "Gear",
-            "value": "[Shock Glove]\nCybernetic Arm (Left)"
+            "value": "[Shock Glove]\nCybernetic Hand (Left)"
           },
           {
             "id": "lfuf8rmd1x4h",
@@ -1263,7 +1263,7 @@
           {
             "id": "lfuf8rmdkqj",
             "key": "Other Relatives",
-            "value": ""
+            "value": "[Hisaki Lee's offspring] (TBD)"
           },
           {
             "id": "lfuf8rmd1les",
@@ -2264,7 +2264,13 @@
     ],
     "content": [],
     "talk": [],
-    "categories": [],
+    "categories": [
+      "Males",
+      "Members of CAST",
+      "Humans",
+      "Heroes",
+      "Reporters"
+    ],
     "tags": [],
     "redirects": [
       "Amplex"
@@ -3208,7 +3214,7 @@
     "id": "lfuf8rmn1xk8",
     "class": "Info",
     "title": "Flora Winters",
-    "description": "Short description...",
+    "description": "Detective Plant Chick (hot)",
     "header": [
       {
         "id": "lfuf8rmns1k",
@@ -3348,7 +3354,7 @@
           {
             "id": "lfuf8rmokhj",
             "type": "paragraph",
-            "text": "N/A"
+            "text": "Parents killed by the [Romano Family Mob|Romanos], got powers, now adopted and detective and stuff, yeah 💀"
           }
         ]
       }
@@ -3532,7 +3538,7 @@
     "id": "lfuf8rmpn5i",
     "class": "Info",
     "title": "Kel Romano",
-    "description": "Short description...",
+    "description": "Mr. Brain",
     "header": [
       {
         "id": "lfuf8rmp1zwc",
@@ -4045,6 +4051,293 @@
       "2027",
       "2028",
       "2029"
+    ]
+  },
+  {
+    "id": "lfxxfoq11qam",
+    "class": "Info",
+    "title": "Earth",
+    "description": "Some planet, idk",
+    "header": [
+      {
+        "id": "lfuf8rmd13bq",
+        "type": "infobox",
+        "banner": {
+          "title": "Earth",
+          "subtitle": "N/A"
+        },
+        "content": [
+          {
+            "id": "lfuf8rmdlab",
+            "key": "Type",
+            "value": "[Planet]"
+          },
+          {
+            "id": "lfuf8rmd20i1",
+            "key": "Affiliation",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmd19tn",
+            "key": "Status",
+            "value": "Active ([2025])"
+          },
+          {
+            "id": "lfuf8rmdpc1",
+            "key": "Satellite(s)",
+            "value": "[The Moon]\nMany artificial satellites"
+          },
+          {
+            "id": "lfuf8rmd1bof",
+            "key": "Location",
+            "value": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "lfuf8rmdki7",
+        "type": "section",
+        "title": "Notes Text Dump",
+        "content": [
+          {
+            "id": "lfuf8rmd1t0l",
+            "type": "paragraph",
+            "text": "N/A"
+          }
+        ]
+      }
+    ],
+    "content": [],
+    "talk": [],
+    "tags": [],
+    "categories": [
+      "Planets"
+    ],
+    "redirects": []
+  },
+  {
+    "id": "lfxxnl6chez",
+    "class": "Info",
+    "title": "Chang Enterprises",
+    "description": "Short description...",
+    "header": [
+      {
+        "id": "lfuf8rmq1x2k",
+        "type": "infobox",
+        "banner": {
+          "title": "Chang Enterprises",
+          "subtitle": "N/A"
+        },
+        "content": [
+          {
+            "id": "lfuf8rmrlnf",
+            "key": "Affiliations",
+            "value": "[Hui Chang]"
+          },
+          {
+            "id": "lfuf8rmr1wlt",
+            "key": "Status",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmr1xaw",
+            "key": "Capital/Headquarters",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmr1fmn",
+            "key": "Locations",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmr1l68",
+            "key": "Founded",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmr1r6y",
+            "key": "Dissolved",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmr1puj",
+            "key": "Leaders",
+            "value": "[Hui Chang]"
+          },
+          {
+            "id": "lfuf8rmr1lhd",
+            "key": "Notable Members",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmr1agq",
+            "key": "Missions",
+            "value": "N/A"
+          }
+        ]
+      }
+    ],
+    "content": [],
+    "talk": [],
+    "tags": [],
+    "categories": [],
+    "redirects": []
+  },
+  {
+    "id": "lfxxzdch1jz5",
+    "class": "Info",
+    "title": "Hui Chang",
+    "description": "Short description...",
+    "header": [
+      {
+        "id": "lfuf8rmc1r6m",
+        "type": "infobox",
+        "banner": {
+          "title": "Hui Chang",
+          "subtitle": "N/A"
+        },
+        "content": [
+          {
+            "id": "lfuf8rmc1b6v",
+            "key": "Full Name",
+            "value": "Hui Chang"
+          },
+          {
+            "id": "lfuf8rmc24r3",
+            "key": "Alias(es)",
+            "value": "Gunsmith"
+          },
+          {
+            "id": "lfuf8rmc9dw",
+            "key": "Species",
+            "value": "[Human]"
+          },
+          {
+            "id": "lfuf8rmckov",
+            "key": "Gender",
+            "value": "[Male]"
+          },
+          {
+            "id": "lfuf8rmc1gq3",
+            "key": "Nationality",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmc1qyc",
+            "key": "Affiliation(s)",
+            "value": "[Chang Enterprises]"
+          },
+          {
+            "id": "lfuf8rmc1ezs",
+            "key": "Rank/Title",
+            "value": "[C.E.O.]"
+          },
+          {
+            "id": "lfuf8rmc21kl",
+            "key": "Occupation(s)",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmc20pt",
+            "key": "Status",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmc1vfm",
+            "key": "Born",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmc20sy",
+            "key": "Disappeared",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmc11w8",
+            "key": "Died",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmd1t0z",
+            "key": "Power(s)",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmd9um",
+            "key": "Enhanced Power(s)",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmdgqq",
+            "key": "Skills",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmd8us",
+            "key": "Gear",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmd15rw",
+            "key": "Father",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmdxlf",
+            "key": "Mother",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmd16t7",
+            "key": "Sibling(s)",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmd252z",
+            "key": "Other Relatives",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmdv3b",
+            "key": "Partner(s)",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmdww8",
+            "key": "Children",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmd236a",
+            "key": "Pet(s)",
+            "value": "N/A"
+          },
+          {
+            "id": "lfuf8rmd1kwh",
+            "key": "Likeness",
+            "value": "N/A"
+          }
+        ]
+      },
+      {
+        "id": "lfuf8rmd1lzn",
+        "type": "section",
+        "title": "Notes Text Dump",
+        "content": [
+          {
+            "id": "lfuf8rmd1u13",
+            "type": "paragraph",
+            "text": "N/A"
+          }
+        ]
+      }
+    ],
+    "content": [],
+    "talk": [],
+    "tags": [],
+    "categories": [],
+    "redirects": [
+      "Gunsmith"
     ]
   }
 ]
