@@ -1,6 +1,11 @@
 require('dotenv').config();
 
-const build = "9500e3c52446c1b7399db9b67c632959"
+const build = "c7d6c45dbe4c3006bd2f8c3c7ee28de9"
+
+if (process.env.BUILD != build) {
+    // Stop the server
+    process.exit(0)
+}
 
 var timezoneoffset = 12 * 1000 * 3600
 

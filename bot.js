@@ -597,13 +597,14 @@ minutesClient.on("ready", async () => {
   });
 
   var reportTime = new Date();
-  reportTime.setDate(reportTime.getDate() + (3 + 7 - reportTime.getDay()) % 7);
-  reportTime.setHours(8, 0, 0, 0);
+  reportTime.setDate(reportTime.getDate() + (7 - reportTime.getDay()) % 7);
+  reportTime.setHours(20, 0, 0, 0);
   // Get the ms until then, if negative then add a week
   reportTime = reportTime - Date.now();
   if (reportTime < 0) reportTime += 604800000;
 
-  console.log("Report to be sent at " + new Date(Date.now() + reportTime).toLocaleString() + " (" + reportTime / 3600000 + " hours from now)");
+  // State how many days, hours, and minutes till the report is sent
+  console.log("Report to be sent at " + new Date(Date.now() + reportTime).toLocaleString() + " (" + reportTime / 1000 / 60 / 60 / 24 + " days, " + reportTime / 1000 / 60 / 60 % 24 + " hours and " + reportTime / 1000 / 60 % 60 + " minutes from now).");
 
   // Set a timeout to run the 'sendReport' function
   setTimeout(sendReport, reportTime);
