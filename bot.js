@@ -57,7 +57,7 @@ function setSupeBackupData(id, map) {
   // Set the timeline with the given document ID
   const docRef = firebase.collection(firebase.datacord, "timelines");
   const docSnap = firebase.doc(docRef, id);
-  docSnap.set({ map: JSON.stringify(map) });
+  firebase.setDoc(docSnap, { map: JSON.stringify(map) });
 }
 
 var linesdata = ""
