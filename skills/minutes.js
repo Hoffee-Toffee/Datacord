@@ -416,7 +416,7 @@ module.exports = function(controller) {
 async function getData(field) {
     // Get the data from the firebase
     const docRef = firebase.collection(firebase.datacord, "data");
-    const docSnap = await docRef.get();
+    const docSnap = await firebase.getDocs(docRef);
     const doc = docSnap.docs.find(doc => doc.id == field);
     const final = JSON.parse(doc.data().data);
     return final;
@@ -425,6 +425,6 @@ async function getData(field) {
 function setData(field, data) {
     // Set the data to the firebase
     const docRef = firebase.collection(firebase.datacord, "data");
-    const docSnap = docRef.doc(field);
-    docSnap.set({ data: JSON.stringify(data) });
+    const docSnap = firebase.doc(docRef, field);
+    firebase.setDoc(docSnap, { data: JSON.stringify(data) });
 }
