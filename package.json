@@ -11,6 +11,7 @@
     "botkit": "^4.15.0",
     "botkit-discord": "^0.1.5",
     "discord.js": "^14.8.0",
+    "dotenv": "^16.0.3",
     "emailjs": "^4.0.1",
     "fetch": "^1.1.0",
     "firebase": "^9.18.0",
