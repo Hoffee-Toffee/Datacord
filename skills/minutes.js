@@ -64,7 +64,7 @@ module.exports = function(controller) {
     });
 
     // Add a timer to the list
-    controller.hears(".add", ["ambient", "direct_message", "mention"], (bot, message) => {
+    controller.hears(".add", ["ambient", "direct_message", "mention"], (bot, message) => async function() {
         // Exit if the message doesn't start with ".add "
         if (!message.text.startsWith(".add ")) return;
 
@@ -86,8 +86,7 @@ module.exports = function(controller) {
             datetime = datetime.substring(1);
         }
 
-        // Get the contents of timecheck.json
-        // It will be in the following format:
+        // Data will be in the following format:
         // [
         //   {
         //     "id": (string), // The ID of the message that will be updated
@@ -99,7 +98,7 @@ module.exports = function(controller) {
         //   ...
         // ]
         
-        var timers = JSON.parse(fs.readFileSync("JSON/timecheck.json", "utf8"));
+        var timers = await getData("timers")
 
         // Exit if the title is already in the list for this channel
         if (timers.some(timer => timer.title == title && timer.channel == message.channel.id)) {
@@ -130,9 +129,7 @@ module.exports = function(controller) {
             });
 
             // Save the list
-            fs.writeFile("JSON/timecheck.json", JSON.stringify(timers), function(err) {
-                if (err) return console.log(err);
-            });
+            setData("timers", timers);
 
             // Delete the message that started the countdown (sent by the user)
             bot.api.chat.delete({
@@ -146,7 +143,7 @@ module.exports = function(controller) {
     });
 
     // Remove/delete a timer from the list
-    controller.hears([".remove", ".delete"], ["ambient", "direct_message", "mention"], (bot, message) => {
+    controller.hears([".remove", ".delete"], ["ambient", "direct_message", "mention"], (bot, message) => async function() {
         // Exit if the message doesn't start with ".remove " or ".delete "
         if (!message.text.startsWith(".remove ") && !message.text.startsWith(".delete ")) return;
 
@@ -159,8 +156,7 @@ module.exports = function(controller) {
         // Get the title from the message
         var title = message.text.split('"')[1];
 
-        // Get the contents of timecheck.json
-        // It will be in the following format:
+        // Data will be in the following format:
         // [
         //   {
         //     "id": (string), // The ID of the message that will be updated
@@ -172,7 +168,7 @@ module.exports = function(controller) {
         //   ...
         // ]
         
-        var timers = JSON.parse(fs.readFileSync("JSON/timecheck.json", "utf8"));
+        var timers = await getData("timers")
 
         // Exit if the title is not in the list for this channel
         if (!timers.some(timer => timer.title == title && timer.channel == message.channel.id)) {
@@ -184,16 +180,14 @@ module.exports = function(controller) {
         timers = timers.filter(timer => timer.title != title || timer.channel != message.channel.id);
 
         // Save the list
-        fs.writeFile("JSON/timecheck.json", JSON.stringify(timers), function(err) {
-            if (err) return console.log(err);
-        });
+        setData("timers", timers);
 
         // Reply with a confirmation
         bot.reply(message, "Timer removed!");
     });
 
     // Edit a timer in the list
-    controller.hears(".edit", ["ambient", "direct_message", "mention"], (bot, message) => {
+    controller.hears(".edit", ["ambient", "direct_message", "mention"], (bot, message) => async function() {
         // Exit if the message doesn't start with ".edit "
         if (!message.text.startsWith(".edit ")) return;
 
@@ -231,8 +225,7 @@ module.exports = function(controller) {
             estimated = false;
         }
 
-        // Get the contents of timecheck.json
-        // It will be in the following format:
+        // Data will be in the following format:
         // [
         //   {
         //     "id": (string), // The ID of the message that will be updated
@@ -244,7 +237,7 @@ module.exports = function(controller) {
         //   ...
         // ]
         
-        var timers = JSON.parse(fs.readFileSync("JSON/timecheck.json", "utf8"));
+        var timers = await getData("timers")
 
         // Exit if the title is not in the list for this channel
         if (!timers.some(timer => timer.title == title && timer.channel == message.channel.id)) {
@@ -275,20 +268,19 @@ module.exports = function(controller) {
         });
 
         // Save the list
-        fs.writeFile("JSON/timecheck.json", JSON.stringify(timers), function(err) {
-            if (err) return console.log(err);
-        });
+        setData("timers", timers);
 
         // Reply with a confirmation
         bot.reply(message, "Timer edited!");
     });
 
     // List all timers for this channel
-    controller.hears(".list", ["ambient", "direct_message", "mention"], (bot, message) => {
+    controller.hears(".list", ["ambient", "direct_message", "mention"], (bot, message) => async function() {
         if (message.text != ".list") return;
 
-        // Get the contents of timecheck.json for this channel
-        var timers = JSON.parse(fs.readFileSync("JSON/timecheck.json", "utf8")).filter(timer => timer.channel == message.channel.id);
+        // Get the timers for this channel
+        var timers = await getData("timers")
+        timers = timers.filter(timer => timer.channel == message.channel.id);
 
         // Exit if the list is empty
         if (timers.length == 0) {
@@ -307,28 +299,16 @@ module.exports = function(controller) {
         bot.reply(message, list);
     });
 
-    // Help command
-    controller.hears(".help", ["ambient", "direct_message", "mention"], (bot, message) => {
-        if (message.text != ".help") return;
-
-        // Reply with a list of all commands
-        bot.reply(message, "Commands: \n" +
-            "**.add " + '"title" "datetime"' + "** - Add a timer \n" +
-            "**.remove " + '"title"' + "** - Remove a timer \n" +
-            "**.edit " + '"title" "new title" "new datetime"' + "** - Edit a timer \n" +
-            "**.list** - List all timers \n" +
-            "**.help** - Show this message");
-    });
-
     // Show the full amount of time left for a timer
-    controller.hears(".full", ["ambient", "direct_message", "mention"], (bot, message) => {
+    controller.hears(".full", ["ambient", "direct_message", "mention"], (bot, message) => async function() {
         if (!message.text.startsWith(".full ")) return;
 
         // Get the title from the message (first double quote to second double quote after the command)
         var title = message.text.substring(6).split('"')[1];
 
-        // Get the contents of timecheck.json
-        var timers = JSON.parse(fs.readFileSync("JSON/timecheck.json", "utf8"));
+        // Get the timers for this channel
+        var timers = await getData("timers")
+        timers = timers.filter(timer => timer.channel == message.channel.id);
 
         // Exit if the title is not in the list for this channel
         if (!timers.some(timer => timer.title == title && timer.channel == message.channel.id)) {
@@ -376,14 +356,14 @@ module.exports = function(controller) {
     });
 
     // Movie command (.pick/.spin/.movie/.wheel)
-    controller.hears([".pick", ".spin", ".movie", ".wheel"], ["ambient", "direct_message", "mention"], (bot, message) => {
+    controller.hears([".pick", ".spin", ".movie", ".wheel"], ["ambient", "direct_message", "mention"], (bot, message) => async () => {
         // Exit if the command is not an exact match
         if (![".pick", ".spin", ".movie", ".wheel"].includes(message.text)) return;
 
-        // Get the contents of movies.json
+        // Get the movies list
         // It contains an array of movie series', each of which contains an array of movies
         // Most however, only contain one movie
-        var movies = JSON.parse(fs.readFileSync("JSON/movies.json", "utf8"));
+        var movies = await getData("movies");
 
         // Exit if the list is empty
         if (movies.length == 0) {
@@ -414,8 +394,37 @@ module.exports = function(controller) {
         }
 
         // Save the movies list
-        fs.writeFile("JSON/movies.json", JSON.stringify(movies), function(err) {
-            if (err) return console.log(err);
-        });
+        setData("movies", movies);
     });
+
+        // Help command
+        controller.hears(".help", ["ambient", "direct_message", "mention"], (bot, message) => {
+            if (message.text != ".help") return;
+    
+            // Reply with a list of all commands
+            bot.reply(message, "Commands: \n" +
+                "**.add " + '"title" "datetime"' + "** - Add a timer \n" +
+                "**.remove " + '"title"' + "** - Remove a timer \n" +
+                "**.edit " + '"title" "new title" "new datetime"' + "** - Edit a timer \n" +
+                "**.list** - List all timers \n" +
+                "**.full " + '"title"' + "** - Show the full amount of time left for a timer \n" +
+               // "**.pick/.spin/.movie/.wheel** - Pick a random movie from the list \n" +
+                "**.help** - Show this message");
+        });
+}
+
+async function getData(field) {
+    // Get the data from the firebase
+    const docRef = firebase.collection(firebase.datacord, "data");
+    const docSnap = await docRef.get();
+    const doc = docSnap.docs.find(doc => doc.id == field);
+    const final = JSON.parse(doc.data().data);
+    return final;
+  }
+
+function setData(field, data) {
+    // Set the data to the firebase
+    const docRef = firebase.collection(firebase.datacord, "data");
+    const docSnap = docRef.doc(field);
+    docSnap.set({ data: JSON.stringify(data) });
 }

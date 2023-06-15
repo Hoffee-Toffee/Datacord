@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const build = "c7d6c45dbe4c3006bd2f8c3c7ee28de9"
+const build = "5f50b05b204b211ccb341953f384758f"
 
 if (process.env.BUILD != build) {
     // Stop the server
@@ -146,38 +146,21 @@ app.get("/vote", function (request, response) {
     sendMessage(embed, "TEST")
     response.send("Message sent")
 });
-app.get("/build", function (request, response) {
-    response.send(build)
-});
-app.get("/import", function (request, response) {
-    // Convert the content into a JSON object
-    var content = request.query.content
-    var json = JSON.parse(content)
 
-    // Loop through each file, creating it with the given content (in the JSON folder)
-    for (var file in json) {
-        fs.writeFile(`./json/${file}.json`, json[file])
-    }
-    // Send a response
-    response.send("Import successful")
-});
-app.get("/export", function (request, response) {
-    // Convert the JSON folder into a JSON object
-    var json = {}
-    var files = fs.readdirSync("./json")
-    for (var file of files) {
-        var filePath = `./json/${file}`
-        var fileContent = fs.readFileSync(filePath, "utf8")
-        json[file] = fileContent
-    }
-    // Send a response with the JSON in the content param
-    response.send("<a href=\"https://datacord.onrender.com/import?content=" + encodeURIComponent(JSON.stringify(json)) + "\">Click here to import</a>")
-});
 const listener = app.listen(process.env.PORT, function () {
     console.log("Your app is listening on port " + listener.address().port);
 });
 
 function getGif() {
+    // Check if time for Sunday GIF
+    var currenttime = new Date();
+
+    if (currenttime.getDay() == 6 && currenttime.getHours() == 12) {
+        // Send a special gif
+        sendMessage("https://tenor.com/view/sylvie-sunday-marvel-loki-gif-22319892", "GIF")
+        return
+    }
+
     // Get a random number between 0 and the weight of the last gif
     var random = Math.floor(Math.random() * gifQueries[gifQueries.length - 1].weight);
 
@@ -185,9 +168,12 @@ function getGif() {
     var query = gifQueries.find(x => random <= x.weight - 1).query
 
     // Use fetch and the Giphy API to get a random gif
-    var url = "https://tenor.googleapis.com/v2/search?q=" + query + "&key=" + process.env.TENOR_KEY + "&client_key=gif_bot&limit=1&random=true"
+    var url = "https://tenor.googleapis.com/v2/search?q=" + query + "&key=" + process.env.TENOR_KEY + "&client_key=gif_bot&limit=2&random=true"
     var response = fetchUrl(url, function (error, meta, body) {
         var data = JSON.parse(body.toString())
+        // Remove the first gif if it is the special Sunday gif
+        if (data.results[0].itemurl == "https://tenor.com/view/sylvie-sunday-marvel-loki-gif-22319892") data.results.shift();
+
         sendMessage(data.results[0].itemurl, "GIF")
     })
 }
@@ -208,15 +194,8 @@ function checkGIF() {
         gifSent = false
     }
 
-    // Update the new version of the site, then kill this instance
+    // If out of date version, kill this instance
     if (process.env.BUILD != build) {
-        console.log("New build detected, updating")
-
-        var toSend = {}
-        
-        // Loop through each file in the JSON folder, to send to the new version
-        fs.readdirSync("./JSON").forEach(file => {
-            toSend[file] = JSON.parse(fs.readFileSync("./JSON/" + file, "utf8"))
-        })
+        process.exit(0)
     }
 }

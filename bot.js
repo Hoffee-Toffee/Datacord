@@ -19,6 +19,22 @@ module.exports = {
   minutesBot
 }
 
+async function getData(field) {
+  // Get the data from the firebase
+  const docRef = firebase.collection(firebase.datacord, "data");
+  const docSnap = await docRef.get();
+  const doc = docSnap.docs.find(doc => doc.id == field);
+  const final = JSON.parse(doc.data().data);
+  return final;
+}
+
+function setData(field, data) {
+  // Set the data to the firebase
+  const docRef = firebase.collection(firebase.datacord, "data");
+  const docSnap = docRef.doc(field);
+  docSnap.set({ data: JSON.stringify(data) });
+}
+
 async function getSupeData(id) {
   // Get the timeline with the given document ID
   const docRef = firebase.collection(firebase.supedb, "timelines");
@@ -26,6 +42,22 @@ async function getSupeData(id) {
   const doc = docSnap.docs.find(doc => doc.id == id);
   const final = JSON.parse(doc.data().map)
   return final;
+}
+
+async function getSupeBackupData(id) {
+  // Get the timeline with the given document ID
+  const docRef = firebase.collection(firebase.datacord, "timelines");
+  const docSnap = await firebase.getDocs(docRef);
+  const doc = docSnap.docs.find(doc => doc.id == id);
+  const final = JSON.parse(doc.data().map)
+  return final;
+}
+
+function setSupeBackupData(id, map) {
+  // Set the timeline with the given document ID
+  const docRef = firebase.collection(firebase.datacord, "timelines");
+  const docSnap = docRef.doc(id);
+  docSnap.set({ map: JSON.stringify(map) });
 }
 
 var linesdata = ""
@@ -424,11 +456,11 @@ function emailFormat(data, top = true) {
 
 // Run when each client is ready
 minutesClient.on("ready", async () => {
-  // Run the timer loop right away, but after ten seconds it will begin to run just over every second
+  // Run the timer loop right away
   timer(true);
 
-  // Set a timeout to wait 1.111 seconds for every timer in "timecheck.json" to be set
-  var timecheck = JSON.parse(fs.readFileSync("./JSON/timecheck.json")).length;
+  // Set a timeout to wait 1.111 seconds for every timer to be set
+  var timecheck = await getData("timers").then((timers) => { return timers.length });
   console.log("Waiting " + timecheck + " seconds for timers to be set...")
 
   setTimeout(() => {
@@ -596,6 +628,7 @@ minutesClient.on("ready", async () => {
     minutesClient.on("interactionCreate", buttonHandler);
   });
 
+  // Get the next Monday at 8am
   var reportTime = new Date();
   reportTime.setDate(reportTime.getDate() + (7 - reportTime.getDay()) % 7);
   reportTime.setHours(20, 0, 0, 0);
@@ -615,7 +648,7 @@ dataClient.on("ready", () => {
   // Run the presence function
   dataPresence();
 
-  // Run the interupt function
+  // Run the interrupt function
   interuptEvent();
 });
 
@@ -626,7 +659,7 @@ function dataPresence(trigger = "reset") {
   try {
     if (trigger !== "reset") activity = dataClient.user.presence.activities[0].name;
     else if (trigger == "shift" && activity == "TASK: Bridge duty") activity = "";
-    else if (trigger == "interupt" && (activity.startsWith("EMERGENCY: ") || activity.startsWith("TASK: "))) activity = "";
+    else if (trigger == "interrupt" && (activity.startsWith("EMERGENCY: ") || activity.startsWith("TASK: "))) activity = "";
     else if (trigger == "activity" && activity != "TASK: Bridge duty" && !activity.startsWith("EMERGENCY: ") && !activity.startsWith("TASK: ")) activity = "";
   }
   catch (err) {
@@ -667,6 +700,8 @@ function dataPresence(trigger = "reset") {
   // Set up to repeat the function after the shift ends (with trigger "shift")
   setTimeout(() => { dataPresence("shift") }, endTime);
   // Log the time Data's shift ends (hours, minutes and seconds)  
+  console.log(`Shift: ${(onDuty ? shift : "off")} duty`);
+  console.log(`Shift ends in ${Math.floor(endTime / 1000 / 60 / 60)} hours, ${Math.floor(endTime / 1000 / 60 % 60)} minutes and ${Math.floor(endTime / 1000 % 60)} seconds.`);
 
   // Set Data's activity if he is on duty, he will be doing his bridge dutys by default
   if (onDuty) {
@@ -702,6 +737,7 @@ function dataPresence(trigger = "reset") {
     var offset = Math.floor(Math.random() * (variance * 2)) - variance;
     setTimeout(() => { dataPresence("activity") }, duration + offset);
     // Log the time Data's activity ends (hours, minutes and seconds)
+    console.log(`Activity ends in ${Math.floor((duration + offset) / 1000 / 60 / 60)} hours, ${Math.floor((duration + offset) / 1000 / 60 % 60)} minutes and ${Math.floor((duration + offset) / 1000 % 60)} seconds.`);
   }
   // If not then check if it's time for First Contact celebrations (on the 6th of April in the first 5 mins of 4pm and if not during an emergency)
   else if (time.getDate() == 6 && time.getMonth() == 3 && time.getHours() == 16 && time.getMinutes() < 5 && !activity.startsWith("EMERGENCY: ")) {
@@ -719,6 +755,7 @@ function dataPresence(trigger = "reset") {
     var offset = Math.floor(Math.random() * (variance * 2)) - variance;
     setTimeout(() => { dataPresence("activity") }, duration + offset);
     // Log the time Data's activity ends (hours, minutes and seconds)
+    console.log(`Activity ends in ${Math.floor((duration + offset) / 1000 / 60 / 60)} hours, ${Math.floor((duration + offset) / 1000 / 60 % 60)} minutes and ${Math.floor((duration + offset) / 1000 % 60)} seconds.`);
   }
   // If not then check if it's time for the Captain Picard Day celebrations and competition (on the 17th of July in the first 5 mins of 4pm and if not during an emergency)
   else if (time.getDate() == 17 && time.getMonth() == 6 && time.getHours() == 16 && time.getMinutes() < 5 && !activity.startsWith("EMERGENCY: ")) {
@@ -736,6 +773,7 @@ function dataPresence(trigger = "reset") {
     var offset = Math.floor(Math.random() * (variance * 2)) - variance;
     setTimeout(() => { dataPresence("activity") }, duration + offset);
     // Log the time Data's activity ends (hours, minutes and seconds)
+    console.log(`Activity ends in ${Math.floor((duration + offset) / 1000 / 60 / 60)} hours, ${Math.floor((duration + offset) / 1000 / 60 % 60)} minutes and ${Math.floor((duration + offset) / 1000 % 60)} seconds.`);
   }
   // If not then pick a random activity
   else {
@@ -773,6 +811,7 @@ function dataPresence(trigger = "reset") {
     var offset = Math.floor(Math.random() * (activity.variance * 2)) - activity.variance;
     setTimeout(() => { dataPresence("activity") }, activity.duration + offset);
     // Log the time Data's activity ends (hours, minutes and seconds)
+    console.log(`Activity ends in ${Math.floor((activity.duration + offset) / 1000 / 60 / 60)} hours, ${Math.floor((activity.duration + offset) / 1000 / 60 % 60)} minutes and ${Math.floor((activity.duration + offset) / 1000 % 60)} seconds.`);
   }
 }
 
@@ -780,7 +819,8 @@ function dataPresence(trigger = "reset") {
 setInterval(interuptEvent, 100000);
 
 function interuptEvent() {
-  var interupt;
+  console.log("Checking for interupts...");
+  var interrupt;
 
   // Emergencies will happen just over once a week, but will decrease as the day goes on
   // Day shift has a 1.5c chance of happening, swing shift has a 1c chance of happening, and night shift has a 0.5c chance of happening
@@ -790,9 +830,9 @@ function interuptEvent() {
   // Run emergency checks if an emergency is not already happening
   if (!dataClient.user.presence.activities[0].name.startsWith("EMERGENCY: ")) {
     // Run check depending on current shift
-    if (shift == "day" && Math.random() < 1.5 / 1500) interupt = interupts[0];
-    else if (shift == "swing" && Math.random() < 1 / 1500) interupt = interupts[0];
-    else if (shift == "night" && Math.random() < 0.5 / 1500) interupt = interupts[0];
+    if (shift == "day" && Math.random() < 1.5 / 1500) interrupt = interupts[0];
+    else if (shift == "swing" && Math.random() < 1 / 1500) interrupt = interupts[0];
+    else if (shift == "night" && Math.random() < 0.5 / 1500) interrupt = interupts[0];
     // Now can run task checks if no task (except if the task is bridge duty) is being done also and it's not night
     else if (shift !== "night" && (dataClient.user.presence.activities[0].name == "TASK: Bridge duty" || !dataClient.user.presence.activities[0].name.startsWith("TASK: "))) {
       // If on-duty (and therefore not doing a task), then there is a one in 25 chance of a task starting
@@ -800,32 +840,37 @@ function interuptEvent() {
       // But if you are off-duty and doing an activity, then there is a one in 100
 
       // Run the checks defined above
-      if (onDuty && Math.random() < 1 / 25) interupt = interupts[1];
-      else if (!onDuty && dataClient.user.presence.activities[0].name == `${shift} shift` && Math.random() < 1 / 50) interupt = interupts[1];
-      else if (!onDuty && dataClient.user.presence.activities[0].name !== `${shift} shift` && Math.random() < 1 / 100) interupt = interupts[1];
+      if (onDuty && Math.random() < 1 / 25) interrupt = interupts[1];
+      else if (!onDuty && dataClient.user.presence.activities[0].name == `${shift} shift` && Math.random() < 1 / 50) interrupt = interupts[1];
+      else if (!onDuty && dataClient.user.presence.activities[0].name !== `${shift} shift` && Math.random() < 1 / 100) interrupt = interupts[1];
     }
   }
 
-  // If an interupt event was chosen, update the presence
-  if (interupt) {
+  // If an interrupt event was chosen, update the presence
+  if (interrupt) {
     // Set Data's activity
     // Since there is an array of names, pick a random one
     dataClient.user.setPresence({
       activities: [{
         type: 0, // Playing
-        name: interupt.name[Math.floor(Math.random() * interupt.name.length)]
+        name: interrupt.name[Math.floor(Math.random() * interrupt.name.length)]
       }]
     });
 
-    // Set a random timeout between the interupt's (duration - variance) and (duration + variance)
-    var offset = Math.floor(Math.random() * (interupt.variance * 2)) - interupt.variance;
-    setTimeout(() => { dataPresence("interupt") }, interupt.duration + offset);
-    // Log the time Data's interupt ends (hours, minutes and seconds)
+    // Set a random timeout between the interrupt's (duration - variance) and (duration + variance)
+    var offset = Math.floor(Math.random() * (interrupt.variance * 2)) - interrupt.variance;
+    setTimeout(() => { dataPresence("interrupt") }, interrupt.duration + offset);
+    // Log the time Data's interrupt ends (hours, minutes and seconds)
+    console.log("Interrupt event initiated.");
+    console.log(`Interrupt ends in ${Math.floor((interrupt.duration + offset) / 1000 / 60 / 60)} hours, ${Math.floor((interrupt.duration + offset) / 1000 / 60 % 60)} minutes and ${Math.floor((interrupt.duration + offset) / 1000 % 60)} seconds.`);
+  }
+  else {
+    console.log("No interrupt event.");
   }
 }
 
-function timer(sort = false) {
-  // Get the contents of timecheck.json
+async function timer(sort = false) {
+  // Get the timers
   // It will be in the following format:
   // [
   //   {
@@ -838,10 +883,9 @@ function timer(sort = false) {
   //   ...
   // ]
 
-  // Read the file
-  var timecheck = JSON.parse(fs.readFileSync("./JSON/timecheck.json"));
+  var timecheck = await getData("timers")
 
-  // Store if the json file needs to be updated
+  // Store if the timers need to be updated
   var update = false;
 
   // If sort is true, then sort the events by datetime
@@ -851,7 +895,7 @@ function timer(sort = false) {
       return new Date(b.datetime) - new Date(a.datetime);
     });
 
-    // If the sorted array is different to the original array, then update the json file
+    // If the sorted array is different to the original array, then update the timers
     if (JSON.stringify(sorted) !== JSON.stringify(timecheck)) {
       update = true;
       timecheck = sorted;
@@ -890,7 +934,7 @@ function timer(sort = false) {
     // Minus 13 hours due to timezone difference
     difference -= 13 * 60 * 60 * 1000;
 
-    // If the event has already happened, then delete the message and the event from the json file
+    // If the event has already happened, then delete the message and the event from the array
     if (difference <= 0) {
       try {
         message.delete();
@@ -928,7 +972,7 @@ function timer(sort = false) {
 
       var text = `**${event.title}**\n... in ${(event.estimated ? "approximately " : "")}${diffmessage}`;
 
-      // Try to update the message, if that fails then send a new message and update the event in the json file
+      // Try to update the message, if that fails then send a new message and update the event in the array
       try {
         // Only update the message if the text is different, but not undefined
         if (message.content !== undefined && message.content !== text) message.edit(text);
@@ -936,18 +980,18 @@ function timer(sort = false) {
       catch (error) {
         // Send a new message in the channel that the event is in
         minutesClient.channels.cache.get(event.channel).send(text).then(res => {
-          // Update the event in the json file
+          // Update the event in the array
           event.id = res.id;
           event.channel = res.channelId;
 
-          fs.writeFileSync("./JSON/timecheck.json", JSON.stringify(timecheck));
+          setData("timers", timecheck);
         });
       }
     }
   });
 
-  // If the json file needs to be updated, then update it
-  if (update) fs.writeFileSync("./JSON/timecheck.json", JSON.stringify(timecheck));
+  // If the timers need to be updated, then update them
+  if (update) setData("timers", timecheck);
 }
 
 async function getPeople() {
@@ -991,9 +1035,8 @@ async function generateReport(person) {
   const newPromises = person.watching.map(id => getSupeData(id));
   const resolvedNew = await Promise.all(newPromises);
 
-  const oldPromises = person.watching.map(id => fs.promises.readFile(`./JSON/${id}.json`, 'utf8'));
-  const resolvedOldContents = await Promise.all(oldPromises);
-  const resolvedOld = resolvedOldContents.map(content => JSON.parse(content));
+  const oldPromises = person.watching.map(id => getSupeBackupData(id));
+  const resolvedOld = await Promise.all(oldPromises);
 
   var reportData = {
     name: person.name,
@@ -1215,10 +1258,9 @@ function emailReport(data) {
     client.send(message, (err, message) => {
       console.log(err || message);
 
-      // Now update the projects json file with the new data
+      // Now update the backups with the current data
       data.ids.forEach((id, i) => {
-        // {id}.json is to be updated with data.new[i]
-        fs.writeFileSync(`./JSON/${id}.json`, JSON.stringify(data.new[i], null, 2));
+        setSupeBackupData(id, data.new[i]);
       });
     });
   }, 1000);

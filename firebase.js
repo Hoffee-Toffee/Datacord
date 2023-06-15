@@ -1,5 +1,4 @@
 // Import firebase
-console.log('Importing firebase.js...');
 const { initializeApp } = require("firebase/app");
 const { getFirestore, collection, getDocs, doc, getDoc, setDoc } = require("firebase/firestore");
 
@@ -18,12 +17,12 @@ const supedb = getFirestore(initializeApp(supedbConfig, "supedb"));
 // Datacord Firebase setup
 const datacordConfig = {
   apiKey: process.env.DATACORD_KEY,
-  authDomain: "datacord-c462a.firebaseapp.com",
-  projectId: "datacord-c462a",
-  storageBucket: "datacord-c462a.appspot.com",
-  messagingSenderId: "432090619409",
-  appId: "1:432090619409:web:4626b9a132ab5c4cc61bb0",
-  measurementId: "G-4N3BH0J3GD",
+  authDomain: "datacord-db.firebaseapp.com",
+  projectId: "datacord-db",
+  storageBucket: "datacord-db.appspot.com",
+  messagingSenderId: "590361883150",
+  appId: "1:590361883150:web:cf62a24d59b3b71173825f",
+  measurementId: "G-X5FM6KYXKM"
 };
 const datacord = getFirestore(initializeApp(datacordConfig, "datacord"));
 
