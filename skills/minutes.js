@@ -423,13 +423,13 @@ async function getData(field) {
         const final = JSON.parse(doc.data().data);
         fetchedData[field] = final;
         fs.writeFileSync("local.json", JSON.stringify(fetchedData));
+        return final
     }
     else {
-        var final = fetchedData[field];
-    }
+        return fetchedData[field];
 
-    return final;
-  }
+    }
+}
 
 function setData(field, data) {
     // Update the data in local.json and firebase

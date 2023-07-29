@@ -29,12 +29,11 @@ async function getData(field) {
     const final = JSON.parse(doc.data().data);
     fetchedData[field] = final;
     fs.writeFileSync("./local.json", JSON.stringify(fetchedData));
+    return final;
   }
   else {
-    const final = fetchedData[field];
+    return fetchedData[field];
   }
-
-  return final;
 }
 
 function setData(field, data) {
@@ -96,7 +95,7 @@ var linesdata = ""
 // Night shift: 0000 - 0800 (Data will work this shift 75% of the time, and will be off duty the other 25% of the time)
 // If off-duty for the Day shift, Data will perform activities on his own
 // If off-duty for the Swing shift, Data will perform any activities including those that involve other crew members
-// If off-duty for the Night shift, Data will perform activities on his own or engage in dream simulation / hybernation
+// If off-duty for the Night shift, Data will perform activities on his own or engage in dream simulation / hibernation
 // After each activity, Data will have a small break to account for travel time and crew interaction
 
 var shift = ""; // Current shift
