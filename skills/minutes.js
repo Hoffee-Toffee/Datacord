@@ -64,7 +64,7 @@ module.exports = function(controller) {
     });
 
     // Add a timer to the list
-    controller.hears(".add", ["ambient", "direct_message", "mention"], (bot, message) => async function() {
+    controller.hears(".add", ["ambient", "direct_message", "mention"], async (bot, message) => {
         // Exit if the message doesn't start with ".add "
         if (!message.text.startsWith(".add ")) return;
 
@@ -143,7 +143,7 @@ module.exports = function(controller) {
     });
 
     // Remove/delete a timer from the list
-    controller.hears([".remove", ".delete"], ["ambient", "direct_message", "mention"], (bot, message) => async function() {
+    controller.hears([".remove", ".delete"], ["ambient", "direct_message", "mention"], async (bot, message) => {
         // Exit if the message doesn't start with ".remove " or ".delete "
         if (!message.text.startsWith(".remove ") && !message.text.startsWith(".delete ")) return;
 
@@ -187,7 +187,7 @@ module.exports = function(controller) {
     });
 
     // Edit a timer in the list
-    controller.hears(".edit", ["ambient", "direct_message", "mention"], (bot, message) => async function() {
+    controller.hears(".edit", ["ambient", "direct_message", "mention"], async (bot, message) => {
         // Exit if the message doesn't start with ".edit "
         if (!message.text.startsWith(".edit ")) return;
 
@@ -275,7 +275,7 @@ module.exports = function(controller) {
     });
 
     // List all timers for this channel
-    controller.hears(".list", ["ambient", "direct_message", "mention"], (bot, message) => async function() {
+    controller.hears(".list", ["ambient", "direct_message", "mention"], async (bot, message) => {
         if (message.text != ".list") return;
 
         // Get the timers for this channel
@@ -300,7 +300,7 @@ module.exports = function(controller) {
     });
 
     // Show the full amount of time left for a timer
-    controller.hears(".full", ["ambient", "direct_message", "mention"], (bot, message) => async function() {
+    controller.hears(".full", ["ambient", "direct_message", "mention"], async (bot, message) => {
         if (!message.text.startsWith(".full ")) return;
 
         // Get the title from the message (first double quote to second double quote after the command)
