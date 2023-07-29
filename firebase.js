@@ -37,12 +37,20 @@ const datacord = getFirestore(initializeApp(datacordConfig, "datacord"));
 //     setDoc: setDoc
 // }
 
-function notify (message) {
+var backlog = [];
+
+// Notify every minute
+setInterval(notify, 60000);
+
+function notify () {
   const Discord = require("discord.js");
   const webhook = new Discord.WebhookClient({
       id: process.env.TEST_ID,
       token: process.env.TEST_TOKEN
   })
+
+  message = "```" + backlog.length + " requests this minute:\n    " + backlog.join("\n    ") + "```";
+  backlog = [];
 
   webhook.send(message).catch(err => { console.log(err) } );
 }
@@ -60,7 +68,7 @@ module.exports = new Proxy(
   },
   {
     get: function (target, name) {
-      notify(`'${name}' accessed at ${new Date().toLocaleString()}`);
+      backlog.push(`'${name}' accessed.`);
       return target[name];
     },
   }
