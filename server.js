@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const build = "07d6df00e55345201360256679bd72b3"
+const build = "7c2e5e840f3e453184421c571eed6d39"
 
 if (process.env.BUILD != build) {
     // Stop the server
@@ -100,7 +100,9 @@ app.get("/vote", function (request, response) {
     var color = request.query.color
     var id = request.query.id
 
-    var date = new Date() - timezoneoffset;
+    // Get 12 hours from now
+    var date = new Date();
+    date.setHours(date.getHours() + 12);
 
     var embed = {
       "content": `New proposal \"${title}\"`,
@@ -177,7 +179,8 @@ function getGif() {
 }
 
 function checkGIF() {
-    var currenttime = new Date() + timezoneoffset;
+    var currenttime = new Date();
+    currenttime.setTime(currenttime.getTime() + timezoneoffset);
 
     console.log("Checking for gif, current time is " + currenttime.getHours() + ":" + currenttime.getMinutes())
 
