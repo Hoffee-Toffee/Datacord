@@ -190,7 +190,7 @@ const dataActivities = [ // Array of random activities
     name: "ACTIVITY: Playing in a chess tournament.",
     duration: 1000 * 60 * 60 * 5, // 5 hours, average time for this activity
     variance: 1000 * 60 * 60, // 1 hour, variance for this activity, so it can be between 4 and 6 hours long
-    condition: () => shift !== "night" // Data won't play during the night as people will be unavailable
+    condition: () => shift !== "night" && Math.random() < 0.3 // Won't play at night and is rarer as tournaments are less common
   },
   {
     name: "ACTIVITY: Playing in a holographic chess tournament.",
@@ -202,7 +202,7 @@ const dataActivities = [ // Array of random activities
     name: ["ACTIVITY: Playing Vulcan chess against Ambassador Spock.", "ACTIVITY: Playing Vulcan chess against Tuvok."],
     duration: 1000 * 60 * 60 * 1.25, // 1.25 hours, average time for this activity
     variance: 1000 * 60 * 15, // 15 minutes, variance for this activity, so it can be between 1 and 1.5 hours long
-    condition: () => shift !== "night" // Data won't play during the night as people will be unavailable
+    condition: () => shift !== "night" && Math.random() < 0.1 // Won't play at night and is rarer as the character must be visiting the Enterprise
   },
   {
     name: "ACTIVITY: Playing a benign version of the unnamed Ktarian game.",
@@ -214,13 +214,13 @@ const dataActivities = [ // Array of random activities
     name: ["ACTIVITY: Playing Kotra against Garak.", "ACTIVITY: Playing Kotra against Nog.", "ACTIVITY: Playing Kotra against O'Brien.", "ACTIVITY: Playing Kotra against a holographic Dukat."],
     duration: 1000 * 60 * 60 * 1.5, // 1.5 hours, average time for this activity
     variance: 1000 * 60 * 30, // 30 minutes, variance for this activity, so it can be between 1 and 2 hours long
-    condition: () => shift !== "night" // Data won't play during the night as people will be unavailable
+    condition: () => shift !== "night" && Math.random() < 0.1 // Won't play at night and is rarer as the character must be visiting the Enterprise
   },
   {
     name: "ACTIVITY: Playing Baccarat against Bashir.",
     duration: 1000 * 60 * 60, // 1 hour, average time for this activity
     variance: 1000 * 60 * 30, // 30 minutes, variance for this activity, so it can be between 0.5 and 1.5 hours long
-    condition: () => shift !== "night" // Data won't play during the night as people will be unavailable
+    condition: () => shift !== "night" && Math.random() < 0.1 // Bashir will not be available during the night shift, and is rarer as Bashir must be visiting the Enterprise
   },
   {
     name: "ACTIVITY: Playing Blackjack with Fontaine.",
@@ -238,13 +238,13 @@ const dataActivities = [ // Array of random activities
     name: ["ACTIVITY: Playing Gin Rummy against Fontaine", "ACTIVITY: Playing Gin Rummy with Tuvok", "ACTIVITY: Playing Gin Rummy against Chakotay"],
     duration: 1000 * 60 * 60 * 1, // 1 hour, average time for this activity
     variance: 1000 * 60 * 30, // 30 minutes, variance for this activity, so it can be between 0.5 and 1.5 hours long
-    condition: () => shift !== "night" // Data won't play during the night as people will be unavailable
+    condition: () => shift !== "night" && Math.random() < 0.1 // Won't play at night and is rarer as the character must be visiting the Enterprise
   },
   {
     name: "ACTIVITY: Attending a wedding ceremony in Ten Forward.",
     duration: 1000 * 60 * 60, // 1 hour, average time for this activity
     variance: 1000 * 60 * 30, // 30 minutes, variance for this activity, so it can be between 0.5 and 1.5 hours long
-    condition: () => shift == "swing" // Wedding ceremonies will only happen during the evening shift
+    condition: () => shift == "swing" && Math.random() < 0.5 // Weddings will only happen during the evening shift and are rarer as they are less common
   },
   {
     name: "ACTIVITY: Listening to a concert in Ten Forward.",
@@ -274,7 +274,7 @@ const dataActivities = [ // Array of random activities
     name: "ACTIVITY: Watching Worf compete in a Bat'leth tournament on the holodeck.",
     duration: 1000 * 60 * 60 * 2, // 2 hours, average time for this activity
     variance: 1000 * 60 * 30, // 30 minutes, variance for this activity, so it can be between 1.5 and 2.5 hours long
-    condition: () => shift !== "night" // Worf won't play during the night as he will be unavailable
+    condition: () => shift !== "night" && Math.random() < 0.3 // Won't watch at night and is rarer as tournaments are less common
   },
   {
     name: "ACTIVITY: Watching a performance of Beverly Crusher's play, \"Something for Breakfast\" in Ten Forward.",
@@ -500,7 +500,7 @@ minutesClient.on("ready", async () => {
   var now = new Date();
 
   // Add 13 hours to the time due to the time zone difference
-  now.setHours(now.getHours() + 13);
+  now.setHours(now.getHours() + 12);
 
   // Shift the date three days into the future
   now.setDate(now.getDate() + 3);
@@ -681,8 +681,8 @@ function dataPresence(trigger = "reset") {
   var time = new Date();
   var endTime; // Will be the the difference between the current time and time the shift ends
 
-  // Add 13 hours to the time due to the time zone difference
-  time.setHours(time.getHours() + 13);
+  // Add 12 hours to the time due to the time zone difference
+  time.setHours(time.getHours() + 12);
 
   var oldShift = shift;
 

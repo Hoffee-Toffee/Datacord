@@ -179,12 +179,12 @@ function getGif() {
 }
 
 function checkGIF() {
-    var currenttime = new Date();
+    var currenttime = new Date() + timezoneoffset;
 
     console.log("Checking for gif, current time is " + currenttime.getHours() + ":" + currenttime.getMinutes())
 
     // Send a gif every 2 hours from 7am till 1am
-    if ([18, 20, 22, 0, 2, 4, 6, 8, 10, 12].includes(currenttime.getHours()) && currenttime.getMinutes() == 0 && !gifSent) {
+    if ([7, 9, 11, 13, 15, 17, 19, 21, 23, 1].includes(currenttime.getHours()) && currenttime.getMinutes() == 0 && !gifSent) {
         console.log("Time matches, sending gif")
         getGif()
         gifSent = true
