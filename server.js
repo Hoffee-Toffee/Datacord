@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const build = "f63f320c4e000c97881901d2320b4729"
+const build = "38c84f09aa92a32044017300f6ba0bb6"
 
 if (process.env.BUILD != build) {
     // Stop the server

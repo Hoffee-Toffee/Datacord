@@ -985,8 +985,8 @@ async function timer(sort = false) {
 
       // If the message contains " and 1 ", delete the final letter
       if (diffmessage.includes(" and 1 ")) diffmessage = diffmessage.slice(0, -1);
-      // Else if the message contains " and 0 ", delete everything after (and including) " and 0 "
-      else if (diffmessage.includes(" and 0 ")) diffmessage = diffmessage.slice(0, diffmessage.indexOf(" and 0 "));
+      // Else if the message contains " and 0", delete everything after (and including) " and 0"
+      else if (diffmessage.includes(" and 0")) diffmessage = diffmessage.slice(0, diffmessage.indexOf(" and 0"));
 
       var text = `**${event.title}**\n... in ${(event.estimated ? "approximately " : "")}${diffmessage}`;
 
