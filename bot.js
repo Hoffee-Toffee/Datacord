@@ -945,11 +945,11 @@ async function timer(sort = false) {
       var message = minutesClient.users.cache.get(event.channel).messages.cache.get(event.id);
     }
 
-    // Get the time difference between now and the event
-    var difference = new Date(event.datetime) - new Date();
+    var date = new Date();
+    date.setTime(date.getTime() + timezoneoffset);
 
-    // Take the timezone offset into account
-    difference.setTime(difference.getTime() + timezoneoffset);
+    // Get the time difference between now and the event
+    var difference = new Date(event.datetime) - date;
 
     // If the event has already happened, then delete the message and the event from the array
     if (difference <= 0) {
