@@ -19,6 +19,8 @@ module.exports = {
   minutesBot
 }
 
+const timezoneoffset = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+
 async function getData(field) {
   // Get the data from local.json or from firebase if it's not there (and save it to local.json)
   var fetchedData = JSON.parse(fs.readFileSync("./local.json"));
@@ -359,6 +361,7 @@ const interupts = [
 // Login to minutesBot and dataBot with discord.js
 // Require discord.js
 const { Client, GatewayIntentBits } = require('discord.js');
+const { time } = require("console");
 
 // Create the new clients instances including the intents needed for the bots like presence and guild messages
 const minutesClient = new Client({
@@ -499,8 +502,8 @@ minutesClient.on("ready", async () => {
   // Get the current time and date
   var now = new Date();
 
-  // Add 13 hours to the time due to the time zone difference
-  now.setHours(now.getHours() + 12);
+  // Adjust for the timezone
+  now.setTime(now.getTime() + timezoneoffset);
 
   // Shift the date three days into the future
   now.setDate(now.getDate() + 3);
@@ -642,7 +645,10 @@ minutesClient.on("ready", async () => {
   // Get the next Monday at 8am
   var reportTime = new Date();
   reportTime.setDate(reportTime.getDate() + (7 - reportTime.getDay()) % 7);
-  reportTime.setHours(20, 0, 0, 0);
+  reportTime.setHours(8, 0, 0, 0);
+  // Adjust for the timezone
+  reportTime.setTime(reportTime.getTime() + timezoneoffset);
+
   // Get the ms until then, if negative then add a week
   reportTime = reportTime - Date.now();
   if (reportTime < 0) reportTime += 604800000;
@@ -681,8 +687,8 @@ function dataPresence(trigger = "reset") {
   var time = new Date();
   var endTime; // Will be the the difference between the current time and time the shift ends
 
-  // Add 12 hours to the time due to the time zone difference
-  time.setHours(time.getHours() + 12);
+  // Account for the timezone
+  time.setTime(time.getTime() + timezoneoffset);
 
   var oldShift = shift;
 
@@ -942,8 +948,8 @@ async function timer(sort = false) {
     // Get the time difference between now and the event
     var difference = new Date(event.datetime) - new Date();
 
-    // Minus 13 hours due to timezone difference
-    difference -= 13 * 60 * 60 * 1000;
+    // Take the timezone offset into account
+    difference.setTime(difference.getTime() + timezoneoffset);
 
     // If the event has already happened, then delete the message and the event from the array
     if (difference <= 0) {
