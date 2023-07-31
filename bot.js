@@ -966,13 +966,14 @@ async function timer(sort = false) {
     // Otherwise, update the message
     else {
       // Only display the uppermost unit (years, months, days, hours, minutes or seconds)
+      // Seconds will be in units of 10 when paired with minutes, otherwise in units of 1
       var messages = [
         Math.floor(difference / (1000 * 3600 * 24 * 365)) + " years and " + Math.floor(difference / (1000 * 3600 * 24 * 30) % 12) + " months",
         Math.floor(difference / (1000 * 3600 * 24 * 30)) + " months and " + Math.floor(difference / (1000 * 3600 * 24 * 7) % 4) + " weeks",
         Math.floor(difference / (1000 * 3600 * 24 * 7)) + " weeks and " + Math.floor(difference / (1000 * 3600 * 24) % 7) + " days",
         Math.floor(difference / (1000 * 3600 * 24)) + " days and " + Math.floor(difference / (1000 * 3600) % 24) + " hours",
         Math.floor(difference / (1000 * 3600)) + " hours and " + Math.floor(difference / (1000 * 60) % 60) + " minutes",
-        Math.floor(difference / (1000 * 60)) + " minutes and " + Math.floor(difference / 1000 % 60) + " seconds",
+        Math.floor(difference / (1000 * 60)) + " minutes and " + Math.floor(difference / 1000 % 60 / 10) + "0 seconds",
         Math.floor(difference / 1000) + " seconds"
       ];
 
