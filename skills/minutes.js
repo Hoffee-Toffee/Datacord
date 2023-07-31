@@ -323,7 +323,8 @@ module.exports = function(controller) {
 
         // Get the time difference between now and the event
         var date = new Date();
-        date = date.setTime(date.getTime() + timezoneoffset);
+        date.setTime(date.getTime() + timezoneoffset);
+        
         var difference = Date.parse(timer.datetime) - date.getTime();
 
         var units = [
