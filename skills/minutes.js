@@ -36,7 +36,7 @@ function genGreeting(plural = true) {
 
 var fs = require('fs');
 
-const timezoneoffset = 0;
+const timezoneoffset = 12 * 60 * 60 * 1000;
 
 const firebase = require("../firebase.js");
 

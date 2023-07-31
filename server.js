@@ -1,13 +1,13 @@
 require('dotenv').config();
 
-const build = "95bb15332a0e7e5ad893a1aad8e24441"
+const build = "06873319a33ad7b6ff8413abfbe48df2"
 
 if (process.env.BUILD != build) {
     // Stop the server
     process.exit(0)
 }
 
-var timezoneoffset = 0;
+var timezoneoffset = 12 * 1000 * 3600
 
 var gifSent = false
 var gifQueries = [
