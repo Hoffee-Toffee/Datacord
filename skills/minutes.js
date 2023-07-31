@@ -322,7 +322,9 @@ module.exports = function(controller) {
         var timer = timers.find(timer => timer.title == title && timer.channel == message.channel.id);
 
         // Get the time difference between now and the event
-        var difference = new Date(timer.datetime) - new Date() - timezoneoffset;
+        var date = new Date();
+        date = date.setTime(date.getTime() + timezoneoffset);
+        var difference = Date.parse(timer.datetime) - date.getTime();
 
         var units = [
             // Years
