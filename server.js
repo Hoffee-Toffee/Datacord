@@ -100,9 +100,7 @@ app.get("/vote", function (request, response) {
     var color = request.query.color
     var id = request.query.id
 
-    // Get 12 hours from now
-    var date = new Date();
-    date.setHours(date.getHours() + 12);
+    var date = new Date() - timezoneoffset;
 
     var embed = {
       "content": `New proposal \"${title}\"`,
