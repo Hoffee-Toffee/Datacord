@@ -21,19 +21,23 @@ var gifQueries = [
     },
     {
         "query": "death on the nile emma mackey jacqueline de bellefort",
-        "weight": 6 // 1
+        "weight": 7 // 2
     },
     {
         "query": "sylvie sophia di martino",
-        "weight": 8 // 2
+        "weight": 9 // 2
     },
     {
         "query": "gal gadot",
-        "weight": 10 // 2
+        "weight": 11 // 2
     },
     {
         "query": "ava max",
-        "weight": 12 // 2
+        "weight": 13 // 2
+    },
+    {
+        "query": "emma mackey",
+        "weight": 14 // 1
     }
 ]
 
@@ -184,8 +188,8 @@ function checkGIF() {
 
     console.log("Checking for gif, current time is " + currenttime.getHours() + ":" + currenttime.getMinutes())
 
-    // Send a gif every 2 hours from 7am till 1am
-    if ([7, 9, 11, 13, 15, 17, 19, 21, 23, 1].includes(currenttime.getHours()) && currenttime.getMinutes() == 0 && !gifSent) {
+    // Send a gif every 2 hours from 8am till 2am
+    if ([8, 10, 12, 14, 16, 18, 20, 22, 0, 2].includes(currenttime.getHours()) && currenttime.getMinutes() == 0 && !gifSent) {
         console.log("Time matches, sending gif")
         getGif()
         gifSent = true
