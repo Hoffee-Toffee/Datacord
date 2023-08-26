@@ -673,7 +673,6 @@ dataClient.on("ready", () => {
 minutesClient.on("messageCreate", async (message) => {
   // Blacklisting GIFS
   var blacklist = await getData("blacklist")
-  blacklist = []
 
   // Exit if a bot, or not the right command
   if (message.author.bot || ![".blacklist", ".bl"].includes(message.content.toLowerCase())) return
