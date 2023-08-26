@@ -361,14 +361,15 @@ const interupts = [
 // Login to minutesBot and dataBot with discord.js
 // Require discord.js
 const { Client, GatewayIntentBits } = require('discord.js');
-const { time } = require("console");
+const { time, error } = require("console");
 
 // Create the new clients instances including the intents needed for the bots like presence and guild messages
 const minutesClient = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.GuildPresences
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.MessageContent
   ]
 });
 
@@ -667,6 +668,42 @@ dataClient.on("ready", () => {
 
   // Run the interrupt function
   interuptEvent();
+});
+
+minutesClient.on("messageCreate", async (message) => {
+  // Blacklisting GIFS
+  var blacklist = await getData("blacklist")
+  blacklist = []
+
+  // Exit if a bot, or not the right command
+  if (message.author.bot || ![".blacklist", ".bl"].includes(message.content.toLowerCase())) return
+  // Try to get the reply
+  message.channel.messages.fetch(message.reference.messageId)
+  .then(msg => {
+    // Toogle that GIF's status
+    var removing = blacklist.includes(msg.content)
+
+    if (removing) {
+      blacklist.splice(blacklist.indexOf(msg.content), 1)
+    }
+    else {
+      // Add instead
+      blacklist.push(msg.content)
+    }
+
+    msg.channel.send(`GIF has been ${removed ? "removed from" : "added to"} the blacklist.`)
+
+    // Update the blacklist
+    setData("blacklist", blacklist)
+  })
+  .catch(err => {
+    if (message.reference == null) {
+      msg.channel.send("This command must be used in a reply to the GIF in question.")
+    }
+    else {
+      console.log(err)
+    }
+  })
 });
 
 function dataPresence(trigger = "reset") {

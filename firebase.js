@@ -50,9 +50,10 @@ function notify () {
   })
 
   message = "```" + backlog.length + " requests this minute:\n    " + backlog.join("\n    ") + "```";
-  backlog = [];
+  
+  if (backlog.length) webhook.send(message).catch(err => { console.log(err) } );
 
-  webhook.send(message).catch(err => { console.log(err) } );
+  backlog = [];
 }
 
 // Notify whenever any of those variables are used

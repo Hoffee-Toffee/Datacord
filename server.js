@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const build = "38c84f09aa92a32044017300f6ba0bb67"
+const build = "6ead3f9030661202e49c435cf4c5f275"
 
 if (process.env.BUILD != build) {
     // Stop the server
@@ -46,6 +46,7 @@ const express = require("express");
 const discordBotkit = require("botkit-discord");
 const app = express();
 const fetchUrl = require("fetch").fetchUrl;
+const firebase = require("./firebase.js");
 
 var gifLoop = setInterval(checkGIF, 40000); // Every 40 seconds, check if a gif should be sent
 
@@ -172,13 +173,15 @@ function getGif() {
     var query = gifQueries.find(x => random <= x.weight - 1).query
 
     // Use fetch and the Giphy API to get a random gif
-    var url = "https://tenor.googleapis.com/v2/search?q=" + query + "&key=" + process.env.TENOR_KEY + "&client_key=gif_bot&limit=2&random=true"
-    var response = fetchUrl(url, function (error, meta, body) {
+    var url = "https://tenor.googleapis.com/v2/search?q=" + query + "&key=" + process.env.TENOR_KEY + "&client_key=gif_bot&limit=10&random=true"
+    var response = fetchUrl(url, async function (error, meta, body) {
         var data = JSON.parse(body.toString())
-        // Remove the first gif if it is the special Sunday gif
-        if (data.results[0].itemurl == "https://tenor.com/view/sylvie-sunday-marvel-loki-gif-22319892") data.results.shift();
+        // Retrieve the first non-blacklisted GIF
+        var blacklist = await getData("blacklist")
 
-        sendMessage(data.results[0].itemurl, "GIF")
+        var gif = data.results.find(result => !blacklist.includes(result.itemurl))
+
+        if (gif) sendMessage(gif.itemurl, "GIF")
     })
 }
 
@@ -204,3 +207,30 @@ function checkGIF() {
         process.exit(0)
     }
 }
+
+async function getData(field) {
+    // Get the data from local.json or from firebase if it's not there (and save it to local.json)
+    var fetchedData = JSON.parse(fs.readFileSync("./local.json"));
+    if (fetchedData[field] == null) {
+      const docRef = firebase.collection(firebase.datacord, "data");
+      const docSnap = await firebase.getDocs(docRef);
+      const doc = docSnap.docs.find(doc => doc.id == field);
+      const final = JSON.parse(doc.data().data);
+      fetchedData[field] = final;
+      fs.writeFileSync("./local.json", JSON.stringify(fetchedData));
+      return final;
+    }
+    else {
+      return fetchedData[field];
+    }
+  }
+  
+  function setData(field, data) {
+    // Update the firebase data and local.json
+    const docRef = firebase.collection(firebase.datacord, "data");
+    const docSnap = firebase.doc(docRef, field);
+    firebase.setDoc(docSnap, { data: JSON.stringify(data) });
+    var fetchedData = JSON.parse(fs.readFileSync("./local.json"));
+    fetchedData[field] = data;
+    fs.writeFileSync("./local.json", JSON.stringify(fetchedData));
+  }
