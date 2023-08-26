@@ -691,7 +691,7 @@ minutesClient.on("messageCreate", async (message) => {
       blacklist.push(msg.content)
     }
 
-    msg.channel.send(`GIF has been ${removed ? "removed from" : "added to"} the blacklist.`)
+    msg.channel.send(`GIF has been ${removing ? "removed from" : "added to"} the blacklist.`)
 
     // Update the blacklist
     setData("blacklist", blacklist)
