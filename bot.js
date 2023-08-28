@@ -1206,14 +1206,7 @@ async function timer(sort = false) {
         .then((channel) =>
           channel.messages.fetch(event.id).then((msg) => (message = msg))
         )
-    } catch (error) {
-      // If failed, then attempt to get the channel as if it's a DM
-      await minutesClient.channels.users
-        .fetch(event.channel)
-        .then((channel) =>
-          channel.messages.fetch(event.id).then((msg) => (message = msg))
-        )
-    }
+    } catch (error) {}
 
     var date = new Date()
     date.setTime(date.getTime() + timezoneoffset)
