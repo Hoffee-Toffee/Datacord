@@ -206,7 +206,7 @@ module.exports = function (controller) {
     ['ambient', 'direct_message', 'mention'],
     (bot, message) => {
       var name =
-        message.guild.members.cache.get(message.author.id).nickname ||
+        message.guild.members.cache.fetch(message.author.id).nickname ||
         message.author.globalName
       if (name !== realbotname && Math.random() * 10 < 1) {
         var word
