@@ -142,18 +142,6 @@ module.exports = function (controller) {
 
         // Save the list
         setData('timers', timers)
-
-        // Delete the message that started the countdown (sent by the user)
-        bot.api.chat.delete(
-          {
-            token: process.env.MINUTES_DISCORD_TOKEN,
-            channel: message.channel,
-            ts: message.ts,
-          },
-          function (err, res) {
-            if (err) return console.log(err)
-          }
-        )
       })
     }
   )
@@ -180,10 +168,7 @@ module.exports = function (controller) {
       })
 
       // Get all timers for this channel and send new messages for them
-      setData(
-        'timers',
-        timers
-      )
+      if (any) setData('timers', timers)
     }
   )
 
