@@ -1325,8 +1325,7 @@ async function timer(sort = false) {
 
   var timecheck = await getData('timers')
 
-  // Store if the timers need to be updated
-  var update = false
+  var tcText = JSON.stringify(timecheck)
 
   // If sort is true, then sort the events by datetime
   if (sort) {
@@ -1337,14 +1336,13 @@ async function timer(sort = false) {
 
     // If the sorted array is different to the original array, then update the timers
     if (JSON.stringify(sorted) !== JSON.stringify(timecheck)) {
-      update = true
       timecheck = sorted
     }
   }
 
   // Loop through each event
   // The client is minutesClient, which is the bot that sends the messages
-  timecheck.forEach(async (event) => {
+  timecheck = timecheck.filter(async (event) => {
     // Get the message that will be updated
     var message = null
     // First get the message as if it's a server
@@ -1369,7 +1367,7 @@ async function timer(sort = false) {
       } catch (error) {}
 
       timecheck.splice(timecheck.indexOf(event), 1)
-      update = true
+      return false
     }
     // Otherwise, update the message
     else {
@@ -1426,24 +1424,13 @@ async function timer(sort = false) {
         // Only update the message if the text is different, but not undefined
         if (message.content !== undefined && message.content !== text)
           message.edit(text)
-      } catch (error) {
-        // Send a new message in the channel that the event is in
-        minutesClient.channels.cache
-          .get(event.channel)
-          .send(text)
-          .then((res) => {
-            // Update the event in the array
-            event.id = res.id
-            event.channel = res.channelId
-
-            setData('timers', timecheck)
-          })
-      }
+      } catch (error) {}
     }
+    return true
   })
 
   // If the timers need to be updated, then update them
-  if (update) setData('timers', timecheck)
+  if (tcText !== JSON.stringify(timecheck)) setData('timers', timecheck)
 }
 
 async function getPeople() {
