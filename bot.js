@@ -1398,7 +1398,7 @@ async function timer(sort = false) {
           message.edit(text)
       } catch (error) {
         // Send a new message in the channel that the event is in
-        await minutesClient.channels.get(event.channel).then((channel) =>
+        await minutesClient.channels.cache.get(event.channel).then((channel) =>
           channel.send(text).then((res) => {
             // Update the event in the array
             event.id = res.id
