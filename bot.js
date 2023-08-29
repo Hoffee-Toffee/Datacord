@@ -844,7 +844,7 @@ minutesClient.on('messageCreate', async (message) => {
     })
 })
 
-jiggyClient.on('messageCreate', async (message) => {
+jigClient.on('messageCreate', async (message) => {
   // Exit if a bot, or not the right command
   if (
     message.author.bot ||
