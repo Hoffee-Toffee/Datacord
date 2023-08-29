@@ -169,19 +169,20 @@ module.exports = function (controller) {
 
       var any = false
 
+      timers = timers.map((timer) => {
+        if (timer.channel == message.channel.id) {
+          if (!any) bot.reply('-' * 50)
+          any = true
+
+          timer.id = null
+        }
+        return timer
+      })
+
       // Get all timers for this channel and send new messages for them
       setData(
         'timers',
-        timers.map(async (timer) => {
-          if (timer.channel == message.channel) {
-            if (!any) await bot.reply('-' * 50)
-
-            await bot.reply(`**${timer.title}**\n...`).then((msg) => {
-              timer.id = msg.messageId
-            })
-          }
-          return timer
-        })
+        timers
       )
     }
   )
