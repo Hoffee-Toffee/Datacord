@@ -22,8 +22,38 @@ module.exports = {
 
 const timezoneoffset = 12 * 60 * 60 * 1000 // 12 hours in milliseconds
 var gifSent = false
+var status = null
 
 function checkGIF() {
+  if (Math.random() * 20000 < 1 || !status) {
+    var statuses = [
+      'Designing traps.',
+      'Recording tapes.',
+      'Videoing Billy.',
+      'Making Billys.',
+      'Following potential subjects.',
+      'Kidnapping subjects.',
+      'Appreciating life',
+      'Visiting the bathroom',
+      'Building a trap.',
+      'Buying trap supplies.',
+    ]
+
+    if (status) statuses.splice(statuses.indexOf(status), 1)
+
+    // Set the bot's presence
+    jigClient.user.setPresence({
+      activities: [
+        {
+          name: `ACTIVITY: ${
+            statuses[Math.floor(Math.random() * statuses.length)]
+          }`,
+          type: 0,
+        },
+      ],
+    })
+  }
+
   var currenttime = new Date()
   currenttime.setTime(currenttime.getTime() + timezoneoffset)
 
@@ -1333,7 +1363,7 @@ async function timer(sort = false) {
     var difference = new Date(event.datetime) - date
 
     // If the event has already happened, then delete the message and the event from the array
-    if (difference <= 0) {
+    if (difference < 1000) {
       try {
         message.delete()
       } catch (error) {}
@@ -1398,7 +1428,10 @@ async function timer(sort = false) {
           message.edit(text)
       } catch (error) {
         // Send a new message in the channel that the event is in
-        minutesClient.channels.cache.get(event.channel).send(text).then((res) => {
+        minutesClient.channels.cache
+          .get(event.channel)
+          .send(text)
+          .then((res) => {
             // Update the event in the array
             event.id = res.id
             event.channel = res.channelId
