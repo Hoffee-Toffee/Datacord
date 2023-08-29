@@ -157,25 +157,27 @@ module.exports = function (controller) {
 
       var any = false
 
-      timers = timers.map(async (timer) => {
+      timers.forEach((timer) => {
         if (timer.channel == message.channel.id) {
           if (!any) bot.reply(message, '-'.repeat(50))
           any = true
 
           // Send a message for the countdown
-          await bot.reply(message, `**${timer.title}**\n...`, (err, res) => {
+          bot.reply(message, `**${timer.title}**\n...`, async (err, res) => {
             // Handle errors
             if (err) return console.log(err)
 
-            // Update the id
-            timer.id = res.id
+            var newTimers = await getData('timers')
+
+            newTimers = newTimers.map((t) => {
+              if (t.id == timer.id) t.id = res.id
+              return t
+            })
+
+            setData('timers', newTimers)
           })
         }
-        return timer
       })
-
-      // Get all timers for this channel and send new messages for them
-      if (any) setData('timers', timers)
     }
   )
 
