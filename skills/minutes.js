@@ -157,13 +157,13 @@ module.exports = function (controller) {
 
       var any = false
 
-      timers = timers.map((timer) => {
+      timers = timers.map(async (timer) => {
         if (timer.channel == message.channel.id) {
           if (!any) bot.reply(message, '-'.repeat(50))
           any = true
 
           // Send a message for the countdown
-          bot.reply(message, `**${timer.title}**\n...`, (err, res) => {
+          await bot.reply(message, `**${timer.title}**\n...`, (err, res) => {
             // Handle errors
             if (err) return console.log(err)
 
