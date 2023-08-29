@@ -162,7 +162,14 @@ module.exports = function (controller) {
           if (!any) bot.reply(message, '-'.repeat(50))
           any = true
 
-          timer.id = null
+          // Send a message for the countdown
+          bot.reply(message, `**${title}**\n...`, (err, res) => {
+            // Handle errors
+            if (err) return console.log(err)
+
+            // Update the id
+            timer.id = res.id
+          })
         }
         return timer
       })
