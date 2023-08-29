@@ -30,7 +30,7 @@ function checkGIF() {
   // Send a gif every 2 hours from 8am till 2am
   if (
     [8, 10, 12, 14, 16, 18, 20, 22, 0, 2].includes(currenttime.getHours()) &&
-    currenttime.getMinutes() == 25 &&
+    currenttime.getMinutes() == 27 &&
     !gifSent
   ) {
     jigGIF()
