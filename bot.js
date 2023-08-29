@@ -22,11 +22,6 @@ module.exports = {
 const timezoneoffset = 12 * 60 * 60 * 1000 // 12 hours in milliseconds
 var gifSent = false
 
-var gifLoop = setInterval(checkGIF, 40000) // Every 40 seconds, check if a gif should be sent
-
-// Only start the bots after the first check is done
-checkGIF()
-
 function checkGIF() {
   var currenttime = new Date()
   currenttime.setTime(currenttime.getTime() + timezoneoffset)
@@ -34,7 +29,7 @@ function checkGIF() {
   // Send a gif every 2 hours from 8am till 2am
   if (
     [8, 10, 12, 14, 16, 18, 20, 22, 0, 2].includes(currenttime.getHours()) &&
-    currenttime.getMinutes() == 0 &&
+    currenttime.getMinutes() == 18 &&
     !gifSent
   ) {
     jigGIF()
@@ -474,6 +469,13 @@ const jigClient = new Client({
 minutesClient.login(process.env.MINUTES_DISCORD_TOKEN)
 dataClient.login(process.env.DATA_DISCORD_TOKEN)
 jigClient.login(process.env.JIG_DISCORD_TOKEN)
+
+jigClient.on('ready', () => {
+  var gifLoop = setInterval(checkGIF, 40000) // Every 40 seconds, check if a gif should be sent
+
+  // Only start the bots after the first check is done
+  checkGIF()
+})
 
 // Generate southern greetings
 function genGreeting(plural = true, user = null) {
