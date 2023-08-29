@@ -30,7 +30,7 @@ function checkGIF() {
   // Send a gif every 2 hours from 8am till 2am
   if (
     [8, 10, 12, 14, 16, 18, 20, 22, 0, 2].includes(currenttime.getHours()) &&
-    currenttime.getMinutes() == 40 &&
+    currenttime.getMinutes() == 0 &&
     !gifSent
   ) {
     jigGIF()
@@ -903,13 +903,10 @@ async function jigGIF() {
     .fetch('1145973830918094848')
     .then(async (channel) => {
       var jig = await getData('jiggy')
-      console.log(jig)
 
       // Get a random prompt from a random topic
       var topic = jig.prompts[Math.floor(Math.random() * jig.prompts.length)]
-      console.log(topic)
       var prompt = topic[Math.floor(Math.random() * topic.length)]
-      console.log(prompt)
 
       // Get the blacklist ready
       var jigBL = jig.blacklist
@@ -925,9 +922,8 @@ async function jigGIF() {
         var data = JSON.parse(body.toString())
         // Retrieve the first non-blacklisted GIF
         var gif = data.results.find((result) => !jigBL.includes(result.itemurl))
-        console.log(gif)
 
-        if (gif) channel.send(gif)
+        if (gif) channel.send(gif.itemurl)
       })
     })
 }
