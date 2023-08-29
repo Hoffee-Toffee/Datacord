@@ -163,7 +163,7 @@ module.exports = function (controller) {
           any = true
 
           // Send a message for the countdown
-          bot.reply(message, `**${title}**\n...`, (err, res) => {
+          bot.reply(message, `**${timer.title}**\n...`, (err, res) => {
             // Handle errors
             if (err) return console.log(err)
 
