@@ -41,13 +41,13 @@ function checkGIF() {
 
     if (status) statuses.splice(statuses.indexOf(status), 1)
 
+    status = statuses[Math.floor(Math.random() * statuses.length)]
+
     // Set the bot's presence
     jigClient.user.setPresence({
       activities: [
         {
-          name: `ACTIVITY: ${
-            statuses[Math.floor(Math.random() * statuses.length)]
-          }`,
+          name: `ACTIVITY: ${status}`,
           type: 0,
         },
       ],
