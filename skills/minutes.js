@@ -159,7 +159,7 @@ module.exports = function (controller) {
 
       timers = timers.map((timer) => {
         if (timer.channel == message.channel.id) {
-          if (!any) bot.reply('-' * 50)
+          if (!any) bot.reply(message, '-'.repeat(50))
           any = true
 
           timer.id = null
