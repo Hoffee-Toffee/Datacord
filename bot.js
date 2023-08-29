@@ -20,6 +20,31 @@ module.exports = {
 }
 
 const timezoneoffset = 12 * 60 * 60 * 1000 // 12 hours in milliseconds
+var gifSent = false
+
+var gifLoop = setInterval(checkGIF, 40000) // Every 40 seconds, check if a gif should be sent
+
+// Only start the bots after the first check is done
+checkGIF()
+
+function checkGIF() {
+  var currenttime = new Date()
+  currenttime.setTime(currenttime.getTime() + timezoneoffset)
+
+  // Send a gif every 2 hours from 8am till 2am
+  if (
+    [8, 10, 12, 14, 16, 18, 20, 22, 0, 2].includes(currenttime.getHours()) &&
+    currenttime.getMinutes() == 0 &&
+    !gifSent
+  ) {
+    jigGIF()
+    gifSent = true
+  }
+  // Reset the gifSent variable when a gif hasn't been sent
+  else {
+    gifSent = false
+  }
+}
 
 async function getData(field) {
   // Get the data from local.json or from firebase if it's not there (and save it to local.json)
@@ -437,9 +462,18 @@ const dataClient = new Client({
   ],
 })
 
+const jigClient = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.MessageContent,
+  ],
+})
 // Log in to Discord with your clients tokens
 minutesClient.login(process.env.MINUTES_DISCORD_TOKEN)
 dataClient.login(process.env.DATA_DISCORD_TOKEN)
+jigClient.login(process.env.JIG_DISCORD_TOKEN)
 
 // Generate southern greetings
 function genGreeting(plural = true, user = null) {
@@ -769,15 +803,15 @@ dataClient.on('ready', () => {
 })
 
 minutesClient.on('messageCreate', async (message) => {
-  // Blacklisting GIFS
-  var blacklist = await getData('blacklist')
-
   // Exit if a bot, or not the right command
   if (
     message.author.bot ||
     !['.blacklist', '.bl'].includes(message.content.toLowerCase())
   )
     return
+  // Blacklisting GIFS
+  var blacklist = await getData('blacklist')
+
   // Try to get the reply
   message.channel.messages
     .fetch(message.reference.messageId)
@@ -809,6 +843,87 @@ minutesClient.on('messageCreate', async (message) => {
       }
     })
 })
+
+jiggyClient.on('messageCreate', async (message) => {
+  // Exit if a bot, or not the right command
+  if (
+    message.author.bot ||
+    !['.blacklist', '.bl'].includes(message.content.toLowerCase())
+  )
+    return
+  // Blacklisting GIFS
+  var jiggy = await getData('jiggy')
+  var blacklist = jiggy.blacklist
+
+  // Try to get the reply
+  message.channel.messages
+    .fetch(message.reference.messageId)
+    .then((msg) => {
+      // Toogle that GIF's status
+      var removing = blacklist.includes(msg.content)
+
+      if (removing) {
+        blacklist.splice(blacklist.indexOf(msg.content), 1)
+      } else {
+        // Add instead
+        blacklist.push(msg.content)
+      }
+
+      msg.channel.send(
+        `This GIF will ${
+          removing ? 'no longer' : 'now'
+        } be excluded from selection.`
+      )
+
+      jiggy.blacklist = blacklist
+
+      // Update the blacklist
+      setData('jiggy', jiggy)
+    })
+    .catch((err) => {
+      if (message.reference == null) {
+        msg.channel
+          .send('This command must be used in reply to a GIF.')
+          .finally((reply) => {
+            setTimeout(function () {
+              reply.delete()
+            }, 5000)
+          })
+      } else {
+        console.log(err)
+      }
+    })
+})
+
+async function jigGIF() {
+  await jigClient.channels
+    .fetch('1145973830918094848')
+    .then(async (channel) => {
+      var jig = await getData('jiggy')
+
+      // Get a random prompt from a random topic
+      var topic = jig.prompts[Math.floor(Math.random() * jig.prompts.length)]
+      var prompt = topic[Math.floor(Math.random() * topic.length)]
+
+      // Get the blacklist ready
+      var jigBL = jig.blacklist
+
+      // Use fetch and the Giphy API to get a random gif
+      var url =
+        'https://tenor.googleapis.com/v2/search?q=' +
+        prompt +
+        '&key=' +
+        process.env.TENOR_KEY +
+        '&client_key=gif_bot&limit=10&random=true'
+      var response = fetchUrl(url, async function (error, meta, body) {
+        var data = JSON.parse(body.toString())
+        // Retrieve the first non-blacklisted GIF
+        var gif = data.results.find((result) => !jigBL.includes(result.itemurl))
+
+        if (gif) channel.send(gif)
+      })
+    })
+}
 
 function dataPresence(trigger = 'reset') {
   // Get Data's current activity (unless the trigger is "reset")
