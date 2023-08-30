@@ -25,7 +25,7 @@ var gifSent = false
 var status = null
 
 function checkGIF() {
-  if (Math.random() * 20000 < 1 || !status) {
+  if (Math.random() * 2000 < 1 || !status) {
     var statuses = [
       'Designing traps.',
       'Recording tapes.',
@@ -1366,7 +1366,12 @@ async function timer(sort = false) {
         message.delete()
       } catch (error) {}
 
-      timecheck.splice(timecheck.indexOf(event), 1)
+      var newTimers = (await getData('timers')) || []
+
+      newTimers.splice(newTimers.indexOf(event), 1)
+
+      setData('timers', newTimers)
+
       return false
     }
     // Otherwise, update the message
