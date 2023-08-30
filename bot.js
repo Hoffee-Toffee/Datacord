@@ -1,11 +1,9 @@
 const discordBotkit = require('botkit-discord')
 const fs = require('fs')
 
-var messageID = '1145580607372533821'
-
 const test_config = {
   token:
-    'MTE0NDkwMTA0MDQ5MjI1NzMxMA.G6E4td.2OhiWPjA8lMQenw70q_Oz6ayBiFuoODyymQycY',
+    'MTE0NjI0OTM2Nzc1NDM3NTE4OA.GR1Y_5.2RaudV_2Tjdz7EX6mrqmQhamNQP1LpgU56Zh7o',
 }
 
 const timezoneoffset = 12 * 60 * 60 * 1000 // 12 hours in milliseconds
@@ -40,17 +38,6 @@ testClient.on('messageCreate', async (message = new Message()) => {
     )
   }
 
-  if (message.content.toLowerCase().startsWith('.update')) {
-    console.log(message.content.slice(8))
-    await message.channel.messages
-      .get(
-        message.content.toLowerCase().startsWith('.update ')
-          ? message.content.slice(8)
-          : messageID
-      )
-      .edit(`Updated at ${new Date().toLocaleTimeString()}!`)
-  }
-
   if (
     ['.kill', '.stop', '.end', '.exit'].includes(message.content.toLowerCase())
   ) {
@@ -62,12 +49,6 @@ testClient.on('messageCreate', async (message = new Message()) => {
 
 testClient.on('ready', async () => {
   await testClient.channels
-    .fetch('1145523077443235962')
-    .then((channel) =>
-      channel.messages
-        .fetch(messageID)
-        .then((message) =>
-          message.edit(`Updated at ${new Date().toLocaleTimeString()}!`)
-        )
-    )
+    .fetch('1146256683748827177')
+    .then((channel) => channel.send('Hello there.'))
 })
