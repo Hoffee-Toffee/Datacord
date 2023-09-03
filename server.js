@@ -39,6 +39,10 @@ var gifQueries = [
     query: 'emma mackey',
     weight: 14, // 1
   },
+  {
+    query: 'shin hati',
+    weight: 16, // 2
+  },
 ]
 
 const fs = require('fs')
