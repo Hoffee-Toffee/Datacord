@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "A simple Node app built on fastify, instantly up and running.",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js"
   },
@@ -28,5 +29,8 @@
     "node",
     "glitch"
   ],
-  "author": "Hoffee-Toffee (Tristan Bulmer)"
+  "author": "Hoffee-Toffee (Tristan Bulmer)",
+  "devDependencies": {
+    "@gradio/client": "^0.2.1"
+  }
 }
