@@ -166,7 +166,10 @@ function getGif() {
   if (currenttime.getDay() == 6 && currenttime.getHours() == 12) {
     // Send a special gif
     sendMessage(
-      'https://tenor.com/view/sylvie-sunday-marvel-loki-gif-22319892',
+      [
+        'https://tenor.com/view/sylvie-sunday-marvel-loki-gif-22319892',
+        'https://tenor.com/view/it%27s-shin-sunday-it%27s-shin-shin-sunday-star-wars-shin-hati-star-wars-shin-sunday-gif-17221787885420664774',
+      ][Math.floor(Math.random() * 2)],
       'GIF'
     )
     return
