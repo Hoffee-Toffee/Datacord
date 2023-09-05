@@ -214,7 +214,7 @@ function checkGIF() {
 
   // Send a gif every 2 hours from 8am till 2am
   if (
-    [8, 10, 12, 14, 16, 18, 20, 22, 0, 2].includes(currenttime.getHours()) &&
+    ![3, 4, 5, 6, 7].includes(currenttime.getHours()) &&
     currenttime.getMinutes() == 0 &&
     !gifSent
   ) {
