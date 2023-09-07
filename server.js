@@ -102,6 +102,22 @@ app.get('/notify', function (request, response) {
   sendMessage(message, hook)
   response.send('Message sent')
 })
+app.get('/local', function (request, response) {
+  response.send(fs.readFileSync('./local.json'))
+})
+app.get('/update', async function (request, response) {
+  var field = request.query.field
+
+  var fetchedData = JSON.parse(fs.readFileSync('./local.json'))
+
+  const docRef = firebase.collection(firebase.datacord, 'data')
+  const docSnap = await firebase.getDocs(docRef)
+  const doc = docSnap.docs.find((doc) => doc.id == field)
+  const final = JSON.parse(doc.data().data)
+  fetchedData[field] = final
+  fs.writeFileSync('./local.json', JSON.stringify(fetchedData))
+  response.send(`Updated '${field}`)
+})
 app.get('/vote', function (request, response) {
   var title = request.query.title
   var description = request.query.description
