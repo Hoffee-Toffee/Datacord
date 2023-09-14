@@ -41,7 +41,7 @@ var gifQueries = [
   },
   {
     query: 'shin hati',
-    weight: 16, // 2
+    weight: 17, // 3
   },
 ]
 
