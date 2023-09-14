@@ -1,0 +1,17 @@
+{
+  "bank": {
+    "total": 0,
+    "start": 0
+  },
+  "pool": {
+    "total": 0,
+    "start": 500,
+    "upperLimit": 1000,
+    "lowerLimit": 50
+  },
+  "stocks": {
+    "TSLA": {
+      "shares": []
+    }
+  }
+}
