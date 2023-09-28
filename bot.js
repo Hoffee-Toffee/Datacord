@@ -20,7 +20,14 @@ module.exports = {
   minutesBot,
 }
 
-const timezoneoffset = 12 * 60 * 60 * 1000 // 12 hours in milliseconds
+function now() {
+  return Date(
+    new Date().toLocaleString('en-NZ', {
+      timeZone: 'Pacific/Auckland',
+    })
+  )
+}
+
 var gifSent = false
 var status = null
 
@@ -55,7 +62,6 @@ function checkGIF() {
   }
 
   var currenttime = new Date()
-  currenttime.setTime(currenttime.getTime() + timezoneoffset)
 
   // Send a gif every 2 hours from 8am till 2am
   if (
@@ -632,9 +638,6 @@ minutesClient.on('ready', async () => {
   // Get the current time and date
   var now = new Date()
 
-  // Adjust for the timezone
-  now.setTime(now.getTime() + timezoneoffset)
-
   // Shift the date three days into the future
   now.setDate(now.getDate() + 3)
 
@@ -800,11 +803,9 @@ minutesClient.on('ready', async () => {
     })
 
   // Get the next Monday at 8am
-  var reportTime = new Date()
+  var reportTime = now()
   reportTime.setDate(reportTime.getDate() + ((7 - reportTime.getDay()) % 7))
   reportTime.setHours(8, 0, 0, 0)
-  // Adjust for the timezone
-  reportTime.setTime(reportTime.getTime() + timezoneoffset)
 
   // Get the ms until then, if negative then add a week
   reportTime = reportTime - Date.now()
@@ -986,9 +987,6 @@ function dataPresence(trigger = 'reset') {
   // Update the shift variable
   var time = new Date()
   var endTime // Will be the the difference between the current time and time the shift ends
-
-  // Account for the timezone
-  time.setTime(time.getTime() + timezoneoffset)
 
   var oldShift = shift
 
@@ -1355,7 +1353,6 @@ async function timer(sort = false) {
     } catch (error) {}
 
     var date = new Date()
-    date.setTime(date.getTime() + timezoneoffset)
 
     // Get the time difference between now and the event
     var difference = new Date(event.datetime) - date
@@ -1516,7 +1513,7 @@ function emailReport(data) {
     })
 
     // Get the current year and which week it is of that year
-    const date = new Date()
+    const date = now()
 
     const year = date.getFullYear()
 

@@ -35,8 +35,6 @@ function genGreeting(plural = true) {
 
 var fs = require('fs')
 
-const timezoneoffset = 12 * 60 * 60 * 1000
-
 const firebase = require('../firebase.js')
 
 module.exports = function (controller) {
@@ -401,8 +399,7 @@ module.exports = function (controller) {
       )
 
       // Get the time difference between now and the event
-      var date = new Date()
-      date.setTime(date.getTime() + timezoneoffset)
+      var date = now()
 
       var difference = Date.parse(timer.datetime) - date.getTime()
 
