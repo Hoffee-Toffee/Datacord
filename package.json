@@ -14,8 +14,10 @@
     "dotenv": "^16.0.3",
     "emailjs": "^4.0.1",
     "fetch": "^1.1.0",
+    "ffmpeg": "^0.0.4",
     "firebase": "^9.18.0",
     "handlebars": "^4.7.7",
+    "jimp": "^0.22.10",
     "stocks.js": "^0.0.19"
   },
   "engines": {

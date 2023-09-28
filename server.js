@@ -4,6 +4,9 @@ var timezoneoffset = 12 * 1000 * 3600
 const express = require('express')
 const app = express()
 const fs = require('fs')
+const https = require('https')
+const ffmpeg = require('ffmpeg')
+const Jimp = require('jimp')
 
 const test_config = {
   token:
@@ -68,7 +71,7 @@ var simEnd = new Date('2023-09-06')
 // Login to minutesBot and dataBot with discord.js
 // Require discord.js
 const { Client, GatewayIntentBits, Message } = require('discord.js')
-const { time } = require('console')
+const { time, error } = require('console')
 const { channel } = require('diagnostics_channel')
 
 // Create the new clients instances including the intents needed for the bots like presence and guild messages
@@ -94,10 +97,11 @@ testClient.on('messageCreate', async (message = new Message()) => {
   }
 
   if (message.content.toLowerCase() == '.') {
-    message.channel.send(
-      message.guild.members.cache.get(message.author.id).nickname ||
-        message.author.globalName
-    )
+    await sendFrame()
+    // message.channel.send(
+    //   message.guild.members.cache.get(message.author.id).nickname ||
+    //     message.author.globalName
+    // )
   }
 
   if (
@@ -111,10 +115,143 @@ testClient.on('messageCreate', async (message = new Message()) => {
 
 testClient.on('ready', async () => {
   await testClient.channels.fetch('1146256683748827177').then((channel) => {
-    channel.send('Starting simulation.')
-    stockSim()
+    // STOCK SIM
+    // channel.send('Starting simulation.')
+    // stockSim()
+
+    // FRAMES
+    var framesData = JSON.parse(fs.readFileSync('./star-trek/data.json'))
+
+    var file = './star-trek/segment.ts'
+
+    if (!fs.existsSync(file)) {
+      channel.send("DOESN'T EXIST, DOWNLOADING...")
+      // Get the new one downloaded
+      var url = `https://asda.distauscordix.monster/aes/x_2immMP8nplzjEn7Kfq6Q/1695016403/storage4/movies/0117731-star-trek-first-contact-1996-1567305537/7e1877a5623168fee93bc6f76044326f.mp4/seg-${framesData.segment}-v1-a1.ts`
+
+      https.get(url, (res) => {
+        var filePath = fs.createWriteStream(file)
+        res.pipe(filePath)
+        filePath.on('finish', () => {
+          filePath.close()
+          channel.send('DOWNLOADED')
+
+          getFrames()
+        })
+      })
+    }
   })
 })
+
+function getFrames() {
+  try {
+    var process = new ffmpeg('./star-trek/segment.ts')
+    process.then(
+      function (video) {
+        video.fnExtractFrameToJPG('./star-trek/frames', {
+          frame_rate: 1,
+          number: 9,
+          file_name: 'frame_%s',
+        })
+      },
+      function (err) {
+        console.log('Error: ' + err)
+      }
+    )
+  } catch (e) {
+    console.log(e.code)
+    console.log(e.msg)
+  }
+}
+
+async function sendFrame() {
+  var framesData = JSON.parse(fs.readFileSync('./star-trek/data.json'))
+  var file = `./star-trek/frames/frame_854x366_${framesData.frame}.jpg`
+
+  var cMs = (framesData.segment * 8 + framesData.frame) * 1000
+
+  // Find subtitles at the time
+  var subtitles = fs
+    .readFileSync('./star-trek/subtitles.vtt')
+    .toString()
+    .split('\n\n')
+  subtitles.shift()
+
+  // Get the subtitles
+  var formatted = subtitles.find((text) => {
+    var split = text.split(/[\n]| --> /)
+
+    var start = split[1]
+
+    var sHour = parseInt(start.split(':')[0]) * 60
+    var sMin = (sHour + parseInt(start.split(':')[1])) * 60
+    var sSec = sMin + parseFloat(start.split(':')[2])
+    var sMs = sSec * 1000
+
+    var end = split[2]
+
+    var eHour = parseInt(end.split(':')[0]) * 60
+    var eMin = (eHour + parseInt(end.split(':')[1])) * 60
+    var eSec = eMin + parseFloat(end.split(':')[2])
+    var eMs = eSec * 1000
+
+    return cMs > sMs && cMs < eMs
+  })
+
+  if (formatted) {
+    formatted = formatted.split('\n').slice(2).join('\n')
+
+    await addSubtitles(file, formatted)
+  }
+
+  testClient.channels.fetch('1146256683748827177').then((channel) => {
+    channel
+      .send({
+        files: [file],
+      })
+      .then(() => {
+        if (framesData.frame == 9) {
+          // Increment segment
+          framesData.segment++
+          framesData.frame = 0
+
+          // Delete old frames
+          fs.rmSync('./star-trek/frames', { recursive: true, force: true })
+
+          // Get the new one downloaded
+          var file = './star-trek/segment.ts'
+          var url = `https://asda.distauscordix.monster/aes/x_2immMP8nplzjEn7Kfq6Q/1695016403/storage4/movies/0117731-star-trek-first-contact-1996-1567305537/7e1877a5623168fee93bc6f76044326f.mp4/seg-${framesData.segment}-v1-a1.ts`
+
+          https.get(url, (res) => {
+            var filePath = fs.createWriteStream(file)
+            res.pipe(filePath)
+            filePath.on('finish', () => {
+              filePath.close()
+              getFrames()
+            })
+          })
+        }
+
+        // Increment frame
+        framesData.frame++
+
+        // Save data
+        fs.writeFileSync('./star-trek/data.json', JSON.stringify(framesData))
+      })
+  })
+}
+
+async function addSubtitles(file, text) {
+  // Reading image
+  var image = await Jimp.read(file)
+  // Defining the text font
+  var font = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE)
+  image.print(font, 0, 300, text)
+
+  // Writing image after processing
+  await image.writeAsync(file)
+  console.log(text)
+}
 
 app.get('/wakeup', function (request, response) {
   response.send('Wakeup successful.')
