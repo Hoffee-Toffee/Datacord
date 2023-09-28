@@ -20,14 +20,6 @@ module.exports = {
   minutesBot,
 }
 
-function now() {
-  return Date(
-    new Date().toLocaleString('en-NZ', {
-      timeZone: 'Pacific/Auckland',
-    })
-  )
-}
-
 var gifSent = false
 var status = null
 
@@ -803,7 +795,7 @@ minutesClient.on('ready', async () => {
     })
 
   // Get the next Monday at 8am
-  var reportTime = now()
+  var reportTime = new Date()
   reportTime.setDate(reportTime.getDate() + ((7 - reportTime.getDay()) % 7))
   reportTime.setHours(8, 0, 0, 0)
 
@@ -1513,7 +1505,7 @@ function emailReport(data) {
     })
 
     // Get the current year and which week it is of that year
-    const date = now()
+    const date = new Date()
 
     const year = date.getFullYear()
 

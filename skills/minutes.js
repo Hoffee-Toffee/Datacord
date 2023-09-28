@@ -399,7 +399,7 @@ module.exports = function (controller) {
       )
 
       // Get the time difference between now and the event
-      var date = now()
+      var date = new Date()
 
       var difference = Date.parse(timer.datetime) - date.getTime()
 

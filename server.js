@@ -7,14 +7,6 @@ if (process.env.BUILD != build) {
   process.exit(0)
 }
 
-function now() {
-  return Date(
-    new Date().toLocaleString('en-NZ', {
-      timeZone: 'Pacific/Auckland',
-    })
-  )
-}
-
 var gifSent = false
 var gifQueries = [
   {
@@ -99,7 +91,7 @@ function sendMessage(message, hookname) {
 app.use(express.static('public'))
 app.get('/wakeup', function (request, response) {
   response.send('Wakeup successful.')
-  console.log(`Pinged at ${now()}`)
+  console.log(`Pinged at ${new Date()}`)
 })
 app.get('/notify', function (request, response) {
   // Send a message to the req
@@ -131,7 +123,7 @@ app.get('/vote', function (request, response) {
   var id = request.query.id
 
   // Get 12 hours from now
-  var date = now()
+  var date = new Date()
   date.setHours(date.getHours() + 12)
 
   var embed = {
@@ -183,7 +175,7 @@ const listener = app.listen(process.env.PORT, function () {
 
 function getGif() {
   // Check if time for Sunday GIF
-  var currenttime = now()
+  var currenttime = new Date()
 
   if (currenttime.getDay() == 6 && currenttime.getHours() == 12) {
     // Send a special gif
@@ -224,7 +216,7 @@ function getGif() {
 }
 
 function checkGIF() {
-  var currenttime = now()
+  var currenttime = new Date()
 
   console.log(
     'Checking for gif, current time is ' +
