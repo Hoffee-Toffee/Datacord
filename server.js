@@ -177,7 +177,7 @@ function getGif() {
   // Check if time for Sunday GIF
   var currenttime = new Date()
 
-  if (currenttime.getDay() == 6 && currenttime.getHours() == 12) {
+  if (currenttime.getDay() == 7 && currenttime.getHours() == 0) {
     // Send a special gif
     sendMessage(
       [
