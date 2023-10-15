@@ -220,9 +220,9 @@ function checkGIF() {
 
   console.log(
     'Checking for gif, current time is ' +
-      currenttime.getHours() +
-      ':' +
-      currenttime.getMinutes()
+    currenttime.getHours() +
+    ':' +
+    currenttime.getMinutes()
   )
 
   // Send a gif every 2 hours from 8am till 2am
