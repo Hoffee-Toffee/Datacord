@@ -85,7 +85,7 @@ async function checkSneeze(client) {
     if (presence) {
       let activities = presence.activities
 
-      if (activities) {
+      if (activities.length) {
         let sneezes = parseInt(activities[0].state.split(' ')[0])
         let updated = activities[0].createdTimestamp
 
