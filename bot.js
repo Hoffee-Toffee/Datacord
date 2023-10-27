@@ -23,7 +23,7 @@ module.exports = {
 var gifSent = false
 var status = null
 
-function checkGIF() {
+function checkGIF(client) {
   if (Math.random() * 2000 < 1 || !status) {
     var statuses = [
       'Designing traps.',
@@ -68,6 +68,38 @@ function checkGIF() {
   else {
     gifSent = false
   }
+
+  // Check/Update the sneeze count
+  checkSneeze(client)
+}
+
+
+async function checkSneeze(client) {
+  // Get current sneeze data
+  let sneezeData = await getData('sneezeData')
+
+  await client.channels.fetch('1146256683748827177').then(async (channel) => {
+    let user = await channel.guild.members.fetch('390419737915555840')
+    let presence = await user.presence
+
+    if (presence) {
+      let activities = presence.activities
+
+      if (activities) {
+        let sneezes = parseInt(activities[0].state.split(' ')[0])
+        let updated = new Date(activities[0].createdTimestamp)
+
+        if (sneezes > sneezeData.count) {
+          user.send(`+${sneezes - sneezeData.count} sneezes:\n${oldCount} -> ${sneezes}`)
+          sneezeData = {
+            count: sneezes,
+            updated
+          }
+          setData('sneezeData', sneezeData)
+        }
+      }
+    }
+  })
 }
 
 async function getData(field) {
@@ -499,11 +531,11 @@ minutesClient.login(process.env.MINUTES_DISCORD_TOKEN)
 dataClient.login(process.env.DATA_DISCORD_TOKEN)
 jigClient.login(process.env.JIG_DISCORD_TOKEN)
 
-jigClient.on('ready', () => {
-  var gifLoop = setInterval(checkGIF, 40000) // Every 40 seconds, check if a gif should be sent
+jigClient.on('ready', (client) => {
+  var gifLoop = setInterval(() => { checkGIF(client) }, 40000) // Every 40 seconds, check if a gif should be sent
 
   // Only start the bots after the first check is done
-  checkGIF()
+  checkGIF(client)
 })
 
 // Generate southern greetings
@@ -806,14 +838,14 @@ minutesClient.on('ready', async () => {
   // State how many days, hours, and minutes till the report is sent
   console.log(
     'Report to be sent at ' +
-      new Date(Date.now() + reportTime).toLocaleString() +
-      ' (' +
-      reportTime / 1000 / 60 / 60 / 24 +
-      ' days, ' +
-      ((reportTime / 1000 / 60 / 60) % 24) +
-      ' hours and ' +
-      ((reportTime / 1000 / 60) % 60) +
-      ' minutes from now).'
+    new Date(Date.now() + reportTime).toLocaleString() +
+    ' (' +
+    reportTime / 1000 / 60 / 60 / 24 +
+    ' days, ' +
+    ((reportTime / 1000 / 60 / 60) % 24) +
+    ' hours and ' +
+    ((reportTime / 1000 / 60) % 60) +
+    ' minutes from now).'
   )
 
   // Set a timeout to run the 'sendReport' function
@@ -896,8 +928,7 @@ jigClient.on('messageCreate', async (message) => {
       }
 
       msg.channel.send(
-        `This GIF will ${
-          removing ? 'no longer' : 'now'
+        `This GIF will ${removing ? 'no longer' : 'now'
         } be excluded from selection.`
       )
 
@@ -1342,7 +1373,7 @@ async function timer(sort = false) {
         .then((channel) =>
           channel.messages.fetch(event.id).then((msg) => (message = msg))
         )
-    } catch (error) {}
+    } catch (error) { }
 
     var date = new Date()
 
@@ -1353,7 +1384,7 @@ async function timer(sort = false) {
     if (difference < 1000) {
       try {
         message.delete()
-      } catch (error) {}
+      } catch (error) { }
 
       var newTimers = (await getData('timers')) || []
 
@@ -1369,29 +1400,29 @@ async function timer(sort = false) {
       // Seconds will be in units of 10 when paired with minutes, otherwise in units of 1
       var messages = [
         Math.floor(difference / (1000 * 3600 * 24 * 365)) +
-          ' years and ' +
-          Math.floor((difference / (1000 * 3600 * 24 * 30)) % 12) +
-          ' months',
+        ' years and ' +
+        Math.floor((difference / (1000 * 3600 * 24 * 30)) % 12) +
+        ' months',
         Math.floor(difference / (1000 * 3600 * 24 * 30)) +
-          ' months and ' +
-          Math.floor((difference / (1000 * 3600 * 24 * 7)) % 4) +
-          ' weeks',
+        ' months and ' +
+        Math.floor((difference / (1000 * 3600 * 24 * 7)) % 4) +
+        ' weeks',
         Math.floor(difference / (1000 * 3600 * 24 * 7)) +
-          ' weeks and ' +
-          Math.floor((difference / (1000 * 3600 * 24)) % 7) +
-          ' days',
+        ' weeks and ' +
+        Math.floor((difference / (1000 * 3600 * 24)) % 7) +
+        ' days',
         Math.floor(difference / (1000 * 3600 * 24)) +
-          ' days and ' +
-          Math.floor((difference / (1000 * 3600)) % 24) +
-          ' hours',
+        ' days and ' +
+        Math.floor((difference / (1000 * 3600)) % 24) +
+        ' hours',
         Math.floor(difference / (1000 * 3600)) +
-          ' hours and ' +
-          Math.floor((difference / (1000 * 60)) % 60) +
-          ' minutes',
+        ' hours and ' +
+        Math.floor((difference / (1000 * 60)) % 60) +
+        ' minutes',
         Math.floor(difference / (1000 * 60)) +
-          ' minutes and ' +
-          Math.floor(((difference / 1000) % 60) / 10) +
-          '0 seconds',
+        ' minutes and ' +
+        Math.floor(((difference / 1000) % 60) / 10) +
+        '0 seconds',
         Math.floor(difference / 1000) + ' seconds',
       ]
 
@@ -1409,16 +1440,15 @@ async function timer(sort = false) {
       else if (diffmessage.includes(' and 0'))
         diffmessage = diffmessage.slice(0, diffmessage.indexOf(' and 0'))
 
-      var text = `**${event.title}**\n... in ${
-        event.estimated ? 'approximately ' : ''
-      }${diffmessage}`
+      var text = `**${event.title}**\n... in ${event.estimated ? 'approximately ' : ''
+        }${diffmessage}`
 
       // Try to update the message, if that fails then send a new message and update the event in the array
       try {
         // Only update the message if the text is different, but not undefined
         if (message.content !== undefined && message.content !== text)
           message.edit(text)
-      } catch (error) {}
+      } catch (error) { }
     }
     return true
   })
@@ -1513,7 +1543,7 @@ function emailReport(data) {
       (Math.floor((date - new Date(year, 0, 1)) / 86400000) +
         new Date(year, 0, 1).getDay() +
         1) /
-        7
+      7
     )
 
     // Pick a color checking how many weeks it has been over time
@@ -1609,9 +1639,9 @@ function emailReport(data) {
                                                       </table>
                                                       <h6 class="text-red-200 text-xs" style="color: #f1aeb5; padding-top: 0; padding-bottom: 0; font-weight: 500; vertical-align: baseline; font-size: 12px; line-height: 14.4px; margin: 0;" align="left">
                                                         ${genGreeting(
-                                                          false,
-                                                          data.name
-                                                        )}!
+            false,
+            data.name
+          )}!
                                                         <br>
                                                         Miss Minutes here with your weekly report.
                                                         <br>
@@ -1717,8 +1747,8 @@ function emailReport(data) {
 function compare(output, old, oldObj, newObj, path = '') {
   // Check if an array, return "a" if true or just the first letter of it's typeof result
   switch (
-    (Array.isArray(oldObj) ? 'a' : (typeof oldObj).charAt(0)) +
-    (Array.isArray(newObj) ? 'a' : (typeof newObj).charAt(0))
+  (Array.isArray(oldObj) ? 'a' : (typeof oldObj).charAt(0)) +
+  (Array.isArray(newObj) ? 'a' : (typeof newObj).charAt(0))
   ) {
     case 'aa': // Comparing two arrays
       if (JSON.stringify(oldObj) == JSON.stringify(newObj)) {
@@ -1872,26 +1902,26 @@ function log(arr, old, path, type, mainObj = null, secObj = null) {
       path == ''
         ? 'PROJECT NAME'
         : obj && obj.title
-        ? obj.title
-        : obj && obj.key
-        ? obj.key
-        : finalKey
-        ? !isNaN(finalKey)
-          ? th(parseInt(finalKey) + 1)
-          : finalKey
-        : obj && obj.id
-        ? obj.id
-        : 'Unknown', // The title of the change
+          ? obj.title
+          : obj && obj.key
+            ? obj.key
+            : finalKey
+              ? !isNaN(finalKey)
+                ? th(parseInt(finalKey) + 1)
+                : finalKey
+              : obj && obj.id
+                ? obj.id
+                : 'Unknown', // The title of the change
     type:
       path == ''
         ? 'Project'
         : obj && obj.class
-        ? obj.class == 'Link'
-          ? 'Node Link'
-          : `${obj.class} Node`
-        : obj && obj.type
-        ? obj.type
-        : '', // The type of the data
+          ? obj.class == 'Link'
+            ? 'Node Link'
+            : `${obj.class} Node`
+          : obj && obj.type
+            ? obj.type
+            : '', // The type of the data
     content: '',
   }
 
@@ -1929,12 +1959,12 @@ function th(i) {
     ([11, 12, 13].includes(i % 100)
       ? 'th'
       : i % 10 === 1
-      ? 'st'
-      : i % 10 === 2
-      ? 'nd'
-      : i % 10 === 3
-      ? 'rd'
-      : 'th') +
+        ? 'st'
+        : i % 10 === 2
+          ? 'nd'
+          : i % 10 === 3
+            ? 'rd'
+            : 'th') +
     ' Entry'
   )
 }
