@@ -13,61 +13,6 @@ const test_config = {
     'MTE0NjI0OTM2Nzc1NDM3NTE4OA.GR1Y_5.2RaudV_2Tjdz7EX6mrqmQhamNQP1LpgU56Zh7o',
 }
 
-const Stocks = require('stocks.js')
-
-var portfolio = JSON.parse(fs.readFileSync('./stocks.json'))
-
-var files = []
-var data = []
-
-fs.readdirSync('./data').forEach((file) => {
-  files.push(`./data/${file}`)
-})
-
-files.forEach((name) => {
-  var file = fs.readFileSync(name).toString().split('\n').splice(1)
-
-  var obj = {}
-
-  file.forEach((col) => {
-    var segments = col.split(',')
-
-    obj[segments[0]] = {
-      open: parseFloat(segments[1]),
-      high: parseFloat(segments[2]),
-      low: parseFloat(segments[3]),
-      close: parseFloat(segments[4]),
-      adjClose: parseFloat(segments[5]),
-      volume: parseFloat(segments[6]),
-    }
-  })
-
-  data[name.slice(7, name.length - 4)] = obj
-})
-
-// Reset all values (FOR TESTING ONLY)
-if (false) {
-  portfolio.stocks = {}
-}
-portfolio.bank.total = portfolio.bank.start
-portfolio.pool.total = portfolio.pool.start
-
-files.forEach(
-  (name) =>
-    (portfolio.stocks[name.slice(7, name.length - 4)] = {
-      trending: 'low',
-      anchor: -1,
-      shares: [],
-    })
-)
-
-// var simStart = new Date('2010-06-30')
-var simStart = new Date('2023-09-06')
-var simDate = simStart
-var simEnd = new Date('2023-09-06')
-
-// var stocks = new Stocks('JIGT25NX38IRYX2X')
-
 // Login to minutesBot and dataBot with discord.js
 // Require discord.js
 const { Client, GatewayIntentBits, Message } = require('discord.js')
@@ -92,16 +37,13 @@ testClient.on('messageCreate', async (message = new Message()) => {
   if (message.author.bot) return
 
   if (message.channel.id == '1146742345447002153') {
-    eval(message.content)
+    message.channel.send(message.author.id)
     return
   }
 
   if (message.content.toLowerCase() == '.') {
-    await sendFrame()
-    // message.channel.send(
-    //   message.guild.members.cache.get(message.author.id).nickname ||
-    //     message.author.globalName
-    // )
+    console.log(message.author)
+    console.log(guild.members)
   }
 
   if (
@@ -113,145 +55,40 @@ testClient.on('messageCreate', async (message = new Message()) => {
   }
 })
 
+
+let sneezeData = {
+  count: 1823,
+  updated: 1698348176197
+}
+
+let oldCount = sneezeData.count
+let lastUpdated = sneezeData.updated
+
 testClient.on('ready', async () => {
-  await testClient.channels.fetch('1146256683748827177').then((channel) => {
-    // STOCK SIM
-    // channel.send('Starting simulation.')
-    // stockSim()
+  await testClient.channels.fetch('1146256683748827177').then(async (channel) => {
+    channel.send("STATUS")
+    let user = await channel.guild.members.fetch('390419737915555840')
+    let presence = await user.presence
 
-    // FRAMES
-    var framesData = JSON.parse(fs.readFileSync('./star-trek/data.json'))
+    if (presence) {
+      let activities = presence.activities
 
-    var file = './star-trek/segment.ts'
+      if (activities) {
+        let sneezes = parseInt(activities[0].state.split(' ')[0])
+        let updated = new Date(activities[0].createdTimestamp)
 
-    if (!fs.existsSync(file)) {
-      channel.send("DOESN'T EXIST, DOWNLOADING...")
-      // Get the new one downloaded
-      var url = `https://asda.distauscordix.monster/aes/x_2immMP8nplzjEn7Kfq6Q/1695016403/storage4/movies/0117731-star-trek-first-contact-1996-1567305537/7e1877a5623168fee93bc6f76044326f.mp4/seg-${framesData.segment}-v1-a1.ts`
-
-      https.get(url, (res) => {
-        var filePath = fs.createWriteStream(file)
-        res.pipe(filePath)
-        filePath.on('finish', () => {
-          filePath.close()
-          channel.send('DOWNLOADED')
-
-          getFrames()
-        })
-      })
+        if (sneezes > oldCount) {
+          user.send(`+${sneezes - oldCount} sneezes:\n${oldCount} -> ${sneezes}`)
+          oldCount = sneezes
+          lastUpdated = updated
+          channel.send(`${sneezes} sneezes, updated on the ${updated}`)
+        }
+      }
     }
+
+    // process.exit()
   })
 })
-
-function getFrames() {
-  try {
-    var process = new ffmpeg('./star-trek/segment.ts')
-    process.then(
-      function (video) {
-        video.fnExtractFrameToJPG('./star-trek/frames', {
-          frame_rate: 1,
-          number: 9,
-          file_name: 'frame_%s',
-        })
-      },
-      function (err) {
-        console.log('Error: ' + err)
-      }
-    )
-  } catch (e) {
-    console.log(e.code)
-    console.log(e.msg)
-  }
-}
-
-async function sendFrame() {
-  var framesData = JSON.parse(fs.readFileSync('./star-trek/data.json'))
-  var file = `./star-trek/frames/frame_854x366_${framesData.frame}.jpg`
-
-  var cMs = (framesData.segment * 8 + framesData.frame) * 1000
-
-  // Find subtitles at the time
-  var subtitles = fs
-    .readFileSync('./star-trek/subtitles.vtt')
-    .toString()
-    .split('\n\n')
-  subtitles.shift()
-
-  // Get the subtitles
-  var formatted = subtitles.find((text) => {
-    var split = text.split(/[\n]| --> /)
-
-    var start = split[1]
-
-    var sHour = parseInt(start.split(':')[0]) * 60
-    var sMin = (sHour + parseInt(start.split(':')[1])) * 60
-    var sSec = sMin + parseFloat(start.split(':')[2])
-    var sMs = sSec * 1000
-
-    var end = split[2]
-
-    var eHour = parseInt(end.split(':')[0]) * 60
-    var eMin = (eHour + parseInt(end.split(':')[1])) * 60
-    var eSec = eMin + parseFloat(end.split(':')[2])
-    var eMs = eSec * 1000
-
-    return cMs > sMs && cMs < eMs
-  })
-
-  if (formatted) {
-    formatted = formatted.split('\n').slice(2).join('\n')
-
-    await addSubtitles(file, formatted)
-  }
-
-  testClient.channels.fetch('1146256683748827177').then((channel) => {
-    channel
-      .send({
-        files: [file],
-      })
-      .then(() => {
-        if (framesData.frame == 9) {
-          // Increment segment
-          framesData.segment++
-          framesData.frame = 0
-
-          // Delete old frames
-          fs.rmSync('./star-trek/frames', { recursive: true, force: true })
-
-          // Get the new one downloaded
-          var file = './star-trek/segment.ts'
-          var url = `https://asda.distauscordix.monster/aes/x_2immMP8nplzjEn7Kfq6Q/1695016403/storage4/movies/0117731-star-trek-first-contact-1996-1567305537/7e1877a5623168fee93bc6f76044326f.mp4/seg-${framesData.segment}-v1-a1.ts`
-
-          https.get(url, (res) => {
-            var filePath = fs.createWriteStream(file)
-            res.pipe(filePath)
-            filePath.on('finish', () => {
-              filePath.close()
-              getFrames()
-            })
-          })
-        }
-
-        // Increment frame
-        framesData.frame++
-
-        // Save data
-        fs.writeFileSync('./star-trek/data.json', JSON.stringify(framesData))
-      })
-  })
-}
-
-async function addSubtitles(file, text) {
-  // Reading image
-  var image = await Jimp.read(file)
-  // Defining the text font
-  var font = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE)
-  image.print(font, 0, 300, text)
-
-  // Writing image after processing
-  await image.writeAsync(file)
-  console.log(text)
-}
 
 app.get('/wakeup', function (request, response) {
   response.send('Wakeup successful.')
@@ -271,85 +108,3 @@ async function sendMessage(message) {
 const listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port)
 })
-
-async function stockSim() {
-  while (simEnd - simDate > 0) {
-    portfolio = await check()
-    simDate.setDate(simDate.getDate() + 1)
-  }
-  sendMessage(
-    `Bank: $${portfolio.bank.start} -> $${portfolio.bank.total}\nPool: $${
-      portfolio.pool.start
-    } -> $${
-      portfolio.pool.total
-    }\nShares: $${portfolio.stocks.TSLA.shares.reduce(
-      (total, curr) => total + curr.amount * curr.cost,
-      0
-    )}\nTOTAL: $${portfolio.bank.start + portfolio.pool.start} -> $${
-      portfolio.bank.total +
-      portfolio.pool.total +
-      portfolio.stocks.TSLA.shares.reduce(
-        (total, curr) => total + curr.amount * curr.cost,
-        0
-      )
-    }`
-  )
-}
-
-async function check() {
-  var fTime = simDate.toISOString().slice(0, 10)
-
-  var newStock = data.TSLA[fTime]
-  var oldStock = portfolio.stocks.TSLA
-
-  if (!newStock || !oldStock) return portfolio
-
-  if (oldStock.anchor == -1) {
-    oldStock.anchor = newStock.low
-  }
-
-  // Sell if high trending low
-  if (newStock.high < oldStock.anchor && oldStock.trending == 'high') {
-    // All stock in it
-    oldStock.shares.forEach((share) => {
-      portfolio.pool.total += share.amount * newStock.close
-    })
-    oldStock.shares = []
-    oldStock.trending = 'low'
-  }
-
-  // Sell some stocks if pool is low
-  if (portfolio.pool.total < portfolio.pool.lowerLimit) {
-    // Soon
-  }
-
-  // Buy if low trending high
-  if (newStock.low > oldStock.anchor && oldStock.trending == 'low') {
-    // Buy as much stock in it as can afford
-
-    if (newStock.close < portfolio.pool.total) {
-      var num = Math.floor(portfolio.pool.total / newStock.close)
-
-      oldStock.shares.push({
-        amount: num,
-        cost: newStock.close,
-      })
-
-      portfolio.pool.total -= num * newStock.close
-    }
-    oldStock.trending = 'high'
-  }
-
-  // Save excess if needed
-  if (portfolio.pool.total > portfolio.pool.upperLimit) {
-    portfolio.bank.total += portfolio.pool.total - portfolio.pool.upperLimit
-    portfolio.pool.total = portfolio.pool.upperLimit
-  }
-
-  // Update vars for next cycle
-  oldStock.anchor += oldStock.trending == 'low' ? newStock.high : newStock.low
-  oldStock.anchor /= 2
-  portfolio.stocks.TSLA = oldStock
-
-  return portfolio
-}
