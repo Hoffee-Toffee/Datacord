@@ -633,7 +633,7 @@ minutesClient.on('ready', async (client) => {
 
   setTimeout(() => {
     // Run the timer loop just over every second
-    setInterval((timer(client)), 800)
+    setInterval(() => timer(client), 800)
     console.log('Timers set and are being checked every 800ms.')
   }, timecheck * 1111)
 
