@@ -23,7 +23,7 @@ module.exports = {
 var gifSent = false
 var status = null
 
-function checkGIF(client) {
+function checkGIF() {
   if (Math.random() * 2000 < 1 || !status) {
     var statuses = [
       'Designing traps.',
@@ -68,11 +68,7 @@ function checkGIF(client) {
   else {
     gifSent = false
   }
-
-  // Check/Update the sneeze count
-  checkSneeze(client)
 }
-
 
 async function checkSneeze(client) {
   // Get current sneeze data
@@ -532,10 +528,10 @@ dataClient.login(process.env.DATA_DISCORD_TOKEN)
 jigClient.login(process.env.JIG_DISCORD_TOKEN)
 
 jigClient.on('ready', (client) => {
-  var gifLoop = setInterval(() => { checkGIF(client) }, 40000) // Every 40 seconds, check if a gif should be sent
+  var gifLoop = setInterval(() => { checkGIF() }, 40000) // Every 40 seconds, check if a gif should be sent
 
   // Only start the bots after the first check is done
-  checkGIF(client)
+  checkGIF()
 })
 
 // Generate southern greetings
@@ -625,9 +621,9 @@ function emailFormat(data, top = true) {
 }
 
 // Run when each client is ready
-minutesClient.on('ready', async () => {
+minutesClient.on('ready', async (client) => {
   // Run the timer loop right away
-  timer(true)
+  timer(client, true)
 
   // Set a timeout to wait 1.111 seconds for every timer to be set
   var timecheck = await getData('timers').then((timers) => {
@@ -637,7 +633,7 @@ minutesClient.on('ready', async () => {
 
   setTimeout(() => {
     // Run the timer loop just over every second
-    setInterval(timer, 800)
+    setInterval((timer(client)), 800)
     console.log('Timers set and are being checked every 800ms.')
   }, timecheck * 1111)
 
@@ -1330,7 +1326,7 @@ function interuptEvent() {
   }
 }
 
-async function timer(sort = false) {
+async function timer(client, sort = false) {
   // Get the timers
   // It will be in the following format:
   // [
@@ -1455,6 +1451,9 @@ async function timer(sort = false) {
 
   // If the timers need to be updated, then update them
   if (tcText !== JSON.stringify(timecheck)) setData('timers', timecheck)
+
+  // Check/Update the sneeze count
+  checkSneeze(client)
 }
 
 async function getPeople() {
