@@ -85,7 +85,7 @@ async function checkSneeze(client) {
         let sneezes = parseInt(activities[0].state.split(' ')[0])
         let updated = activities[0].createdTimestamp
 
-        if (sneezes > sneezeData.count) {
+        if (sneezes != sneezeData.count) {
           user.send(`+${sneezes - sneezeData.count} sneezes:\n${sneezeData.count} -> ${sneezes}`)
           sneezeData = {
             count: sneezes,
