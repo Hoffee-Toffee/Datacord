@@ -86,12 +86,17 @@ async function checkSneeze(client) {
         let updated = activities[0].createdTimestamp
 
         if (sneezes != sneezeData.count) {
-          user.send(`${(sneezes - sneezeData.count) > 0 ? '+' : ''}${sneezes - sneezeData.count} sneezes:\n${sneezeData.count} -> ${sneezes}`)
+          let change = `${(sneezes - sneezeData.count) > 0 ? '+' : ''}${sneezes - sneezeData.count}`
+          user.send(`${change} sneezes:\n${sneezeData.count} -> ${sneezes}`)
           sneezeData = {
             count: sneezes,
             updated
           }
           setData('sneezeData', sneezeData)
+
+          let day = new Date().toLocaleDateString('en-NZ')
+
+          setSneeze(day, change, false)
         }
       }
     }
@@ -122,6 +127,33 @@ function setData(field, data) {
   var fetchedData = JSON.parse(fs.readFileSync('./local.json'))
   fetchedData[field] = data
   fs.writeFileSync('./local.json', JSON.stringify(fetchedData))
+}
+
+async function setSneeze(day, count = '0', confirmed = false) {
+  let sneezeData = await getData('sneezeData')
+
+  let oldCount = sneezeData.calendar[day] ? sneezeData.calendar[day].count : 0
+
+  switch (count.charAt(0)) {
+    case '+': // Add
+      count = oldCount + parseInt(count.slice(1))
+      break;
+
+    case '-': // Minus
+      count = oldCount - parseInt(count.slice(1))
+      break;
+
+    default: // Set
+      count = parseInt(count)
+      break;
+  }
+
+  sneezeData.calendar[day] = {
+    count,
+    confirmed
+  }
+
+  setData('sneezeData', sneezeData)
 }
 
 async function getSupeData(id) {
@@ -503,6 +535,7 @@ const minutesClient = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildPresences,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessageReactions
   ],
 })
 
@@ -647,205 +680,15 @@ minutesClient.on('ready', async (client) => {
     ],
   })
 
-  // Send a greeting to the channel provided by the api
-  minutesClient.channels.cache.get(process.env.MINUTES_ID).send(genGreeting())
-
-  // Also send an embed test message
-  // The embed timestamp depends on the time and weekday as the conditions below:
-  // 1. Voting always closes on at 3pm on a weekday, never on a weekend
-  // 2. The time between submitting a proposal and voting closing is always at least 72 hours (3 days)
-
-  // Get the current time and date
-  var now = new Date()
-
-  // Shift the date three days into the future
-  now.setDate(now.getDate() + 3)
-
-  // If this date is a weekend, shift it to the next Monday at 3pm
-  if (now.getDay() == 0) {
-    now.setDate(now.getDate() + 1)
-    now.setTime(15, 0, 0, 0)
-  } else if (now.getDay() == 6) {
-    now.setDate(now.getDate() + 2)
-    now.setTime(15, 0, 0, 0)
-  }
-  // Otherwise, if time is before 3pm, set it to 3pm
-  else if (now.getHours() < 15) now.setTime(15, 0, 0, 0)
-  // Otherwise, if time is after 3pm, set it to 3pm on the next weekday
-  else if (now.getHours() >= 15 && now.getDay() != 5) {
-    now.setDate(now.getDate() + 1)
-    now.setTime(15, 0, 0, 0)
-  }
-  // Otherwise, if time is after 3pm on a Friday, set it to 3pm on the next Monday
-  else if (now.getHours() >= 15 && now.getDay() == 5) {
-    now.setDate(now.getDate() + 3)
-    now.setTime(15, 0, 0, 0)
-  }
-
-  var closeTime = now.toISOString()
-
-  var embed = {
-    content: `New proposal \"title\"`,
-    tts: false,
-    components: [
-      {
-        type: 1,
-        components: [
-          {
-            style: 3,
-            label: `Accept`,
-            custom_id: `accept`,
-            disabled: false,
-            type: 2,
-          },
-          {
-            style: 4,
-            label: `Reject`,
-            custom_id: `reject`,
-            disabled: false,
-            type: 2,
-          },
-          {
-            style: 1,
-            label: `See Full Report`,
-            custom_id: `report`,
-            disabled: false,
-            type: 2,
-          },
-        ],
-      },
-    ],
-    embeds: [
-      {
-        type: 'rich',
-        title: `Proposal Title`,
-        description: `Short description`,
-        color: 0xb2f703,
-        fields: [
-          {
-            name: '0/3 votes',
-            value: '\u200b',
-          },
-        ],
-        timestamp: closeTime,
-        footer: {
-          text: `Voting close`,
-        },
-        url: `https://transit-lumber.github.io/supedb`,
-      },
-    ],
-  }
-
-  minutesClient.channels.cache
-    .get(process.env.MINUTES_ID)
-    .send(embed)
-    .then((msg) => {
-      // Create a function to handle the button clicks
-
-      var votes = []
-
-      function buttonHandler(interaction) {
-        if (interaction.message.id !== msg.id) return
-
-        var reply = ``
-
-        // Check if they are wanting the report
-        if (interaction.customId == 'report') {
-          // Send the report
-          sendReport()
-          reply = `Sending report...`
-        } else {
-          // Check if the user has already voted
-          if (!votes.find((vote) => vote.user == interaction.user.id)) {
-            // If they haven't, add their vote to the array
-            votes.push({
-              user: interaction.user.id,
-              vote: interaction.customId,
-            })
-            reply = `You voted to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
-          }
-          // If they have, then check if they are changing their vote
-          else if (
-            votes.find((vote) => vote.user == interaction.user.id).vote !==
-            interaction.customId
-          ) {
-            // If they are, change their vote
-            votes.find((vote) => vote.user == interaction.user.id).vote =
-              interaction.customId
-            reply = `You changed your vote to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
-          } else {
-            // Remove their vote from the array
-            votes.splice(
-              votes.findIndex((vote) => vote.user == interaction.user.id),
-              1
-            )
-            reply = `You removed your vote to ${interaction.customId} the ${interaction.message.embeds[0].title} proposal.`
-          }
-        }
-
-        // DM the user with the message and delete it after 15 seconds
-        interaction.user.send(reply).then((msg) => {
-          setTimeout(() => {
-            msg.delete()
-          }, 15000)
-        })
-
-        // Get the total number of votes
-        var total = votes.length
-        embed.embeds[0].fields[0].name = `${total}/3 votes`
-
-        // Now, check if the vote is over (three users have voted)
-        if (votes.length >= 3) {
-          // If it is over, then disable the buttons
-          embed.components[0].components.forEach((button) => {
-            button.disabled = true
-          })
-
-          // Get the results
-          var accept = votes.filter((vote) => vote.vote == 'accept').length
-          var reject = votes.filter((vote) => vote.vote == 'reject').length
-
-          reply = `Results:\n    Accept: ${accept}\n    Reject: ${reject}\n\n`
-          reply += accept > reject ? `Proposal accepted!` : `Proposal rejected.`
-
-          // Reply to the proposal with the results
-          interaction.message.reply(reply)
-        }
-
-        msg.edit(embed)
-
-        // Acknowledge the interaction
-        interaction.deferUpdate()
-      }
-
-      // Create a listener for the button clicks
-      minutesClient.on('interactionCreate', buttonHandler)
-    })
-
-  // Get the next Monday at 8am
+  // Get midnight tonight
   var reportTime = new Date()
-  reportTime.setDate(reportTime.getDate() + ((7 - reportTime.getDay()) % 7))
-  reportTime.setHours(8, 0, 0, 0)
+  reportTime.setHours(24, 0, 0, -1)
 
-  // Get the ms until then, if negative then add a week
+  // Get the ms until then
   reportTime = reportTime - Date.now()
-  if (reportTime < 0) reportTime += 604800000
-
-  // State how many days, hours, and minutes till the report is sent
-  console.log(
-    'Report to be sent at ' +
-    new Date(Date.now() + reportTime).toLocaleString() +
-    ' (' +
-    reportTime / 1000 / 60 / 60 / 24 +
-    ' days, ' +
-    ((reportTime / 1000 / 60 / 60) % 24) +
-    ' hours and ' +
-    ((reportTime / 1000 / 60) % 60) +
-    ' minutes from now).'
-  )
 
   // Set a timeout to run the 'sendReport' function
-  setTimeout(sendReport, reportTime)
+  setTimeout((client) => { sendReport(client) }, reportTime)
 })
 
 dataClient.on('ready', () => {
@@ -897,6 +740,82 @@ minutesClient.on('messageCreate', async (message) => {
       }
     })
 })
+
+let colors = {
+  green: 0x008A0E,
+  blue: 0x1071E5,
+  yellow: 0xFCCE14,
+  orange: 0xCC4E00,
+  red: 0xE81313,
+  black: 0x000000,
+}
+
+async function sendReport(client, time) {
+  // Get the current time and date
+  var now = new Date(time)
+  var closeTime = now.toISOString()
+
+  // Get the data for this day
+  let sneezeData = await getData('sneezeData')
+  let total = sneezeData.count
+  let count = sneezeData.calendar[day] || 0
+
+  var embed = {
+    embeds: [
+      {
+        type: 'rich',
+        title: `${count} sneeze${count != 1 ? 's' : ''} recorded today`,
+        description: `Please confirm the count for this day, or reply with a change or new count`,
+        color: colors.blue,
+        timestamp: closeTime,
+        footer: {
+          text: `Total: ${total}`,
+        }
+      },
+    ]
+  }
+
+  let channel = client.channels.cache.get('1146256683748827177')
+
+  channel.send(embed).then(msg => msg.react("👍"))
+}
+
+minutesClient.on('messageReactionAdd', (reaction, user) => {
+  if (reaction.message.author.id === user.id) {
+    // the reaction is coming from the same user who posted the message
+    return;
+  }
+
+  let embed;
+
+  try {
+    embed = reaction.message.embeds[0].data
+  }
+  catch (error) {
+    console.error(error)
+  }
+
+  if (reaction.emoji.name == "👍") {
+
+    if (!embed.title.endsWith('✅')) {
+      embed.color = colors.green
+      embed.title = `${embed.title}\n✅`
+      delete embed.description
+
+      reaction.message.edit({ embeds: [embed] })
+
+      let day = new Date(embed.timestamp).toLocaleDateString('en-NZ')
+      reaction.message.channel.send(parseInt(embed.title.split(' ')[0]))
+
+      let count = embed.title.split(' ')[0]
+
+      setSneeze(day, count, true)
+    }
+
+    reaction.message.reactions.removeAll()
+  }
+
+});
 
 jigClient.on('messageCreate', async (message) => {
   // Exit if a bot, or not the right command
@@ -1470,500 +1389,4 @@ async function getPeople() {
     }
   })
   return final
-}
-
-async function sendReport() {
-  // Get all the people
-  const config = await getPeople()
-
-  // Generate reports for each person and send them
-  const reportPromises = config.map((person) => generateReport(person))
-  const reports = await Promise.all(reportPromises)
-
-  // Send the reports
-  reports.forEach((report) => {
-    if (report.email) {
-      // Send an email
-      emailReport(report)
-    }
-    if (report.discord) {
-      // Send a DM
-      discordReport(report)
-    }
-  })
-}
-
-async function generateReport(person) {
-  const newPromises = person.watching.map((id) => getSupeData(id))
-  const resolvedNew = await Promise.all(newPromises)
-
-  const oldPromises = person.watching.map((id) => getSupeBackupData(id))
-  const resolvedOld = await Promise.all(oldPromises)
-
-  var reportData = {
-    name: person.name,
-    email: person.email || null,
-    discord: person.discord || null,
-    old: resolvedOld,
-    new: resolvedNew,
-    ids: person.watching,
-  }
-
-  return reportData
-}
-
-function emailReport(data) {
-  const emailjs = import('emailjs').then((emailjs) => {
-    // Compare the files
-    var output = []
-
-    data.old.forEach((old, i) => {
-      output.push(compare([], old, old, data.new[i]))
-    })
-
-    if (output.length === 0) output.push('No changes were detected.')
-
-    // Send an email with this content
-    const client = new emailjs.SMTPClient({
-      user: 'miss_minutes@outlook.com',
-      password: process.env.MINUTES_EMAIL_PASSWORD,
-      host: 'smtp-mail.outlook.com',
-      tls: {
-        ciphers: 'SSLv3',
-      },
-    })
-
-    // Get the current year and which week it is of that year
-    const date = new Date()
-
-    const year = date.getFullYear()
-
-    const week = Math.ceil(
-      (Math.floor((date - new Date(year, 0, 1)) / 86400000) +
-        new Date(year, 0, 1).getDay() +
-        1) /
-      7
-    )
-
-    // Pick a color checking how many weeks it has been over time
-    var color = [
-      '#084298',
-      '#432874',
-      '#801f4f',
-      '#842029',
-      '#984c0c',
-      '#0f5132',
-      '#087990',
-    ][Math.floor(date.getTime() / 1000 / 60 / 60 / 24 / 7) % 7]
-
-    console.log(emailFormat(output))
-
-    const message = new emailjs.Message({
-      text: output.join('\n'),
-      from: 'Miss Minutes <miss_minutes@outlook.com>',
-      to: data.email,
-      subject: `SupeDB - Weekly Update\n(Week ${week}, ${year})`,
-      attachment: [
-        {
-          data: `
-          <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-          <html>
-            <head>
-              <!-- Compiled with Bootstrap Email version: 1.3.1 --><meta http-equiv="x-ua-compatible" content="ie=edge">
-              <meta name="x-apple-disable-message-reformatting">
-              <meta name="viewport" content="width=device-width, initial-scale=1">
-              <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
-              <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-              <style type="text/css">
-                ul{padding: 0}ul p{margin:0; margin-left: 1em}body,table,td{font-family:Helvetica,Arial,sans-serif !important}.ExternalClass{width:100%}.ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div{line-height:150%}a{text-decoration:none}*{color:inherit}a[x-apple-data-detectors],u+#body a,#MessageViewBody a{color:inherit;text-decoration:none;font-size:inherit;font-family:inherit;font-weight:inherit;line-height:inherit}img{-ms-interpolation-mode:bicubic}table:not([class^=s-]){font-family:Helvetica,Arial,sans-serif;mso-table-lspace:0pt;mso-table-rspace:0pt;border-spacing:0px;border-collapse:collapse}table:not([class^=s-]) td{border-spacing:0px;border-collapse:collapse}@media screen and (max-width: 600px){.w-full,.w-full>tbody>tr>td{width:100% !important}*[class*=s-lg-]>tbody>tr>td{font-size:0 !important;line-height:0 !important;height:0 !important}.s-2>tbody>tr>td{font-size:8px !important;line-height:8px !important;height:8px !important}.s-3>tbody>tr>td{font-size:12px !important;line-height:12px !important;height:12px !important}.s-5>tbody>tr>td{font-size:20px !important;line-height:20px !important;height:20px !important}.s-10>tbody>tr>td{font-size:40px !important;line-height:40px !important;height:40px !important}}
-              </style>
-            </head>
-            <body class="text-white" style="outline: 0; width: 100%; min-width: 100%; height: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-family: Helvetica, Arial, sans-serif; line-height: 24px; font-weight: normal; font-size: 16px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; color: #ffffff; margin: 0; padding: 0; border-width: 0;" bgcolor="${color}">
-              <table class="text-white body" valign="top" role="presentation" border="0" cellpadding="0" cellspacing="0" style="outline: 0; width: 100%; min-width: 100%; height: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-family: Helvetica, Arial, sans-serif; line-height: 24px; font-weight: normal; font-size: 16px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; color: #ffffff; margin: 0; padding: 0; border-width: 0;" bgcolor="${color}">
-                <tbody>
-                  <tr>
-                    <td valign="top" style="line-height: 24px; font-size: 16px; color: #ffffff; margin: 0;" align="left" bgcolor="${color}">
-                      <table class="container" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
-                        <tbody>
-                          <tr>
-                            <td align="center" style="line-height: 24px; font-size: 16px; margin: 0; padding: 0 16px;">
-                              <!--[if (gte mso 9)|(IE)]>
-                                <table align="center" role="presentation">
-                                  <tbody>
-                                    <tr>
-                                      <td width="600">
-                              <![endif]-->
-                              <table align="center" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                                <tbody>
-                                  <tr>
-                                    <td style="line-height: 24px; font-size: 16px; margin: 0;" align="left">
-                                      <table class="s-10 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
-                                        <tbody>
-                                          <tr>
-                                            <td style="line-height: 40px; font-size: 40px; width: 100%; height: 40px; margin: 0;" align="left" width="100%" height="40">
-                                              &#160;
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
-                                      <table class="card  bg-dark" role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-radius: 6px; border-collapse: separate !important; width: 100%; overflow: hidden; border: 1px solid #e2e8f0;" bgcolor="#1a202c">
-                                        <tbody>
-                                          <tr>
-                                            <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0;" align="left" bgcolor="#1a202c">
-                                              <table class="card-body" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
-                                                <tbody>
-                                                  <tr>
-                                                    <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 20px;" align="left">
-                                                      <h1 class="h3  text-orange-500" style="color: #fd7e14; padding-top: 0; padding-bottom: 0; font-weight: 500; vertical-align: baseline; font-size: 28px; line-height: 33.6px; margin: 0;" align="left">
-                                                        Weekly Update
-                                                        <span class="h6  text-gray-400" style="color: #cbd5e0; padding-top: 0; padding-bottom: 0; font-weight: 500; text-align: left; vertical-align: baseline; font-size: 16px; line-height: 19.2px; margin: 0;">(Week ${week}, ${year})</span>
-                                                        <table class="s-2 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
-                                                          <tbody>
-                                                            <tr>
-                                                              <td style="line-height: 8px; font-size: 8px; width: 100%; height: 8px; margin: 0;" align="left" width="100%" height="8">
-                                                                &#160;
-                                                              </td>
-                                                            </tr>
-                                                          </tbody>
-                                                        </table>
-                                                      </h1>
-                                                      <table class="s-2 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
-                                                        <tbody>
-                                                          <tr>
-                                                            <td style="line-height: 8px; font-size: 8px; width: 100%; height: 8px; margin: 0;" align="left" width="100%" height="8">
-                                                              &#160;
-                                                            </td>
-                                                          </tr>
-                                                        </tbody>
-                                                      </table>
-                                                      <h6 class="text-red-200 text-xs" style="color: #f1aeb5; padding-top: 0; padding-bottom: 0; font-weight: 500; vertical-align: baseline; font-size: 12px; line-height: 14.4px; margin: 0;" align="left">
-                                                        ${genGreeting(
-            false,
-            data.name
-          )}!
-                                                        <br>
-                                                        Miss Minutes here with your weekly report.
-                                                        <br>
-                                                        <br>
-                                                        Here is a rundown of all that has changed in your projects over the last week.
-                                                      </h6>
-                                                      <table class="s-5 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
-                                                        <tbody>
-                                                          <tr>
-                                                            <td style="line-height: 20px; font-size: 20px; width: 100%; height: 20px; margin: 0;" align="left" width="100%" height="20">
-                                                              &#160;
-                                                            </td>
-                                                          </tr>
-                                                        </tbody>
-                                                      </table>
-                                                      <table class="hr" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
-                                                        <tbody>
-                                                          <tr>
-                                                            <td style="line-height: 24px; font-size: 16px; border-top-width: 1px; border-top-color: #e2e8f0; border-top-style: solid; height: 1px; width: 100%; margin: 0;" align="left">
-                                                            </td>
-                                                          </tr>
-                                                        </tbody>
-                                                      </table>
-                                                      <table class="s-5 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
-                                                        <tbody>
-                                                          <tr>
-                                                            <td style="line-height: 20px; font-size: 20px; width: 100%; height: 20px; margin: 0;" align="left" width="100%" height="20">
-                                                              &#160;
-                                                            </td>
-                                                          </tr>
-                                                        </tbody>
-                                                      </table>
-                                                      <div class="space-y-3">
-                                                        <h2 class="h4 text-orange-300" style="color: #feb272; padding-top: 0; padding-bottom: 0; font-weight: 500; vertical-align: baseline; font-size: 24px; line-height: 28.8px; margin: 0;" align="left">Changes:</h2>
-                                                        <table class="s-3 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
-                                                          <tbody>
-                                                            <tr>
-                                                              <td style="line-height: 12px; font-size: 12px; width: 100%; height: 12px; margin: 0;" align="left" width="100%" height="12">
-                                                                &#160;
-                                                              </td>
-                                                            </tr>
-                                                          </tbody>
-                                                        </table>
-                                                        <ul class="list-disc list-inside" style="padding-left: 10px; font-size: x-small; line-height: 24px; margin: 0;">
-                                                          ${emailFormat(output)}
-                                                        </ul>
-                                                      </div>
-                                                    </td>
-                                                  </tr>
-                                                </tbody>
-                                              </table>
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
-                                      <table class="s-10 w-full" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;" width="100%">
-                                        <tbody>
-                                          <tr>
-                                            <td style="line-height: 40px; font-size: 40px; width: 100%; height: 40px; margin: 0;" align="left" width="100%" height="40">
-                                              &#160;
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                              <!--[if (gte mso 9)|(IE)]>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                              <![endif]-->
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </body>
-          </html>
-          
-          `,
-          alternative: true,
-        },
-      ],
-    })
-
-    client.send(message, (err, message) => {
-      console.log(err || message)
-
-      // Now update the backups with the current data
-      data.ids.forEach((id, i) => {
-        setSupeBackupData(id, data.new[i])
-      })
-    })
-  }, 1000)
-}
-
-function compare(output, old, oldObj, newObj, path = '') {
-  // Check if an array, return "a" if true or just the first letter of it's typeof result
-  switch (
-  (Array.isArray(oldObj) ? 'a' : (typeof oldObj).charAt(0)) +
-  (Array.isArray(newObj) ? 'a' : (typeof newObj).charAt(0))
-  ) {
-    case 'aa': // Comparing two arrays
-      if (JSON.stringify(oldObj) == JSON.stringify(newObj)) {
-        return
-      }
-
-      log(output, old, path, 'M')
-
-      // Check what we can use for comparison
-      var compAttr = ['id', 'title', 'key'].find((attr) =>
-        newObj.concat(oldObj).every((obj) => obj[attr] !== undefined)
-      )
-
-      if (compAttr != undefined) {
-        // If we can, use it to compare the two arrays
-        for (var i = 0; i < oldObj.length; i++) {
-          // Check for additions and modifications
-          // Check if it exists in the new array
-          var index = newObj.findIndex(
-            (obj) => obj[compAttr] == oldObj[i][compAttr]
-          )
-          if (index != -1) {
-            // If it does, compare the two objects
-            compare(output, old, oldObj[i], newObj[index], path + '[' + i + ']')
-          } else {
-            // If it doesn't, it was deleted
-            log(output, old, `${path}[${i}]`, 'D')
-          }
-        }
-
-        for (var i = 0; i < newObj.length; i++) {
-          // Check for additions
-          // Check if the id exists in the old array
-          var index = oldObj.findIndex(
-            (obj) => obj[compAttr] == newObj[i][compAttr]
-          )
-          if (index == -1) {
-            // If it doesn't, it was added
-            log(output, old, `${path}[${i}]`, 'A')
-          }
-        }
-        // If all are strings/numbers, check for additions and deletions only
-      } else if (
-        newObj
-          .concat(oldObj)
-          .every((obj) => typeof obj == 'string' || typeof obj == 'number')
-      ) {
-        for (var i = 0; i < oldObj.length; i++) {
-          // Check for deletions
-          // Check if it exists anywhere in the new array
-          var index = newObj.findIndex((obj) => obj == oldObj[i])
-          if (index == -1) {
-            // If it doesn't, it was deleted
-            log(output, old, `${path}[${i}]`, 'D', oldObj[i])
-          }
-        }
-
-        for (var i = 0; i < newObj.length; i++) {
-          // Check for additions
-          // Check if it exists anywhere in the old array
-          var index = oldObj.findIndex((obj) => obj == newObj[i])
-          if (index == -1) {
-            // If it doesn't, it was added
-            log(output, old, `${path}[${i}]`, 'A', newObj[i])
-          }
-        }
-      } else {
-        // If we can't, compare the two arrays as strings
-        if (JSON.stringify(oldObj) == JSON.stringify(newObj)) {
-          return
-        }
-
-        log(
-          output,
-          old,
-          path,
-          'M',
-          JSON.stringify(oldObj),
-          JSON.stringify(newObj)
-        )
-      }
-      break
-    case 'oo': // Comparing two objects
-      if (JSON.stringify(oldObj) == JSON.stringify(newObj)) {
-        return
-      }
-
-      log(output, old, path, 'M')
-
-      // Run though each key in the old object
-      for (var key in oldObj) {
-        // Check if the key exists in the new object
-        if (newObj.hasOwnProperty(key)) {
-          // If it does, compare the two values
-          compare(output, old, oldObj[key], newObj[key], path + '.' + key)
-        } else {
-          // If it doesn't, it was deleted
-          log(output, old, `${path}.${key}`, 'D', oldObj[key])
-        }
-      }
-
-      // Run though each key in the new object
-      for (var key in newObj) {
-        // Check if the key exists in the old object
-        if (!oldObj.hasOwnProperty(key)) {
-          // If it doesn't, it was added
-          log(output, old, `${path}.${key}`, 'A', newObj[key])
-        }
-      }
-
-      break
-    case 'ss': // Comparing two strings or
-    case 'nn': // Comparing two numbers
-      if (oldObj == newObj) {
-        return
-      }
-
-      log(output, old, `${path}`, 'M', oldObj, newObj)
-      break
-    default:
-      // State the type of the two values
-      log(output, old, path, 'F', oldObj, newObj)
-  }
-
-  if (path == '') {
-    return createNestedJSON(output)
-  }
-}
-
-function log(arr, old, path, type, mainObj = null, secObj = null) {
-  // Polishes the info ready for converting into it's final format (email, html, discord...)
-
-  // Break down the path, using it to get the data at the end
-  // Will be in format like '[23].content[7][1].content.title'
-  var obj = path
-    .split('[')
-    .join('.')
-    .split(']')
-    .join('')
-    .split('.')
-    .filter((val) => val != '')
-    .reduce((obj, key) => obj[key], old)
-
-  // Get the final value in the path
-  // e.g. '[23].content[7][1].content.title' -> 'title'
-  var finalKey = path.split('.').pop().split('[').pop().split(']').shift()
-
-  var toAdd = {
-    depth: path.split('.').length + path.split('[').length - 2, // How deep the change is
-    title:
-      path == ''
-        ? 'PROJECT NAME'
-        : obj && obj.title
-          ? obj.title
-          : obj && obj.key
-            ? obj.key
-            : finalKey
-              ? !isNaN(finalKey)
-                ? th(parseInt(finalKey) + 1)
-                : finalKey
-              : obj && obj.id
-                ? obj.id
-                : 'Unknown', // The title of the change
-    type:
-      path == ''
-        ? 'Project'
-        : obj && obj.class
-          ? obj.class == 'Link'
-            ? 'Node Link'
-            : `${obj.class} Node`
-          : obj && obj.type
-            ? obj.type
-            : '', // The type of the data
-    content: '',
-  }
-
-  switch (type) {
-    case 'M': // Modified
-      toAdd.title = `${toAdd.title} (Modified)`
-      if (mainObj && secObj)
-        toAdd.content = `Old: ${JSON.stringify(
-          mainObj
-        )}<br>New: ${JSON.stringify(secObj)}`
-      break
-    case 'A': // Added
-      toAdd.title = `${toAdd.title} (Added)`
-      if (mainObj) toAdd.content = `New: ${JSON.stringify(mainObj)}`
-      break
-    case 'D': // Deleted
-      toAdd.title = `${toAdd.title} (Deleted)`
-      if (mainObj) toAdd.content = `Old: ${JSON.stringify(mainObj)}`
-      break
-    case 'F': // Failed
-      toAdd.title = `${toAdd.title} (Failed)`
-      if (mainObj && secObj)
-        toAdd.content = `Old: ${JSON.stringify(
-          mainObj
-        )}<br>New: ${JSON.stringify(secObj)}`
-      break
-  }
-
-  arr.push(toAdd)
-}
-
-function th(i) {
-  return (
-    i +
-    ([11, 12, 13].includes(i % 100)
-      ? 'th'
-      : i % 10 === 1
-        ? 'st'
-        : i % 10 === 2
-          ? 'nd'
-          : i % 10 === 3
-            ? 'rd'
-            : 'th') +
-    ' Entry'
-  )
 }
