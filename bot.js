@@ -688,10 +688,10 @@ minutesClient.on('ready', async (client) => {
   reportTime.setHours(24, 0, 0, -1)
 
   // Get the ms until then
-  reportTime = reportTime - Date.now()
+  let msLeft = reportTime - Date.now()
 
   // Set a timeout to run the 'sendReport' function
-  setTimeout((client) => { sendReport(client) }, reportTime)
+  setTimeout((client) => { sendReport(client, reportTime) }, msLeft)
 })
 
 dataClient.on('ready', () => {
