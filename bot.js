@@ -829,10 +829,10 @@ minutesClient.on('messageReactionAdd', (reaction, user) => {
       embed.title = `${embed.title}\n✅`
       delete embed.description
 
-      reaction.message.edit('', { embeds: [embed] })
+      reaction.message.edit({ embeds: [embed] })
 
       let day = new Date(embed.timestamp).toLocaleDateString('en-NZ')
-      reaction.message.channel.send(parseInt(embed.title.split(' ')[0]))
+      // reaction.message.channel.send(parseInt(embed.title.split(' ')[0]))
 
       let count = embed.title.split(' ')[0]
 
