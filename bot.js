@@ -691,7 +691,7 @@ minutesClient.on('ready', async (client) => {
   let msLeft = reportTime - Date.now()
 
   // Set a timeout to run the 'sendReport' function
-  setTimeout((client) => { sendReport(client, reportTime) }, msLeft)
+  setTimeout(() => { sendReport(client, reportTime) }, msLeft)
 })
 
 dataClient.on('ready', () => {
@@ -703,6 +703,11 @@ dataClient.on('ready', () => {
 })
 
 minutesClient.on('messageCreate', async (message) => {
+  //
+  if (message.content == 'RUN SEND REPORT') {
+    sendReport(minutesClient, '11/01/2023')
+    return
+  }
   // Exit if a bot, or not the right command
   if (
     message.author.bot ||
@@ -778,9 +783,21 @@ async function sendReport(client, time) {
     ]
   }
 
-  let channel = client.channels.cache.get('1146256683748827177')
+  let channel = client.channels.cache.get(process.env.MINUTES_ID)
 
   channel.send(embed).then(msg => msg.react("👍"))
+
+  // Prepare for next week
+
+  // Get midnight tonight
+  var reportTime = new Date()
+  reportTime.setHours(24, 0, 0, -1)
+
+  // Get the ms until then
+  let msLeft = reportTime - Date.now()
+
+  // Set a timeout to run the 'sendReport' function
+  setTimeout(() => { sendReport(client, reportTime) }, msLeft)
 }
 
 minutesClient.on('messageReactionAdd', (reaction, user) => {
