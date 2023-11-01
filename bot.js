@@ -761,7 +761,7 @@ async function sendReport(client, time) {
   // Get the data for this day
   let sneezeData = await getData('sneezeData')
   let total = sneezeData.count
-  let count = sneezeData.calendar[closeTime] || 0
+  let count = sneezeData.calendar[now.toLocaleDateString('en-NZ')] || 0
 
   var embed = {
     embeds: [
