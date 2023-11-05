@@ -708,45 +708,90 @@ minutesClient.on('messageCreate', async (message) => {
     sendReport(minutesClient, '11/01/2023')
     return
   }
-  // Exit if a bot, or not the right command
+  // Exit if a bot
   if (
-    message.author.bot ||
-    !['.blacklist', '.bl'].includes(message.content.toLowerCase())
+    message.author.bot
   )
     return
-  // Blacklisting GIFS
-  var blacklist = await getData('blacklist')
 
-  // Try to get the reply
-  message.channel.messages
-    .fetch(message.reference.messageId)
-    .then((msg) => {
-      // Toogle that GIF's status
-      var removing = blacklist.includes(msg.content)
+  // Blacklist commands
+  if (['.blacklist', '.bl'].includes(message.content.toLowerCase())) {
+    // Blacklisting GIFS
+    var blacklist = await getData('blacklist')
 
-      if (removing) {
-        blacklist.splice(blacklist.indexOf(msg.content), 1)
-      } else {
-        // Add instead
-        blacklist.push(msg.content)
-      }
+    // Try to get the reply
+    message.channel.messages
+      .fetch(message.reference.messageId)
+      .then((msg) => {
+        // Toogle that GIF's status
+        var removing = blacklist.includes(msg.content)
 
-      msg.channel.send(
-        `GIF has been ${removing ? 'removed from' : 'added to'} the blacklist.`
-      )
+        if (removing) {
+          blacklist.splice(blacklist.indexOf(msg.content), 1)
+        } else {
+          // Add instead
+          blacklist.push(msg.content)
+        }
 
-      // Update the blacklist
-      setData('blacklist', blacklist)
-    })
-    .catch((err) => {
-      if (message.reference == null) {
         msg.channel.send(
-          'This command must be used in a reply to the GIF in question.'
+          `GIF has been ${removing ? 'removed from' : 'added to'} the blacklist.`
         )
-      } else {
-        console.log(err)
-      }
-    })
+
+        // Update the blacklist
+        setData('blacklist', blacklist)
+      })
+      .catch((err) => {
+        if (message.reference == null) {
+          msg.channel.send(
+            'This command must be used in a reply to the GIF in question.'
+          )
+        } else {
+          console.log(err)
+        }
+      })
+  }
+  // Sneeze update
+  else {
+    // Try to get the reply
+    message.channel.messages
+      .fetch(message.reference.messageId)
+      .then(async (msg) => {
+        let embed;
+
+        try {
+          embed = msg.embeds[0].data
+
+          if (embed && !embed.title.endsWith('✅') && ['-', '+'].includes(message.content[0])) {
+            let sneezeData = await getData('sneezeData')
+
+            let day = new Date(embed.timestamp).toLocaleDateString('en-NZ')
+            let today = new Date().toLocaleDateString('en-NZ')
+
+            let count = parseInt(embed.title.split(' ')[0])
+            let todayCount = sneezeData.calendar[today].count
+
+            let change = parseInt(message.content)
+
+            count += change
+            todayCount -= change
+
+            embed.title = `${count} sneeze${count != 1 ? 's' : ''} recorded today`,
+
+              message.edit({ embeds: [embed] })
+
+            setSneeze(day, count, false)
+            setSneeze(today, todayCount, false)
+
+            msg.channel.send(
+              `${Math.abs(change)} sneeze${Math.abs(change) != 1 ? 's' : ''} transferred from ${change >= 0 ? `${today.toLocaleDateString('en-NZ')} to ${day.toLocaleDateString('en-NZ')}` : `${day.toLocaleDateString('en-NZ')} to ${today.toLocaleDateString('en-NZ')}`}.`,
+            )
+          }
+        }
+        catch (error) {
+          console.error(error)
+        }
+      })
+  }
 })
 
 let colors = {
