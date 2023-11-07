@@ -753,48 +753,46 @@ minutesClient.on('messageCreate', async (message) => {
   // Sneeze update
   else {
     // Try to get the reply
-    minutesClient.channels
-      .fetch(message.channel.id).then(channel =>
-        channel.messages
-          .fetch(message.reference.messageId)
-          .then(async (msg) => {
-            console.log(msg)
+    message.channel.messages
+      .fetch(message.reference.messageId)
+      .then(async (msg) => {
+        console.log(msg)
 
-            let embed;
+        let embed;
 
-            try {
-              embed = msg.embeds[0].data
+        try {
+          embed = msg.embeds[0].data
 
-              if (embed && !embed.title.endsWith('✅') && ['-', '+'].includes(message.content[0])) {
-                let sneezeData = await getData('sneezeData')
+          if (embed && !embed.title.endsWith('✅') && ['-', '+'].includes(message.content[0])) {
+            let sneezeData = await getData('sneezeData')
 
-                let day = new Date(embed.timestamp).toLocaleDateString('en-NZ')
-                let today = new Date().toLocaleDateString('en-NZ')
+            let day = new Date(embed.timestamp).toLocaleDateString('en-NZ')
+            let today = new Date().toLocaleDateString('en-NZ')
 
-                let count = parseInt(embed.title.split(' ')[0])
-                let todayCount = sneezeData.calendar[today].count
+            let count = parseInt(embed.title.split(' ')[0])
+            let todayCount = sneezeData.calendar[today].count
 
-                let change = parseInt(message.content)
+            let change = parseInt(message.content)
 
-                count += change
-                todayCount -= change
+            count += change
+            todayCount -= change
 
-                embed.title = `${count} sneeze${count != 1 ? 's' : ''} recorded today`,
+            embed.title = `${count} sneeze${count != 1 ? 's' : ''} recorded today`,
 
-                  message.edit({ embeds: [embed] })
+              message.edit({ embeds: [embed] })
 
-                setSneeze(day, count, false)
-                setSneeze(today, todayCount, false)
+            setSneeze(day, count, false)
+            setSneeze(today, todayCount, false)
 
-                msg.channel.send(
-                  `${Math.abs(change)} sneeze${Math.abs(change) != 1 ? 's' : ''} transferred from ${change >= 0 ? `${today} to ${day}` : `${day} to ${today}`}.`,
-                )
-              }
-            }
-            catch (error) {
-              console.error(error)
-            }
-          }))
+            msg.channel.send(
+              `${Math.abs(change)} sneeze${Math.abs(change) != 1 ? 's' : ''} transferred from ${change >= 0 ? `${today} to ${day}` : `${day} to ${today}`}.`,
+            )
+          }
+        }
+        catch (error) {
+          console.error(error)
+        }
+      })
   }
 })
 
@@ -858,47 +856,45 @@ async function sendReport(client, time) {
 
 minutesClient.on('messageReactionAdd', async (reaction, user) => {
   // Get the message reacted to
-  minutesClient.channels
-    .fetch(reaction.message.channel.id).then(channel =>
-      channel.messages
-        .fetch(reaction.message.reference.messageId)
-        .then(async (msg) => {
-          console.log(msg)
+  message.channel.messages
+    .fetch(message.reference.messageId)
+    .then((msg) => {
+      console.log(msg)
 
-          if (msg.author.id === user.id) {
-            // the reaction is coming from the same user who posted the message
-            return;
-          }
+      if (msg.author.id === user.id) {
+        // the reaction is coming from the same user who posted the message
+        return;
+      }
 
-          let embed;
+      let embed;
 
-          try {
-            embed = msg.embeds[0].data
-          }
-          catch (error) {
-            console.error(error)
-          }
+      try {
+        embed = msg.embeds[0].data
+      }
+      catch (error) {
+        console.error(error)
+      }
 
-          if (reaction.emoji.name == "👍") {
+      if (reaction.emoji.name == "👍") {
 
-            if (!embed.title.endsWith('✅')) {
-              embed.color = colors.green
-              embed.title = `${embed.title}\n✅`
-              delete embed.description
+        if (!embed.title.endsWith('✅')) {
+          embed.color = colors.green
+          embed.title = `${embed.title}\n✅`
+          delete embed.description
 
-              msg.edit({ embeds: [embed] })
+          msg.edit({ embeds: [embed] })
 
-              let day = new Date(embed.timestamp).toLocaleDateString('en-NZ')
-              // reaction.message.channel.send(parseInt(embed.title.split(' ')[0]))
+          let day = new Date(embed.timestamp).toLocaleDateString('en-NZ')
+          // reaction.message.channel.send(parseInt(embed.title.split(' ')[0]))
 
-              let count = embed.title.split(' ')[0]
+          let count = embed.title.split(' ')[0]
 
-              setSneeze(day, count, true)
-            }
+          setSneeze(day, count, true)
+        }
 
-            msg.reactions.removeAll()
-          }
-        }))
+        msg.reactions.removeAll()
+      }
+    })
 });
 
 jigClient.on('messageCreate', async (message) => {
