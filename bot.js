@@ -759,7 +759,7 @@ minutesClient.on('messageCreate', async (message) => {
         // Get the message that will be updated
         try {
           await minutesClient.channels
-            .fetch(msg.channel)
+            .fetch(msg.channel.id)
             .then((channel) =>
               channel.messages.fetch(msg.id).then((message) => (msg = message))
             )
@@ -868,7 +868,7 @@ minutesClient.on('messageReactionAdd', async (reaction, user) => {
   // Get the message that will be updated
   try {
     await minutesClient.channels
-      .fetch(msg.channel)
+      .fetch(msg.channel.id)
       .then((channel) =>
         channel.messages.fetch(msg.id).then((message) => (msg = message))
       )
