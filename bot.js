@@ -761,7 +761,7 @@ minutesClient.on('messageCreate', async (message) => {
           await minutesClient.channels
             .fetch(msg.channel.id)
             .then((channel) =>
-              channel.messages.fetch(msg.id).then((message) => (msg = message))
+              channel.messages.fetch(msg.id).then((newmsg) => (msg = newmsg))
             )
         } catch (error) {
           console.error(error)
