@@ -763,7 +763,9 @@ minutesClient.on('messageCreate', async (message) => {
             .then((channel) =>
               channel.messages.fetch(msg.id).then((message) => (msg = message))
             )
-        } catch (error) { }
+        } catch (error) {
+          console.error(error)
+        }
 
         let embed;
 
@@ -870,7 +872,9 @@ minutesClient.on('messageReactionAdd', async (reaction, user) => {
       .then((channel) =>
         channel.messages.fetch(msg.id).then((message) => (msg = message))
       )
-  } catch (error) { }
+  } catch (error) {
+    console.error(error)
+  }
 
   if (reaction.message.author.id === user.id) {
     // the reaction is coming from the same user who posted the message
@@ -1379,7 +1383,9 @@ async function timer(client, sort = false) {
         .then((channel) =>
           channel.messages.fetch(event.id).then((msg) => (message = msg))
         )
-    } catch (error) { }
+    } catch (error) {
+      console.error(error)
+    }
 
     var date = new Date()
 
@@ -1390,7 +1396,9 @@ async function timer(client, sort = false) {
     if (difference < 1000) {
       try {
         message.delete()
-      } catch (error) { }
+      } catch (error) {
+        console.error(error)
+      }
 
       var newTimers = (await getData('timers')) || []
 
@@ -1454,7 +1462,9 @@ async function timer(client, sort = false) {
         // Only update the message if the text is different, but not undefined
         if (message.content !== undefined && message.content !== text)
           message.edit(text)
-      } catch (error) { }
+      } catch (error) {
+        console.error(error)
+      }
     }
     return true
   })
