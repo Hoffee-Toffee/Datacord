@@ -758,6 +758,8 @@ minutesClient.on('messageCreate', async (message) => {
         channel.messages
           .fetch(message.reference.messageId)
           .then(async (msg) => {
+            console.log(msg)
+
             let embed;
 
             try {
@@ -861,6 +863,7 @@ minutesClient.on('messageReactionAdd', async (reaction, user) => {
       channel.messages
         .fetch(reaction.message.reference.messageId)
         .then(async (msg) => {
+          console.log(msg)
 
           if (msg.author.id === user.id) {
             // the reaction is coming from the same user who posted the message
