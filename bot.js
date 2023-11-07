@@ -756,6 +756,15 @@ minutesClient.on('messageCreate', async (message) => {
     message.channel.messages
       .fetch(message.reference.messageId)
       .then(async (msg) => {
+        // Get the message that will be updated
+        try {
+          await minutesClient.channels
+            .fetch(msg.channel)
+            .then((channel) =>
+              channel.messages.fetch(msg.id).then((message) => (msg = message))
+            )
+        } catch (error) { }
+
         let embed;
 
         try {
@@ -852,7 +861,17 @@ async function sendReport(client, time) {
   setTimeout(() => { sendReport(client, reportTime) }, msLeft)
 }
 
-minutesClient.on('messageReactionAdd', (reaction, user) => {
+minutesClient.on('messageReactionAdd', async (reaction, user) => {
+  let msg = null
+  // Get the message that will be updated
+  try {
+    await minutesClient.channels
+      .fetch(msg.channel)
+      .then((channel) =>
+        channel.messages.fetch(msg.id).then((message) => (msg = message))
+      )
+  } catch (error) { }
+
   if (reaction.message.author.id === user.id) {
     // the reaction is coming from the same user who posted the message
     return;
@@ -874,7 +893,7 @@ minutesClient.on('messageReactionAdd', (reaction, user) => {
       embed.title = `${embed.title}\n✅`
       delete embed.description
 
-      reaction.message.edit({ embeds: [embed] })
+      msg.edit({ embeds: [embed] })
 
       let day = new Date(embed.timestamp).toLocaleDateString('en-NZ')
       // reaction.message.channel.send(parseInt(embed.title.split(' ')[0]))
@@ -884,7 +903,7 @@ minutesClient.on('messageReactionAdd', (reaction, user) => {
       setSneeze(day, count, true)
     }
 
-    reaction.message.reactions.removeAll()
+    msg.reactions.removeAll()
   }
 
 });
