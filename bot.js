@@ -137,7 +137,7 @@ async function setSneeze(day, count = '0', confirmed = false) {
 
   let oldCount = sneezeData.calendar[day] ? sneezeData.calendar[day].count : 0
 
-  switch (count.charAt(0)) {
+  switch (String(count).charAt(0)) {
     case '+': // Add
       count = oldCount + parseInt(count.slice(1))
       break;
@@ -783,7 +783,7 @@ minutesClient.on('messageCreate', async (message) => {
             setSneeze(today, todayCount, false)
 
             msg.channel.send(
-              `${Math.abs(change)} sneeze${Math.abs(change) != 1 ? 's' : ''} transferred from ${change >= 0 ? `${today.toLocaleDateString('en-NZ')} to ${day.toLocaleDateString('en-NZ')}` : `${day.toLocaleDateString('en-NZ')} to ${today.toLocaleDateString('en-NZ')}`}.`,
+              `${Math.abs(change)} sneeze${Math.abs(change) != 1 ? 's' : ''} transferred from ${change >= 0 ? `${today} to ${day}` : `${day} to ${today}`}.`,
             )
           }
         }
