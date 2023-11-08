@@ -26,51 +26,13 @@ const datacordConfig = {
 };
 const datacord = getFirestore(initializeApp(datacordConfig, "datacord"));
 
-// Export the variables
-// module.exports = {
-//     supedb: supedb,
-//     datacord: datacord,
-//     collection: collection,
-//     getDocs: getDocs,
-//     doc: doc,
-//     getDoc: getDoc,
-//     setDoc: setDoc
-// }
-
-var backlog = [];
-
-// Notify every minute
-setInterval(notify, 60000);
-
-function notify () {
-  const Discord = require("discord.js");
-  const webhook = new Discord.WebhookClient({
-      id: process.env.TEST_ID,
-      token: process.env.TEST_TOKEN
-  })
-
-  message = "```" + backlog.length + " requests this minute:\n    " + backlog.join("\n    ") + "```";
-  
-  if (backlog.length) webhook.send(message).catch(err => { console.log(err) } );
-
-  backlog = [];
-}
-
 // Notify whenever any of those variables are used
-module.exports = new Proxy(
-  {
-    supedb: supedb,
-    datacord: datacord,
-    collection: collection,
-    getDocs: getDocs,
-    doc: doc,
-    getDoc: getDoc,
-    setDoc: setDoc
-  },
-  {
-    get: function (target, name) {
-      backlog.push(`'${name}' accessed.`);
-      return target[name];
-    },
-  }
-);
+module.exports = {
+  supedb: supedb,
+  datacord: datacord,
+  collection: collection,
+  getDocs: getDocs,
+  doc: doc,
+  getDoc: getDoc,
+  setDoc: setDoc
+}

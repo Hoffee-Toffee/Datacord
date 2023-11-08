@@ -2,93 +2,19 @@ require('dotenv').config()
 
 const build = 'e0cb303a190e289e4f8960163b8c66fc'
 
-if (process.env.BUILD != build) {
-  // Stop the server
-  process.exit(0)
-}
-
-var gifSent = false
-var gifQueries = [
-  {
-    query: 'dua lipa',
-    weight: 3, // 3
-  },
-  {
-    query: 'jess bush star trek nurse christine chapel',
-    weight: 5, // 2
-  },
-  {
-    query: 'death on the nile emma mackey jacqueline de bellefort',
-    weight: 7, // 2
-  },
-  {
-    query: 'sylvie sophia di martino',
-    weight: 9, // 2
-  },
-  {
-    query: 'gal gadot',
-    weight: 11, // 2
-  },
-  {
-    query: 'ava max',
-    weight: 13, // 2
-  },
-  {
-    query: 'emma mackey',
-    weight: 14, // 1
-  },
-  {
-    query: 'shin hati',
-    weight: 17, // 3
-  },
-]
-
 const fs = require('fs')
 const express = require('express')
 const discordBotkit = require('botkit-discord')
 const app = express()
 const fetchUrl = require('fetch').fetchUrl
 const firebase = require('./firebase.js')
-
-var gifLoop = setInterval(checkGIF, 40000) // Every 40 seconds, check if a gif should be sent
-
-// Only start the bots after the first check is done
-checkGIF()
-
-const discordBot = require('./bot')
-
-function sendMessage(message, hookname) {
-  console.log('Sending message "' + message + '" to ' + hookname + ' webhook')
-  if (message == null || message.lenght < 1) {
-    return
-  }
-
-  if (hookname == 'MEDIA') {
-    var id = process.env.MEDIA_ID
-    var token = process.env.MEDIA_TOKEN
-  } else if (hookname == 'GIF') {
-    var id = process.env.GIF_ID
-    var token = process.env.GIF_TOKEN
-  } else if (hookname == 'TEST') {
-    var id = process.env.TEST_ID
-    var token = process.env.TEST_TOKEN
-  } else if (hookname == 'TRISBOT') {
-    var id = process.env.TBOT_ID
-    var token = process.env.TBOT_TOKEN
-  }
-
-  const Discord = require('discord.js')
-  const webhook = new Discord.WebhookClient({
-    id: id,
-    token: token,
-  })
-
-  webhook.send(message).catch((err) => {
-    console.log(err)
-  })
-}
+const sneezeHook = require('./sneezeHook.ts')
+const request = require('request');
 
 app.use(express.static('public'))
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 app.get('/wakeup', function (request, response) {
   response.send('Wakeup successful.')
   console.log(`Pinged at ${new Date()}`)
@@ -169,7 +95,44 @@ app.get('/vote', function (request, response) {
   response.send('Message sent')
 })
 
-const listener = app.listen(process.env.PORT, function () {
+app.post('/test', async (req, res) => {
+  console.log(req.body)
+  res.sendStatus(200)
+})
+
+// Check hooks every 1000 ms
+setInterval(async () => {
+  const hooks = await getData('hooks')
+
+  // Filter out all that have expired
+  const expired = hooks.filter(hook => new Date(hook.expires) <= new Date())
+
+  expired.forEach(hook => {
+    try {
+      const options = {
+        url: hook.webhookUrl,
+        method: 'POST',
+        json: true,
+        body: { expired: true }
+      };
+
+      request.post(options)
+    }
+    catch (error) {
+
+    }
+  })
+
+  // Update hooks
+  if (expired.length) {
+    const active = hooks.filter(hook => new Date(hook.expires) > new Date())
+    setData('hooks', active)
+  }
+})
+
+app.use('/api/v1/', sneezeHook)
+
+const listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port)
 })
 
@@ -214,38 +177,6 @@ function getGif() {
     if (gif) sendMessage(gif.itemurl, 'GIF')
   })
 }
-
-function checkGIF() {
-  var currenttime = new Date()
-
-  console.log(
-    'Checking for gif, current time is ' +
-    currenttime.getHours() +
-    ':' +
-    currenttime.getMinutes()
-  )
-
-  // Send a gif every 2 hours from 8am till 2am
-  if (
-    ![3, 4, 5, 6, 7].includes(currenttime.getHours()) &&
-    currenttime.getMinutes() == 0 &&
-    !gifSent
-  ) {
-    console.log('Time matches, sending gif')
-    getGif()
-    gifSent = true
-  }
-  // Reset the gifSent variable when a gif hasn't been sent
-  else {
-    gifSent = false
-  }
-
-  // If out of date version, kill this instance
-  if (process.env.BUILD != build) {
-    process.exit(0)
-  }
-}
-
 async function getData(field) {
   // Get the data from local.json or from firebase if it's not there (and save it to local.json)
   var fetchedData = JSON.parse(fs.readFileSync('./local.json'))
