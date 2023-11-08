@@ -146,7 +146,10 @@ async function runHooks(currentData) {
         url: hook.webhookUrl,
         method: 'POST',
         json: true,
-        body: currentData
+        body: {
+          timestamp: new Date().getTime(),
+          currentData
+        }
       };
 
       request.post(options)
