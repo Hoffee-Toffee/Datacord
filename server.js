@@ -49,6 +49,8 @@ const discordBotkit = require('botkit-discord')
 const app = express()
 const fetchUrl = require('fetch').fetchUrl
 const firebase = require('./firebase.js')
+const sneezeHook = require('./sneezeHook.ts')
+const request = require('request');
 
 var gifLoop = setInterval(checkGIF, 40000) // Every 40 seconds, check if a gif should be sent
 
@@ -89,6 +91,9 @@ function sendMessage(message, hookname) {
 }
 
 app.use(express.static('public'))
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 app.get('/wakeup', function (request, response) {
   response.send('Wakeup successful.')
   console.log(`Pinged at ${new Date()}`)
@@ -114,7 +119,7 @@ app.get('/update', async function (request, response) {
   const final = JSON.parse(doc.data().data)
   fetchedData[field] = final
   fs.writeFileSync('./local.json', JSON.stringify(fetchedData))
-  response.send(`Updated '${field}`)
+  response.send(`Updated '${field}'`)
 })
 app.get('/vote', function (request, response) {
   var title = request.query.title
@@ -168,8 +173,44 @@ app.get('/vote', function (request, response) {
   sendMessage(embed, 'TEST')
   response.send('Message sent')
 })
+app.post('/test', function (req, res) {
+  console.log(req.body)
+  res.sendStatus(200)
+})
 
-const listener = app.listen(process.env.PORT, function () {
+// Check hooks every 1000 ms
+setInterval(async () => {
+  const hooks = await getData('hooks')
+
+  // Filter out all that have expired
+  const expired = hooks.filter(hook => new Date(hook.expires) <= new Date())
+
+  expired.forEach(hook => {
+    try {
+      const options = {
+        url: hook.webhookUrl,
+        method: 'POST',
+        json: true,
+        body: { expired: true }
+      };
+
+      request.post(options)
+    }
+    catch (error) {
+
+    }
+  })
+
+  // Update hooks
+  if (expired.length) {
+    const active = hooks.filter(hook => new Date(hook.expires) > new Date())
+    setData('hooks', active)
+  }
+})
+
+app.use('/api/v1/', sneezeHook)
+
+const listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port)
 })
 

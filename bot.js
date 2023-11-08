@@ -2,6 +2,7 @@ const discordBotkit = require('botkit-discord')
 const firebase = require('./firebase.js')
 const fetchUrl = require('fetch').fetchUrl
 const fs = require('fs')
+const request = require('request')
 
 const data_config = {
   token: process.env.DATA_DISCORD_TOKEN,
@@ -130,6 +131,30 @@ function setData(field, data) {
   var fetchedData = JSON.parse(fs.readFileSync('./local.json'))
   fetchedData[field] = data
   fs.writeFileSync('./local.json', JSON.stringify(fetchedData))
+
+  // If it changed the sneezeData, then use the sneezeHooks
+  if (field = 'sneezeData') runHooks(data)
+}
+
+async function runHooks(data) {
+  const hooks = await getData('hooks')
+
+  // Loop though each hook, sending the data to each
+  hooks.forEach(hook => {
+    try {
+      const options = {
+        url: hook.webhookUrl,
+        method: 'POST',
+        json: true,
+        body: currentData
+      };
+
+      request.post(options)
+    }
+    catch (error) {
+
+    }
+  })
 }
 
 async function setSneeze(day, count = '0', confirmed = false) {
