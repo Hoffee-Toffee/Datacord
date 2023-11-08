@@ -136,7 +136,7 @@ function setData(field, data) {
   if (field = 'sneezeData') runHooks(data)
 }
 
-async function runHooks(data) {
+async function runHooks(currentData) {
   const hooks = await getData('hooks')
 
   // Loop though each hook, sending the data to each
@@ -776,7 +776,7 @@ minutesClient.on('messageCreate', async (message) => {
       })
   }
   // Sneeze update
-  else {
+  else if (message.channel.id == process.env.MINUTES_ID) {
     // Try to get the reply
     message.channel.messages
       .fetch(message.reference.messageId)
