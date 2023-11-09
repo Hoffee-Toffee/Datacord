@@ -206,7 +206,7 @@ setInterval(async () => {
     const active = hooks.filter(hook => hook.expires > new Date().getTime())
     setData('hooks', active)
   }
-})
+}, 1000)
 
 app.use('/api/v1/', sneezeHook)
 
