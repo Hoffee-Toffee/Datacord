@@ -24,18 +24,18 @@ router.post('/webhook', async (req, res) => {
   const payload = req.body
 
   // Error checks
-  // Expiry is integer between 60,000 and 86,400,000
-  if (payload.expiry < 60000 || payload.expiry > 86400000) {
+  // Expires is integer between 60,000 and 86,400,000
+  if (!payload.expires || payload.expires < 60000 || payload.expires > 86400000) {
     res
       .status(400)
       .send(
-        "Invalid payload.\n - Expected 'expiry' to be an Integer value between 60,000 (One Minute) and 86,400,000 (24 Hours)."
+        "Invalid payload.\n - Expected 'expires' to be an Integer value between 60,000 (One Minute) and 86,400,000 (24 Hours)."
       )
     return
   }
 
   // Convert
-  let expires = new Date().getTime() + payload.expiry
+  let expires = new Date().getTime() + payload.expires
 
   // Register the webhook and store the connection details
   const webhook = {
