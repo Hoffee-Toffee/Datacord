@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const fs = require('fs')
 const firebase = require('./firebase.js')
+const request = require('request')
 
 async function getData(field) {
   // Get the data from local.json or from firebase if it's not there (and save it to local.json)
@@ -42,13 +43,12 @@ router.post('/webhook', async (req, res) => {
     id: `${new Date().getTime()}${Math.floor(Math.random() * 90000) + 10000}`,
     expires,
     webhookUrl: payload.webhookUrl,
+    sendInitial: payload.sendInitial,
     /* Store the connection details here */
   }
 
   // Get current webhooks
   let hooks = await getData('hooks')
-
-  console.log(hooks)
 
   // Add to hooks
   hooks.push(webhook)
@@ -58,6 +58,24 @@ router.post('/webhook', async (req, res) => {
 
   // Respond to the webhook with the initial data and a success status
   const initialData = await getData('sneezeData')
+
+  // Send initial if true
+  if (webhook.sendInitial) {
+    try {
+      const options = {
+        url: webhook.webhookUrl,
+        method: 'POST',
+        json: true,
+        body: {
+          timestamp: new Date().getTime(),
+          initialData,
+        },
+      }
+
+      request.post(options)
+    } catch (error) {}
+  }
+
   res.json({ initialData, webhookId: webhook.id })
 })
 
