@@ -35,8 +35,7 @@ router.post('/webhook', async (req, res) => {
   }
 
   // Convert
-  let expires = new Date()
-  expires.setMilliseconds(expires.getMilliseconds() + payload.expiry)
+  let expires = new Date().getTime() + payload.expiry
 
   // Register the webhook and store the connection details
   const webhook = {
@@ -48,7 +47,7 @@ router.post('/webhook', async (req, res) => {
   }
 
   // Get current webhooks
-  let hooks = await getData('hooks')
+  const hooks = await getData('hooks')
 
   // Add to hooks
   hooks.push(webhook)

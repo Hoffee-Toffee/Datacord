@@ -183,7 +183,7 @@ setInterval(async () => {
   const hooks = await getData('hooks')
 
   // Filter out all that have expired
-  const expired = hooks.filter(hook => new Date(hook.expires) <= new Date())
+  const expired = hooks.filter(hook => hook.expires <= new Date().getTime())
 
   expired.forEach(hook => {
     try {
@@ -203,7 +203,7 @@ setInterval(async () => {
 
   // Update hooks
   if (expired.length) {
-    const active = hooks.filter(hook => new Date(hook.expires) > new Date())
+    const active = hooks.filter(hook => hook.expires > new Date().getTime())
     setData('hooks', active)
   }
 })
