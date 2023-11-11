@@ -7,7 +7,7 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "botbuilder": "^4.11.0",
+    "botbuilder": "^4.21.1",
     "botkit": "^4.15.0",
     "botkit-discord": "^0.1.5",
     "discord.js": "^14.8.0",
