@@ -865,7 +865,7 @@ async function sendReport(client, time) {
     ]
   }
 
-  let channel = client.channels.cache.get(process.env.MINUTES_ID)
+  let channel = client.channels.get(process.env.MINUTES_ID)
 
   channel.send(embed).then(msg => msg.react("👍"))
 

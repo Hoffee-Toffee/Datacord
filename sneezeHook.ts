@@ -25,7 +25,11 @@ router.post('/webhook', async (req, res) => {
 
   // Error checks
   // Expires is integer between 60,000 and 86,400,000
-  if (!payload.expires || payload.expires < 60000 || payload.expires > 86400000) {
+  if (
+    !payload.expires ||
+    payload.expires < 60000 ||
+    payload.expires > 86400000
+  ) {
     res
       .status(400)
       .send(
