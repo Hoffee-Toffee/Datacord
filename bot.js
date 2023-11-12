@@ -890,6 +890,11 @@ async function sendReport(client, time) {
 minutesClient.on('messageReactionAdd', async (reaction, user) => {
   if (user.id == minutesClient.user.id) return
   // Get the message reacted to
+  console.log(reaction)
+  console.log(reaction.message)
+  console.log(reaction.message.reference)
+  console.log(reaction.message.reference.messageId)
+
   reaction.message.channel.messages
     .fetch(reaction.message.reference.messageId)
     .then((msg) => {
