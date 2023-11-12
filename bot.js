@@ -1,9 +1,12 @@
-const discordBotkit = require('botkit-discord')
 const firebase = require('./firebase.js')
 const fetchUrl = require('fetch').fetchUrl
 const fs = require('fs')
 const request = require('request')
 
+/*  BOTKIT SECTION START
+
+const discordBotkit = require('botkit-discord')
+  
 const data_config = {
   token: process.env.DATA_DISCORD_TOKEN,
 }
@@ -20,6 +23,8 @@ module.exports = {
   dataBot,
   minutesBot,
 }
+
+    BOTKIT SECTION END */
 
 var gifSent = false
 var status = null

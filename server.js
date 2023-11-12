@@ -45,7 +45,6 @@ var gifQueries = [
 
 const fs = require('fs')
 const express = require('express')
-const discordBotkit = require('botkit-discord')
 const app = express()
 const fetchUrl = require('fetch').fetchUrl
 const firebase = require('./firebase.js')
@@ -57,6 +56,7 @@ var gifLoop = setInterval(checkGIF, 40000) // Every 40 seconds, check if a gif s
 // Only start the bots after the first check is done
 checkGIF()
 
+// const discordBotkit = require('botkit-discord')
 const discordBot = require('./bot')
 
 function sendMessage(message, hookname) {
