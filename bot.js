@@ -924,7 +924,6 @@ minutesClient.on('messageReactionAdd', async (reaction, user) => {
     msg.reactions.removeAll()
   }
 })
-});
 
 jigClient.on('messageCreate', async (message) => {
   // Exit if a bot, or not the right command
