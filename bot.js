@@ -888,52 +888,42 @@ async function sendReport(client, time) {
 }
 
 minutesClient.on('messageReactionAdd', async (reaction, user) => {
-  if (user.id == minutesClient.user.id) return
-  // Get the message reacted to
-  console.log(reaction)
-  console.log(reaction.message)
-  console.log(reaction.message.reference)
-  console.log(reaction.message.reference.messageId)
+  let msg = reaction.message
 
-  reaction.message.channel.messages
-    .fetch(reaction.message.reference.messageId)
-    .then((msg) => {
-      console.log(msg)
+  if (msg.author.id === user.id) {
+    // the reaction is coming from the same user who posted the message
+    return;
+  }
 
-      if (msg.author.id === user.id) {
-        // the reaction is coming from the same user who posted the message
-        return;
-      }
+  let embed;
 
-      let embed;
+  try {
+    embed = msg.embeds[0].data
+  }
+  catch (error) {
+    console.error(error)
+  }
 
-      try {
-        embed = msg.embeds[0].data
-      }
-      catch (error) {
-        console.error(error)
-      }
+  if (reaction.emoji.name == "👍") {
 
-      if (reaction.emoji.name == "👍") {
+    if (!embed.title.endsWith('✅')) {
+      embed.color = colors.green
+      embed.title = `${embed.title}\n✅`
+      delete embed.description
 
-        if (!embed.title.endsWith('✅')) {
-          embed.color = colors.green
-          embed.title = `${embed.title}\n✅`
-          delete embed.description
+      msg.edit({ embeds: [embed] })
 
-          msg.edit({ embeds: [embed] })
+      let day = new Date(embed.timestamp).toLocaleDateString('en-NZ')
+      // reaction.message.channel.send(parseInt(embed.title.split(' ')[0]))
 
-          let day = new Date(embed.timestamp).toLocaleDateString('en-NZ')
-          // reaction.message.channel.send(parseInt(embed.title.split(' ')[0]))
+      let count = embed.title.split(' ')[0]
 
-          let count = embed.title.split(' ')[0]
+      setSneeze(day, count, true)
+    }
 
-          setSneeze(day, count, true)
-        }
-
-        msg.reactions.removeAll()
-      }
-    })
+    msg.reactions.removeAll()
+  }
+})
 });
 
 jigClient.on('messageCreate', async (message) => {
