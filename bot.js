@@ -870,7 +870,7 @@ async function sendReport(client, time) {
     ]
   }
 
-  let channel = client.channels.get(process.env.MINUTES_ID)
+  let channel = client.channels.cache.get(process.env.MINUTES_ID)
 
   channel.send(embed).then(msg => msg.react("👍"))
 
@@ -889,7 +889,7 @@ async function sendReport(client, time) {
 
 minutesClient.on('messageReactionAdd', async (reaction, user) => {
   // Get the message reacted to
-  minutesClient.channels.get(message.channel).messages
+  minutesClient.channels.cache.get(message.channel).messages
     .fetch(message.reference.messageId)
     .then((msg) => {
       console.log(msg)
