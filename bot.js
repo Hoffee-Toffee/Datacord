@@ -889,7 +889,7 @@ async function sendReport(client, time) {
 
 minutesClient.on('messageReactionAdd', async (reaction, user) => {
   // Get the message reacted to
-  minutesClient.channels.cache.get(message.channel).messages
+  minutesClient.channels.cache.get(message.channel.id).messages
     .fetch(message.reference.messageId)
     .then((msg) => {
       console.log(msg)
