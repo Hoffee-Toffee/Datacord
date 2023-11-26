@@ -17,7 +17,7 @@
     "request": "^2.88.2"
   },
   "engines": {
-    "node": "16.x"
+    "node": ">=18"
   },
   "repository": {
     "url": "https://glitch.com/edit/#!/glitch-mvp-node"
