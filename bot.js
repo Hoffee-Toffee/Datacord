@@ -29,7 +29,7 @@ module.exports = {
 var gifSent = false
 var status = null
 
-function checkGIF() {
+async function checkGIF() {
   if (Math.random() * 2000 < 1 || !status) {
     var statuses = [
       'Designing traps.',
@@ -67,12 +67,61 @@ function checkGIF() {
     currenttime.getMinutes() == 0 &&
     !gifSent
   ) {
+    if (currenttime.getHours() == 0) {
+      let message = checkDate(currenttime)
+
+      if (message)
+        await jigClient.channels
+          .fetch('1145973830918094848')
+          .then(async (channel) => channel.send(message))
+    }
     jigGIF()
     gifSent = true
   }
   // Reset the gifSent variable when a gif hasn't been sent
   else {
     gifSent = false
+  }
+}
+
+function checkDate(currentDate) {
+  let event = "Saw XI";
+  let targetDate = new Date('27 September 2024');
+
+  // Calculate the time difference in milliseconds
+  const timeDifference = targetDate - currentDate;
+
+  // Calculate years, months, weeks, and days
+  const years = targetDate.getFullYear() - currentDate.getFullYear();
+  const currentYearMonth = currentDate.getFullYear() * 12 + currentDate.getMonth();
+  const targetYearMonth = targetDate.getFullYear() * 12 + targetDate.getMonth();
+  const months = targetYearMonth - currentYearMonth;
+  const weeks = Math.floor(timeDifference / (7 * 24 * 60 * 60 * 1000));
+  const days = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
+
+  // If a year or more away (on this day)
+  if (years > 0 && targetDate.getDate() === currentDate.getDate() && targetDate.getMonth() === currentDate.getMonth()) {
+    return `${years} year${years - 1 ? 's' : ''} until ${event}!`;
+  }
+
+  // If 11 months or less away (on this day)
+  if (months > 0 && months <= 11 && targetDate.getDate() === currentDate.getDate()) {
+    return `${months} month${months - 1 ? 's' : ''} until ${event}!`;
+  }
+
+  // If a week or more away but less than a month (on this day)
+  if (weeks > 0 && weeks <= 3 && targetDate.getDate() === currentDate.getDate()) {
+    return `${weeks} week${weeks - 1 ? 's' : ''} until ${event}!`;
+  }
+
+  // If 5, 3, 2, or 1 day away (on this day)
+  if ([5, 3, 2, 1].includes(days)) {
+    return `${days} day${days - 1 ? 's' : ''} until ${event}!`;
+  }
+
+  // If today
+  if (targetDate.toDateString() === currentDate.toDateString()) {
+    return `Woohoo! ${event} is finally here!`;
   }
 }
 
