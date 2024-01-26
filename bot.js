@@ -3,6 +3,8 @@ const fetchUrl = require('fetch').fetchUrl
 const fs = require('fs')
 const request = require('request')
 
+const clarkeBot = require('./bots/clarke.js')
+
 /*  BOTKIT SECTION START
 
 const discordBotkit = require('botkit-discord')
