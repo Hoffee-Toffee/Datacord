@@ -24,3 +24,12 @@ client.on('ready', async (bot) => {
       channel.send('Bot Online')
     })
 })
+
+client.on('messageCreate', async (message) => {
+  //
+  if (message.content.toLowerCase() == 'test') {
+    setTimeout(() => {
+      message.channel.send('Test Reply')
+    }, 30000)
+  }
+})
