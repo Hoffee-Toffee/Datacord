@@ -255,6 +255,12 @@ async function order(side, price) {
   fetch('https://paper-api.alpaca.markets/v2/orders', options)
     .then(response => {
       sendMessage(`New Order Created:\n\n    TYPE: \`${side}\`\n    QTY: \`${bodyObj.qty}\`\n    ESTIMATED VALUE: \`${parseFloat(bodyObj.qty) * price}\`\n    STATUS: \`${response.status}\``)
+
+      if (['filled', 'accepted', 'completed'].includes(response.status)) {
+        state.config.midpoint = price
+        state.config.heading = side == 'buy' ? 1 : -1
+        saveConfig()
+      }
     })
     .catch(err => console.error(err));
 }
