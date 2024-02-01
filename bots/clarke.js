@@ -224,11 +224,11 @@ async function order(side, price) {
   switch (side) {
     // Buying
     case 'buy':
-      // Can't if already has stock
-      if (position.qty) return;
+      // Can't if already has stock or not enough cash
+      if (position.qty || (account.cash * state.config.buyPerc >= price)) return;
 
       // Try to buy some stock
-      bodyObj.qty = (parseFloat(account.cash) * state.config.buyPerc / price).toString()
+      bodyObj.qty = Math.ceil(parseFloat(account.cash * state.config.buyPerc) / price)
 
       break;
 
