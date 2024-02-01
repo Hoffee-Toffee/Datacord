@@ -16,25 +16,97 @@ const client = new Client({
 // Log in to Discord with your client's token
 client.login(process.env.CLARKE_DISCORD_TOKEN)
 
-let state = {
-  config: (await loadConfig())
+async function fetchAccount() {
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      ...keys.apca
+    }
+  };
+
+  return await fetch('https://paper-api.alpaca.markets/v2/account', options)
+    .then(response => response.json())
+    .catch(err => console.error(err));
 }
 
-let keys = {
-  apca: {
-    "APCA-API-KEY-ID": process.env.APCA_API_KEY_ID,
-    "APCA-API-SECRET-KEY": process.env.APCA_API_SECRET_KEY,
-  },
-  twlv: process.env.TWLV_API_KEY
+async function fetchPositions() {
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      ...keys.apca
+    }
+  };
+
+  return await fetch('https://paper-api.alpaca.markets/v2/positions/TSLA', options)
+    .then(response => response.json())
+    .catch(err => console.error(err));
 }
 
-client.on('ready', async (bot) => {
-  // Run the main bot loop every 30 seconds, starting 1 second after the nearest 'snap' point
-  state.bot = bot
-  let waitMs = 30000 - new Date().getTime() % 30000
+function sendMessage(msg) {
+  state.bot.channels
+    .fetch('1199976538930688040')
+    .then(async (channel) => {
+      channel.send(msg)
+    })
+}
 
-  setTimeout(() => { setInterval(autoTrader, 30000) }, waitMs + 10000)
-})
+async function fetchPrice() {
+  return await fetch(`https://api.twelvedata.com/typprice?apikey=ed5846d2aa5b43deaaa92f4872d056c3&interval=1min&timezone=Pacific/Auckland&format=JSON&symbol=TSLA&outputsize=1`)
+    .then(async response => {
+      let data = await response.json()
+
+      if (data.status == 'ok') return data.values[0].typprice
+      return
+    })
+    .catch(err => console.error(err));
+}
+
+async function loadConfig() {
+  let field = 'clarke'
+
+  // Get the data from local.json or firebase (then save it to local.json)
+  var fetchedData = JSON.parse(fs.readFileSync('local.json', 'utf8'))
+  if (fetchedData[field] == null) {
+    const docRef = firebase.collection(firebase.datacord, 'data')
+    const docSnap = await firebase.getDocs(docRef)
+    const doc = docSnap.docs.find((doc) => doc.id == field)
+    const final = JSON.parse(doc.data().data)
+    fetchedData[field] = final
+    fs.writeFileSync('local.json', JSON.stringify(fetchedData))
+    return final
+  } else {
+    return fetchedData[field]
+  }
+}
+
+function saveConfig() {
+  let field = 'clarke'
+  let data = state.config
+
+  // Update the data in local.json and firebase
+  const docRef = firebase.collection(firebase.datacord, 'data')
+  const docSnap = firebase.doc(docRef, field)
+  firebase.setDoc(docSnap, { data: JSON.stringify(data) })
+  var fetchedData = JSON.parse(fs.readFileSync('local.json', 'utf8'))
+  fetchedData[field] = data
+  fs.writeFileSync('local.json', JSON.stringify(fetchedData))
+}
+
+async function fetchTimes() {
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      ...keys.apca
+    }
+  };
+
+  return await fetch('https://paper-api.alpaca.markets/v2/clock', options)
+    .then(response => response.json())
+    .catch(err => console.error(err));
+}
 
 async function autoTrader() {
   // Update status to have current portfolio stats
@@ -70,19 +142,6 @@ async function autoTrader() {
   }
 }
 
-async function fetchTimes() {
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      ...keys.apca
-    }
-  };
-
-  return await fetch('https://paper-api.alpaca.markets/v2/clock', options)
-    .then(response => response.json())
-    .catch(err => console.error(err));
-}
 
 async function stockCheck() {
   // Get the current typical stock price
@@ -197,80 +256,22 @@ async function order(side, price) {
     .catch(err => console.error(err));
 }
 
-async function fetchAccount() {
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      ...keys.apca
-    }
-  };
-
-  return await fetch('https://paper-api.alpaca.markets/v2/account', options)
-    .then(response => response.json())
-    .catch(err => console.error(err));
+let state = {
+  config: (await loadConfig())
 }
 
-async function fetchPositions() {
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      ...keys.apca
-    }
-  };
-
-  return await fetch('https://paper-api.alpaca.markets/v2/positions/TSLA', options)
-    .then(response => response.json())
-    .catch(err => console.error(err));
+let keys = {
+  apca: {
+    "APCA-API-KEY-ID": process.env.APCA_API_KEY_ID,
+    "APCA-API-SECRET-KEY": process.env.APCA_API_SECRET_KEY,
+  },
+  twlv: process.env.TWLV_API_KEY
 }
 
-function sendMessage(msg) {
-  state.bot.channels
-    .fetch('1199976538930688040')
-    .then(async (channel) => {
-      channel.send(msg)
-    })
-}
+client.on('ready', async (bot) => {
+  // Run the main bot loop every 30 seconds, starting 1 second after the nearest 'snap' point
+  state.bot = bot
+  let waitMs = 30000 - new Date().getTime() % 30000
 
-async function fetchPrice() {
-  return await fetch(`https://api.twelvedata.com/typprice?apikey=ed5846d2aa5b43deaaa92f4872d056c3&interval=1min&timezone=Pacific/Auckland&format=JSON&symbol=TSLA&outputsize=1`)
-    .then(async response => {
-      let data = await response.json()
-
-      if (data.status == 'ok') return data.values[0].typprice
-      return
-    })
-    .catch(err => console.error(err));
-}
-
-async function loadConfig() {
-  let field = 'clarke'
-
-  // Get the data from local.json or firebase (then save it to local.json)
-  var fetchedData = JSON.parse(fs.readFileSync('local.json', 'utf8'))
-  if (fetchedData[field] == null) {
-    const docRef = firebase.collection(firebase.datacord, 'data')
-    const docSnap = await firebase.getDocs(docRef)
-    const doc = docSnap.docs.find((doc) => doc.id == field)
-    const final = JSON.parse(doc.data().data)
-    fetchedData[field] = final
-    fs.writeFileSync('local.json', JSON.stringify(fetchedData))
-    return final
-  } else {
-    return fetchedData[field]
-  }
-}
-
-function saveConfig() {
-  let field = 'clarke'
-  let data = state.config
-
-  // Update the data in local.json and firebase
-  const docRef = firebase.collection(firebase.datacord, 'data')
-  const docSnap = firebase.doc(docRef, field)
-  firebase.setDoc(docSnap, { data: JSON.stringify(data) })
-  var fetchedData = JSON.parse(fs.readFileSync('local.json', 'utf8'))
-  fetchedData[field] = data
-  fs.writeFileSync('local.json', JSON.stringify(fetchedData))
-}
+  setTimeout(() => { setInterval(autoTrader, 30000) }, waitMs + 10000)
+})
