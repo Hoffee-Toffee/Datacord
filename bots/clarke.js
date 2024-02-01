@@ -1,6 +1,8 @@
 // Login to minutesBot and dataBot with discord.js
 // Require discord.js
+var fs = require('fs')
 const { Client, GatewayIntentBits } = require('discord.js')
+const firebase = require('../firebase.js')
 
 // Create the new client instance including the intents needed for the bot (like presence and guild messages)
 const client = new Client({
@@ -128,7 +130,7 @@ async function autoTrader() {
   // Check if now opening / closing
   else if (state.is_open ? state.now > state.next_close : state.now > state.next_open) {
     state.is_open = !state.is_open
-    // await sendReport()
+    await sendReport()
   }
 
   // If open...
@@ -140,8 +142,9 @@ async function autoTrader() {
     }
 
   }
-}
 
+  updateStatus()
+}
 
 async function stockCheck() {
   // Get the current typical stock price
@@ -254,6 +257,26 @@ async function order(side, price) {
       sendMessage(`New Order Created:\n\n    TYPE: \`${side}\`\n    QTY: \`${bodyObj.qty}\`\n    ESTIMATED VALUE: \`${parseFloat(bodyObj.qty) * price}\`\n    STATUS: \`${response.status}\``)
     })
     .catch(err => console.error(err));
+}
+
+async function updateStatus() {
+  let account = await fetchAccount()
+
+  // Set the bot's presence
+  client.user.setPresence({
+    activities: [
+      {
+        name: `Market: ${state.is_open ? 'Open' : 'Closed'},\n Cash: ${account.cash},\n Equity: ${account.equity},\n Total: ${account.buying_power}`,
+        type: 0,
+      },
+    ],
+  })
+}
+
+async function sendReport() {
+  let account = await fetchAccount()
+
+  sendMessage(`UPDATE:\n\n    Market: ${state.is_open ? 'Open' : 'Closed'}\n    Cash: ${account.cash}\n    Equity: ${account.equity}\n    Total: ${account.buying_power}`)
 }
 
 let state = {}
