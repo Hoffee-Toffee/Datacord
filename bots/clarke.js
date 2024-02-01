@@ -305,5 +305,5 @@ client.on('ready', async (bot) => {
   state.bot = bot
   let waitMs = 30000 - new Date().getTime() % 30000
 
-  setTimeout(() => { setInterval(autoTrader, 30000) }, waitMs + 10000)
+  setTimeout(() => { setInterval(autoTrader, 30000) }, waitMs + 1000)
 })
