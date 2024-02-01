@@ -128,7 +128,7 @@ async function autoTrader() {
   // Check if now opening / closing
   else if (state.is_open ? state.now > state.next_close : state.now > state.next_open) {
     state.is_open = !state.is_open
-    await sendReport()
+    // await sendReport()
   }
 
   // If open...
@@ -256,9 +256,9 @@ async function order(side, price) {
     .catch(err => console.error(err));
 }
 
-let state = {
-  config: (await loadConfig())
-}
+let state = {}
+
+state.config = await loadConfig()
 
 let keys = {
   apca: {
