@@ -113,6 +113,7 @@ async function fetchTimes() {
 async function autoTrader() {
   // Update status to have current portfolio stats
   state.now = new Date()
+  state.account = await fetchAccount()
 
   // Check if market opening / closing times need to be fetched
   if (!state.timestamp || (state.now > state.next_open && state.now > state.next_close)) {
@@ -135,15 +136,7 @@ async function autoTrader() {
 
   // If open...
   if (state.is_open) {
-
-    console.log(state.now)
-    // Check stocks if on a 5-minute rotation
-    if (!(state.now.getMinutes() % 5) && state.now.getSeconds() < 10) {
-      console.log("Checking stocks...")
-      await stockCheck()
-      console.log("Stocks checked.")
-    }
-
+    await stockCheck()
   }
 
   updateStatus()
@@ -269,13 +262,11 @@ async function order(side, price) {
 }
 
 async function updateStatus() {
-  let account = await fetchAccount()
-
   // Set the bot's presence
   client.user.setPresence({
     activities: [
       {
-        name: `Market: ${state.is_open ? 'Open' : 'Closed'},\n Cash: ${account.cash},\n Equity: ${account.equity},\n Total: ${account.buying_power}`,
+        name: `Market: ${state.is_open ? 'Open' : 'Closed'},\n Cash: ${state.account.cash},\n Equity: ${state.account.equity},\n Total: ${state.account.buying_power}`,
         type: 0,
       },
     ],
@@ -283,9 +274,7 @@ async function updateStatus() {
 }
 
 async function sendReport() {
-  let account = await fetchAccount()
-
-  sendMessage(`UPDATE:\n\n    Market: ${state.is_open ? 'Open' : 'Closed'}\n    Cash: ${account.cash}\n    Equity: ${account.equity}\n    Total: ${account.buying_power}`)
+  sendMessage(`UPDATE:\n\n    Market: ${state.is_open ? 'Open' : 'Closed'}\n    Cash: ${state.account.cash}\n    Equity: ${state.account.equity}\n    Total: ${state.account.buying_power}`)
 }
 
 let state = {}
