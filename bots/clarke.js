@@ -168,7 +168,7 @@ async function stockCheck() {
     // If heading is 1...
     case 1:
       // Increase - Update midpoint
-      if (price >= midpoint) {
+      if (price >= state.config.midpoint) {
         state.config.midpoint = price
         saveConfig()
       }
@@ -184,7 +184,7 @@ async function stockCheck() {
     // If heading is -1...
     case -1:
       // Decrease - Update midpoint
-      if (price <= midpoint) {
+      if (price <= state.config.midpoint) {
         state.config.midpoint = price
         saveConfig()
       }
