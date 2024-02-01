@@ -17,7 +17,7 @@ const client = new Client({
 client.login(process.env.CLARKE_DISCORD_TOKEN)
 
 let state = {
-  config: await loadConfig()
+  config: (await loadConfig())
 }
 
 let keys = {
