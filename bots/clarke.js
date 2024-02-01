@@ -138,7 +138,9 @@ async function autoTrader() {
 
     // Check stocks if on a 5-minute rotation
     if (!(state.now.getMinutes() % 5) && state.now.getSeconds() < 10) {
+      console.log("Checking stocks...")
       await stockCheck()
+      console.log("Stocks checked.")
     }
 
   }
