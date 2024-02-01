@@ -123,7 +123,7 @@ async function autoTrader() {
       ...state,
       ...data,
       next_open: new Date(data.next_open),
-      next_close: new Date(date.next_close)
+      next_close: new Date(data.next_close)
     }
 
   }
