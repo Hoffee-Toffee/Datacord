@@ -258,8 +258,6 @@ async function order(side, price) {
 
 let state = {}
 
-state.config = await loadConfig()
-
 let keys = {
   apca: {
     "APCA-API-KEY-ID": process.env.APCA_API_KEY_ID,
@@ -269,6 +267,8 @@ let keys = {
 }
 
 client.on('ready', async (bot) => {
+  state.config = await loadConfig()
+
   // Run the main bot loop every 30 seconds, starting 1 second after the nearest 'snap' point
   state.bot = bot
   let waitMs = 30000 - new Date().getTime() % 30000
