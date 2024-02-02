@@ -274,7 +274,17 @@ async function updateStatus() {
 }
 
 async function sendReport() {
-  sendMessage(`UPDATE:\n\n    Market: ${state.is_open ? 'Open' : 'Closed'}\n    Cash: ${state.account.cash}\n    Equity: ${state.account.equity}\n    Total: ${state.account.buying_power}`)
+  let nextTime = state.is_open ? state.next_close : state.next_open
+
+  let diff = nextTime - state.now
+
+  let days = Math.floor(diff / 86400000)
+  let hours = Math.floor(diff / 3600000 % 24)
+  let minutes = Math.floor(diff / 60000 % 60)
+
+  let delay = [days, hours, minutes].map((x, i) => x ? `${x} ${['day', 'hour', 'minute'][i]}${x > 1 ? 's' : ''}` : 0).filter((x) => x).filter((x, i) => i < 2).join(' and ')
+
+  sendMessage(`UPDATE:\n\n    Market: ${state.is_open ? 'Open' : 'Closed'}\n${state.is_open ? 'Closes' : 'Opens'} in: ${delay}\n    Cash: ${state.account.cash}\n    Equity: ${state.account.equity}\n    Total: ${state.account.buying_power}`)
 }
 
 let state = {}
