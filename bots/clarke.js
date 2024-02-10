@@ -212,8 +212,7 @@ async function order(side, price) {
     symbol: "TSLA",
     side,
     type: "market",
-    time_in_force: "fok",
-    client_order_id: new Date().toISOString()
+    time_in_force: "fok"
   }
 
   // Try to execute the order, only changing the midpoint and heading if successful
@@ -224,7 +223,7 @@ async function order(side, price) {
       if (position.qty || (account.cash * state.config.buyPerc >= price)) return;
 
       // Try to buy some stock
-      bodyObj.qty = Math.ceil(parseFloat(account.cash * state.config.buyPerc) / price)
+      bodyObj.qty = String(Math.ceil(parseFloat(account.cash * state.config.buyPerc) / price))
 
       break;
 
@@ -234,7 +233,7 @@ async function order(side, price) {
       if (!position.qty) return;
 
       // Try to sell all of that stock
-      bodyObj.qty = position.qty
+      bodyObj.qty = String(position.qty)
 
       break;
   }
