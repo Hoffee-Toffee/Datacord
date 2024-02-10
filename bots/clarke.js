@@ -135,7 +135,7 @@ async function autoTrader() {
   }
 
   // If open...
-  if (state.is_open) {
+  if (state.is_open && !(state.now.getMinutes() % 5) && state.now.getSeconds() < 10) {
     await stockCheck()
   }
 
