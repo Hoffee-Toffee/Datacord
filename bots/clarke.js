@@ -41,7 +41,7 @@ async function fetchPositions() {
     }
   };
 
-  return await fetch('https://paper-api.alpaca.markets/v2/positions/TSLA', options)
+  return await fetch('https://paper-api.alpaca.markets/v2/positions', options)
     .then(response => response.json())
     .catch(err => console.error(err));
 }
@@ -55,12 +55,11 @@ function sendMessage(msg) {
 }
 
 async function fetchPrice() {
-  return await fetch(`https://api.twelvedata.com/typprice?apikey=ed5846d2aa5b43deaaa92f4872d056c3&interval=1min&timezone=Pacific/Auckland&format=JSON&symbol=TSLA&outputsize=1`)
+  return await fetch(`https://api.twelvedata.com/typprice?apikey=ed5846d2aa5b43deaaa92f4872d056c3&interval=1min&timezone=Pacific/Auckland&format=JSON&symbol=${Object.keys(state.config.stocks).join()}&outputsize=1`)
     .then(async response => {
       let data = await response.json()
 
-      if (data.status == 'ok') return data.values[0].typprice
-      return
+      return data
     })
     .catch(err => console.error(err));
 }
@@ -143,73 +142,79 @@ async function autoTrader() {
 }
 
 async function stockCheck() {
-  // Get the current typical stock price
-  let price = parseFloat(await fetchPrice())
+  // Get the current typical stock prices
+  let prices = await fetchPrice()
 
-  // If there is no midpoint then set that to the current price and return
-  if (state.config.midpoint == null) {
-    state.config.midpoint = price
-    saveConfig()
-    return
-  }
+  // Loop though each stock
+  for (const [symbol, config] of Object.entries(state.config.stocks)) {
+    const price = parseFloat(prices[symbol].values[0].typprice)
 
-  // Use margin config to calculate heading bounds
-  let lowerBound = Math.min(state.config.midpoint - state.config.marginDiff, state.config.midpoint * (1 - state.config.marginPerc))
-  let upperBound = Math.max(state.config.midpoint + state.config.marginDiff, state.config.midpoint * (1 + state.config.marginPerc))
+    // If there is no midpoint then set that to the current price and return
+    if (config.midpoint == null) {
+      config.midpoint = price
+      saveConfig()
+      return
+    }
 
-  switch (state.config.heading) {
-    // If heading is 1...
-    case 1:
-      // Increase - Update midpoint
-      if (price >= state.config.midpoint) {
-        state.config.midpoint = price
-        saveConfig()
-      }
-      // Decrease by X - Update midpoint, change heading to 0
-      else if (price < lowerBound) {
-        state.config.midpoint = price
-        state.config.heading = 0
-        saveConfig()
-      }
+    // Use margin config to calculate heading bounds
+    let lowerBound = Math.min(config.midpoint - state.config.marginDiff, config.midpoint * (1 - state.config.marginPerc))
+    let upperBound = Math.max(config.midpoint + state.config.marginDiff, config.midpoint * (1 + state.config.marginPerc))
 
-      break;
+    switch (config.heading) {
+      // If heading is 1...
+      case 1:
+        // Increase - Update midpoint
+        if (price >= config.midpoint) {
+          config.midpoint = price
+          saveConfig()
+        }
+        // Decrease by X - Update midpoint, change heading to 0
+        else if (price < lowerBound) {
+          config.midpoint = price
+          config.heading = 0
+          saveConfig()
+        }
 
-    // If heading is -1...
-    case -1:
-      // Decrease - Update midpoint
-      if (price <= state.config.midpoint) {
-        state.config.midpoint = price
-        saveConfig()
-      }
-      // Increase by X - Update midpoint, change heading to 0
-      else if (price > upperBound) {
-        state.config.midpoint = price
-        state.config.heading = 0
-        saveConfig()
-      }
-      break;
+        break;
 
-    // If heading is 0 / undefined / null / other...
-    default:
-      // Increase by X - update midpoint, change heading to 1, buy stock
-      if (price > upperBound) {
-        order("buy", price)
-      }
-      // Decrease by X - update midpoint, change heading to -1, sell stock
-      else if (price < lowerBound) {
-        order("sell", price)
-      }
-      break;
+      // If heading is -1...
+      case -1:
+        // Decrease - Update midpoint
+        if (price <= config.midpoint) {
+          config.midpoint = price
+          saveConfig()
+        }
+        // Increase by X - Update midpoint, change heading to 0
+        else if (price > upperBound) {
+          config.midpoint = price
+          config.heading = 0
+          saveConfig()
+        }
+        break;
+
+      // If heading is 0 / undefined / null / other...
+      default:
+        // Increase by X - update midpoint, change heading to 1, buy stock
+        if (price > upperBound) {
+          order("buy", price, symbol)
+        }
+        // Decrease by X - update midpoint, change heading to -1, sell stock
+        else if (price < lowerBound) {
+          order("sell", price, symbol)
+        }
+        break;
+    }
   }
 }
 
-async function order(side, price) {
+async function order(side, price, symbol) {
   // Get the current position (if any)
-  let position = await fetchPositions()
+  let positions = await fetchPositions()
+  let position = positions.find(pos => pos.symbol == symbol)
   let account = await fetchAccount()
 
   let bodyObj = {
-    symbol: "TSLA",
+    symbol,
     side,
     type: "market",
     time_in_force: "fok"
