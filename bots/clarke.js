@@ -46,9 +46,9 @@ async function fetchPositions() {
     .catch(err => console.error(err));
 }
 
-function sendMessage(msg) {
+function sendMessage(msg, silent = false) {
   state.bot.channels
-    .fetch('1199976538930688040')
+    .fetch(silent ? '1206705530740019230' : '1199976538930688040')
     .then(async (channel) => {
       channel.send(msg)
     })
@@ -93,6 +93,7 @@ function saveConfig() {
   var fetchedData = JSON.parse(fs.readFileSync('local.json', 'utf8'))
   fetchedData[field] = data
   fs.writeFileSync('local.json', JSON.stringify(fetchedData))
+  sendMessage(JSON.stringify(state.config, null, 2), true)
 }
 
 async function fetchTimes() {
