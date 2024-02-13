@@ -171,7 +171,7 @@ async function stockCheck() {
         }
         // Decrease by X - Update midpoint, change heading to 0
         else if (price < lowerBound) {
-          config.midpoint = price
+          config.midpoint = lowerBound
           config.heading = 0
           saveConfig()
         }
@@ -187,7 +187,7 @@ async function stockCheck() {
         }
         // Increase by X - Update midpoint, change heading to 0
         else if (price > upperBound) {
-          config.midpoint = price
+          config.midpoint = upperBound
           config.heading = 0
           saveConfig()
         }
