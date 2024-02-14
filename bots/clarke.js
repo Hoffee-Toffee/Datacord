@@ -139,6 +139,12 @@ async function autoTrader() {
     await stockCheck()
   }
 
+  // Check if there are changes to be saved, and save them
+  if (state.change) {
+    state.change = undefined
+    saveConfig()
+  }
+
   updateStatus()
 }
 
@@ -153,65 +159,68 @@ async function stockCheck() {
     // If there is no midpoint then set that to the current price and return
     if (config.midpoint == null) {
       config.midpoint = price
-      saveConfig()
-      return
+      state.change = true
+    }
+    else {
+      // Use margin config to calculate heading bounds
+      let lowerBound = Math.min(config.midpoint - state.config.marginDiff, config.midpoint * (1 - state.config.marginPerc))
+      let upperBound = Math.max(config.midpoint + state.config.marginDiff, config.midpoint * (1 + state.config.marginPerc))
+
+      switch (config.heading) {
+        // If heading is 1...
+        case 1:
+          // Increase - Update midpoint
+          if (price >= config.midpoint) {
+            config.midpoint = price
+            state.change = true
+          }
+          // Decrease by X - Update midpoint, change heading to 0
+          else if (price < lowerBound) {
+            config.midpoint = lowerBound
+            config.heading = 0
+            state.change = true
+          }
+
+          break;
+
+        // If heading is -1...
+        case -1:
+          // Decrease - Update midpoint
+          if (price <= config.midpoint) {
+            config.midpoint = price
+            state.change = true
+          }
+          // Increase by X - Update midpoint, change heading to 0
+          else if (price > upperBound) {
+            config.midpoint = upperBound
+            config.heading = 0
+            state.change = true
+          }
+          break;
+
+        // If heading is 0 / undefined / null / other...
+        default:
+          // Increase by X - update midpoint, change heading to 1, buy stock
+          if (price > upperBound) {
+            order("buy", price, symbol)
+          }
+          // Decrease by X - update midpoint, change heading to -1, sell stock
+          else if (price < lowerBound) {
+            order("sell", price, symbol)
+          }
+          break;
+      }
+
     }
 
-    // Use margin config to calculate heading bounds
-    let lowerBound = Math.min(config.midpoint - state.config.marginDiff, config.midpoint * (1 - state.config.marginPerc))
-    let upperBound = Math.max(config.midpoint + state.config.marginDiff, config.midpoint * (1 + state.config.marginPerc))
-
-    switch (config.heading) {
-      // If heading is 1...
-      case 1:
-        // Increase - Update midpoint
-        if (price >= config.midpoint) {
-          config.midpoint = price
-          saveConfig()
-        }
-        // Decrease by X - Update midpoint, change heading to 0
-        else if (price < lowerBound) {
-          config.midpoint = lowerBound
-          config.heading = 0
-          saveConfig()
-        }
-
-        break;
-
-      // If heading is -1...
-      case -1:
-        // Decrease - Update midpoint
-        if (price <= config.midpoint) {
-          config.midpoint = price
-          saveConfig()
-        }
-        // Increase by X - Update midpoint, change heading to 0
-        else if (price > upperBound) {
-          config.midpoint = upperBound
-          config.heading = 0
-          saveConfig()
-        }
-        break;
-
-      // If heading is 0 / undefined / null / other...
-      default:
-        // Increase by X - update midpoint, change heading to 1, buy stock
-        if (price > upperBound) {
-          order("buy", price, symbol)
-        }
-        // Decrease by X - update midpoint, change heading to -1, sell stock
-        else if (price < lowerBound) {
-          order("sell", price, symbol)
-        }
-        break;
-    }
   }
+
 }
 
 async function order(side, price, symbol) {
   // Get the current position (if any)
   let positions = await fetchPositions()
-  let position = positions.find(pos => pos.symbol == symbol)
+  let position = positions.find(pos => pos.symbol == symbol) || { qty: 0 }
   let account = await fetchAccount()
 
   let bodyObj = {
@@ -258,9 +267,10 @@ async function order(side, price, symbol) {
       sendMessage(`New Order Created:\n\n    TYPE: \`${side}\`\n    QTY: \`${bodyObj.qty}\`\n    ESTIMATED VALUE: \`${parseFloat(bodyObj.qty) * price}\`\n    STATUS: \`${response.status}\``)
 
       if (['filled', 'accepted', 'completed'].includes(response.status)) {
-        state.config.midpoint = price
-        state.config.heading = side == 'buy' ? 1 : -1
-        saveConfig()
+        config = state.config.stocks[symbol]
+        config.midpoint = price
+        config.heading = side == 'buy' ? 1 : -1
+        state.change = true
       }
     })
     .catch(err => console.error(err));
