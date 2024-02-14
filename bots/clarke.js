@@ -223,6 +223,11 @@ async function order(side, price, symbol) {
   let position = positions.find(pos => pos.symbol == symbol) || { qty: 0 }
   let account = await fetchAccount()
 
+  config = state.config.stocks[symbol]
+  config.midpoint = price
+  config.heading = side == 'buy' ? 1 : -1
+  state.change = true
+
   let bodyObj = {
     symbol,
     side,
@@ -264,12 +269,7 @@ async function order(side, price, symbol) {
 
   fetch('https://paper-api.alpaca.markets/v2/orders', options)
     .then(response => {
-      sendMessage(`New Order Created:\n\n    TYPE: \`${side}\`\n    QTY: \`${bodyObj.qty}\`\n    ESTIMATED VALUE: \`${parseFloat(bodyObj.qty) * price}\`\n    STATUS: \`${response.status}\``)
-
-      config = state.config.stocks[symbol]
-      config.midpoint = price
-      config.heading = side == 'buy' ? 1 : -1
-      state.change = true
+      sendMessage(`New \`${symbol}\`Order Created:\n\n    TYPE: \`${side}\`\n    QTY: \`${bodyObj.qty}\`\n    ESTIMATED VALUE: \`${parseFloat(bodyObj.qty) * price}\`\n    STATUS: \`${response.status}\``)
     })
     .catch(err => console.error(err));
 }
