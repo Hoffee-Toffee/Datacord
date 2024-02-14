@@ -235,10 +235,10 @@ async function order(side, price, symbol) {
     // Buying
     case 'buy':
       // Can't if already has stock or not enough cash
-      if (position.qty || (account.cash * state.config.buyPerc >= price)) return;
+      if (position.qty || (parseFloat(account.buying_power) * state.config.buyPerc >= price)) return;
 
       // Try to buy some stock
-      bodyObj.qty = String(Math.ceil(parseFloat(account.cash * state.config.buyPerc) / price))
+      bodyObj.qty = String(Math.ceil(parseFloat(account.buying_power) * state.config.buyPerc / price))
 
       break;
 
@@ -266,12 +266,10 @@ async function order(side, price, symbol) {
     .then(response => {
       sendMessage(`New Order Created:\n\n    TYPE: \`${side}\`\n    QTY: \`${bodyObj.qty}\`\n    ESTIMATED VALUE: \`${parseFloat(bodyObj.qty) * price}\`\n    STATUS: \`${response.status}\``)
 
-      if (['filled', 'accepted', 'completed'].includes(response.status)) {
-        config = state.config.stocks[symbol]
-        config.midpoint = price
-        config.heading = side == 'buy' ? 1 : -1
-        state.change = true
-      }
+      config = state.config.stocks[symbol]
+      config.midpoint = price
+      config.heading = side == 'buy' ? 1 : -1
+      state.change = true
     })
     .catch(err => console.error(err));
 }
