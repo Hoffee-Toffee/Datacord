@@ -239,11 +239,13 @@ async function order(side, price, symbol) {
   switch (side) {
     // Buying
     case 'buy':
+      // Calc how much $ worth to buy
+      let cost = Math.min(parseFloat(account.buying_power), state.config.buyLimit)
       // Can't if already has stock or not enough cash
-      if (position.qty || (parseFloat(account.buying_power) * state.config.buyPerc <= price)) return;
+      if (position.qty || (cost * state.config.buyPerc <= price)) return;
 
       // Try to buy some stock
-      bodyObj.qty = String(Math.ceil(parseFloat(account.buying_power) * state.config.buyPerc / price))
+      bodyObj.qty = String(Math.floor(cost * state.config.buyPerc / price)) || 1
 
       break;
 
