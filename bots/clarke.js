@@ -241,8 +241,10 @@ async function order(side, price, symbol) {
     case 'buy':
       // Calc how much $ worth to buy
       let cost = Math.min(parseFloat(account.buying_power), state.config.buyLimit)
-      // Can't if already has stock or not enough cash
-      if (position.qty || (cost * state.config.buyPerc <= price)) return;
+      // Can't if already has stock, not enough cash, or is buying for more than last sell
+      if (position.qty || (cost * state.config.buyPerc <= price) || cost > (config.lastValue || 0)) return;
+
+      config.lastValue = cost
 
       // Try to buy some stock
       bodyObj.qty = String(Math.floor(cost * state.config.buyPerc / price)) || 1
@@ -251,8 +253,10 @@ async function order(side, price, symbol) {
 
     // Selling
     case 'sell':
-      // Can't if doesn't have stock
-      if (!position.qty) return;
+      // Can't if doesn't have stock, or if it will return less that the last buy
+      if (!position.qty || cost < (config.lastValue || 100)) return;
+
+      config.lastValue = cost
 
       // Try to sell all of that stock
       bodyObj.qty = String(position.qty)
