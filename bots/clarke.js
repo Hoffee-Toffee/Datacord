@@ -263,6 +263,8 @@ async function order(side, price, symbol) {
 
       break;
   }
+  console.log(config)
+  state.change = true
 
   const options = {
     method: 'POST',
