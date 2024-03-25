@@ -150,11 +150,21 @@ async function autoTrader() {
 
 async function stockCheck() {
   // Get the current typical stock prices
-  let prices = await fetchPrice()
+  let laggedPrices = await fetchPrice()
+  let positions = await fetchPositions()
+
+  let prices = {}
+  positions.forEach(stock, () => {
+    prices[stock.symbol] = parseFloat(stock.current_price)
+  })
+
+  Object.keys(laggedPrices).forEach(symbol, () => {
+    prices[symbol] = parseFloat(laggedPrices[symbol].values[0].typprice) - 10
+  })
 
   // Loop though each stock
   for (const [symbol, config] of Object.entries(state.config.stocks)) {
-    const price = parseFloat(prices[symbol].values[0].typprice)
+    const price = prices[symbol]
 
     // If there is no midpoint then set that to the current price and return
     if (config.midpoint == null) {
