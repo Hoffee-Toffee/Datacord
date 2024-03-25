@@ -154,11 +154,11 @@ async function stockCheck() {
   let positions = await fetchPositions()
 
   let prices = {}
-  positions.forEach(stock, () => {
+  positions.forEach(stock => {
     prices[stock.symbol] = parseFloat(stock.current_price)
   })
 
-  Object.keys(laggedPrices).forEach(symbol, () => {
+  Object.keys(laggedPrices).forEach(symbol => {
     prices[symbol] = parseFloat(laggedPrices[symbol].values[0].typprice) - 10
   })
 
