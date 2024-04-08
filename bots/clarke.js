@@ -54,12 +54,12 @@ function sendMessage(msg, silent = false) {
     })
 }
 
-async function fetchPrice() {
-  return await fetch(`https://api.twelvedata.com/typprice?apikey=ed5846d2aa5b43deaaa92f4872d056c3&interval=1min&timezone=Pacific/Auckland&format=JSON&symbol=${Object.keys(state.config.stocks).join()}&outputsize=1`)
+async function fetchPrice(symbol) {
+  return await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${keys.finn}`)
     .then(async response => {
       let data = await response.json()
 
-      return data
+      return data.c
     })
     .catch(err => console.error(err));
 }
@@ -150,7 +150,6 @@ async function autoTrader() {
 
 async function stockCheck() {
   // Get the current typical stock prices
-  let laggedPrices = await fetchPrice()
   let positions = await fetchPositions()
 
   let prices = {}
@@ -158,13 +157,10 @@ async function stockCheck() {
     prices[stock.symbol] = parseFloat(stock.current_price)
   })
 
-  Object.keys(laggedPrices).forEach(symbol => {
-    prices[symbol] = parseFloat(laggedPrices[symbol].values[0].typprice) - 10
-  })
 
   // Loop though each stock
   for (const [symbol, config] of Object.entries(state.config.stocks)) {
-    const price = prices[symbol]
+    const price = prices[symbol] || await fetchPrice(symbol)
 
     // If there is no midpoint then set that to the current price and return
     if (config.midpoint == null) {
@@ -336,7 +332,8 @@ let keys = {
     "APCA-API-KEY-ID": process.env.APCA_API_KEY_ID,
     "APCA-API-SECRET-KEY": process.env.APCA_API_SECRET_KEY,
   },
-  twlv: process.env.TWLV_API_KEY
+  twlv: process.env.TWLV_API_KEY,
+  finn: process.env.FINN_API_KEY
 }
 
 client.on('ready', async (bot) => {
