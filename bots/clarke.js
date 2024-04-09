@@ -3,6 +3,7 @@
 var fs = require('fs')
 const { Client, GatewayIntentBits } = require('discord.js')
 const firebase = require('../firebase.js')
+const { config } = require('dotenv')
 
 // Create the new client instance including the intents needed for the bot (like presence and guild messages)
 const client = new Client({
@@ -234,6 +235,11 @@ async function order(side, price, symbol) {
   config.heading = side == 'buy' ? 1 : -1
   state.change = true
 
+  if (state.now.getTime() - config.lastTransaction > Math.pow(120, 3)) {
+    config.lastTransaction = state.now.getTime()
+    config.lastValue = (config.lastValue + (2 * config.midpoint)) / 3
+  }
+
   let bodyObj = {
     symbol,
     side,
@@ -251,6 +257,7 @@ async function order(side, price, symbol) {
       if (position.qty || (cost * state.config.buyPerc <= price) || price > (config.lastValue || Infinity)) return;
 
       config.lastValue = price
+      config.lastTransaction = state.now.getTime()
 
       // Try to buy some stock
       bodyObj.qty = String(Math.floor(cost * state.config.buyPerc / price)) || 1
@@ -263,6 +270,7 @@ async function order(side, price, symbol) {
       if (!position.qty || price < (config.lastValue || 0)) return;
 
       config.lastValue = price
+      config.lastTransaction = state.now.getTime()
 
       // Try to sell all of that stock
       bodyObj.qty = String(position.qty)
