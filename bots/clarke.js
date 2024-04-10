@@ -230,14 +230,14 @@ async function order(side, price, symbol) {
   let position = positions.find(pos => pos.symbol == symbol) || { qty: 0 }
   let account = await fetchAccount()
 
-  config = state.config.stocks[symbol]
-  config.midpoint = price
-  config.heading = side == 'buy' ? 1 : -1
+  tickConfig = state.config.stocks[symbol]
+  tickConfig.midpoint = price
+  tickConfig.heading = side == 'buy' ? 1 : -1
   state.change = true
 
-  if (state.now.getTime() - config.lastTransaction > Math.pow(120, 3)) {
-    config.lastTransaction = state.now.getTime()
-    config.lastValue = (config.lastValue + (2 * config.midpoint)) / 3
+  if (state.now.getTime() - tickConfig.lastTransaction > Math.pow(120, 3)) {
+    tickConfig.lastTransaction = state.now.getTime()
+    tickConfig.lastValue = (tickConfig.lastValue + (2 * tickConfig.midpoint)) / 3
   }
 
   let bodyObj = {
@@ -254,10 +254,10 @@ async function order(side, price, symbol) {
       // Calc how much $ worth to buy
       let cost = Math.min(parseFloat(account.buying_power), state.config.buyLimit)
       // Can't if already has stock, not enough cash, or is buying for more than last sell
-      if (position.qty || (cost * state.config.buyPerc <= price) || price > (config.lastValue || Infinity)) return;
+      if (position.qty || (cost * state.config.buyPerc <= price) || price > (tickConfig.lastValue || Infinity)) return;
 
-      config.lastValue = price
-      config.lastTransaction = state.now.getTime()
+      tickConfig.lastValue = price
+      tickConfig.lastTransaction = state.now.getTime()
 
       // Try to buy some stock
       bodyObj.qty = String(Math.floor(cost * state.config.buyPerc / price)) || 1
@@ -267,17 +267,17 @@ async function order(side, price, symbol) {
     // Selling
     case 'sell':
       // Can't if doesn't have stock, or if it will return less that the last buy
-      if (!position.qty || price < (config.lastValue || 0)) return;
+      if (!position.qty || price < (tickConfig.lastValue || 0)) return;
 
-      config.lastValue = price
-      config.lastTransaction = state.now.getTime()
+      tickConfig.lastValue = price
+      tickConfig.lastTransaction = state.now.getTime()
 
       // Try to sell all of that stock
       bodyObj.qty = String(position.qty)
 
       break;
   }
-  console.log(config)
+  console.log(tickConfig)
   state.change = true
 
   const options = {
