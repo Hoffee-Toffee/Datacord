@@ -165,7 +165,7 @@ async function checkSneeze(client) {
 
 async function getData(field) {
   // Get the data from local.json or from firebase if it's not there (and save it to local.json)
-  var fetchedData = JSON.parse(fs.readFileSync('./local.json'))
+  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, './local.json')))
   if (fetchedData[field] == null) {
     const docRef = firebase.collection(firebase.datacord, 'data')
     const docSnap = await firebase.getDocs(docRef)
@@ -184,7 +184,7 @@ function setData(field, data) {
   const docRef = firebase.collection(firebase.datacord, 'data')
   const docSnap = firebase.doc(docRef, field)
   firebase.setDoc(docSnap, { data: JSON.stringify(data) })
-  var fetchedData = JSON.parse(fs.readFileSync('./local.json'))
+  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, './local.json')))
   fetchedData[field] = data
   fs.writeFileSync('./local.json', JSON.stringify(fetchedData))
 

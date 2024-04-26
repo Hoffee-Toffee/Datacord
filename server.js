@@ -43,6 +43,7 @@ const fetchUrl = require('fetch').fetchUrl
 const firebase = require('./firebase.js')
 const sneezeHook = require('./sneezeHook.ts')
 const request = require('request');
+const path = require('path')
 
 var gifLoop = setInterval(checkGIF, 40000) // Every 40 seconds, check if a gif should be sent
 
@@ -99,12 +100,12 @@ app.get('/notify', function (request, response) {
   response.send('Message sent')
 })
 app.get('/local', function (request, response) {
-  response.send(fs.readFileSync('./local.json'))
+  response.send(fs.readFileSync(path.join(__dirname, './local.json')))
 })
 app.get('/update', async function (request, response) {
   var field = request.query.field
 
-  var fetchedData = JSON.parse(fs.readFileSync('./local.json'))
+  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, './local.json')))
 
   const docRef = firebase.collection(firebase.datacord, 'data')
   const docSnap = await firebase.getDocs(docRef)
@@ -273,7 +274,7 @@ function checkGIF() {
 
 async function getData(field) {
   // Get the data from local.json or from firebase if it's not there (and save it to local.json)
-  var fetchedData = JSON.parse(fs.readFileSync('./local.json'))
+  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, './local.json')))
   if (fetchedData[field] == null) {
     const docRef = firebase.collection(firebase.datacord, 'data')
     const docSnap = await firebase.getDocs(docRef)
@@ -292,7 +293,7 @@ function setData(field, data) {
   const docRef = firebase.collection(firebase.datacord, 'data')
   const docSnap = firebase.doc(docRef, field)
   firebase.setDoc(docSnap, { data: JSON.stringify(data) })
-  var fetchedData = JSON.parse(fs.readFileSync('./local.json'))
+  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, './local.json')))
   fetchedData[field] = data
   fs.writeFileSync('./local.json', JSON.stringify(fetchedData))
 }
