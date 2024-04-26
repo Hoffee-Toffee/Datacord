@@ -4,6 +4,7 @@ var fs = require('fs')
 const { Client, GatewayIntentBits } = require('discord.js')
 const firebase = require('../firebase.js')
 const { config } = require('dotenv')
+const path = require('path')
 
 // Create the new client instance including the intents needed for the bot (like presence and guild messages)
 const client = new Client({
