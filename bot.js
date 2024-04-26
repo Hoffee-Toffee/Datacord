@@ -165,14 +165,14 @@ async function checkSneeze(client) {
 
 async function getData(field) {
   // Get the data from local.json or from firebase if it's not there (and save it to local.json)
-  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, './local.json')))
+  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, 'local.json')))
   if (fetchedData[field] == null) {
     const docRef = firebase.collection(firebase.datacord, 'data')
     const docSnap = await firebase.getDocs(docRef)
     const doc = docSnap.docs.find((doc) => doc.id == field)
     const final = JSON.parse(doc.data().data)
     fetchedData[field] = final
-    fs.writeFileSync(path.join(__dirname, './local.json'), JSON.stringify(fetchedData))
+    fs.writeFileSync(path.join(__dirname, 'local.json'), JSON.stringify(fetchedData))
     return final
   } else {
     return fetchedData[field]
@@ -184,9 +184,9 @@ function setData(field, data) {
   const docRef = firebase.collection(firebase.datacord, 'data')
   const docSnap = firebase.doc(docRef, field)
   firebase.setDoc(docSnap, { data: JSON.stringify(data) })
-  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, './local.json')))
+  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, 'local.json')))
   fetchedData[field] = data
-  fs.writeFileSync(path.join(__dirname, './local.json'), JSON.stringify(fetchedData))
+  fs.writeFileSync(path.join(__dirname, 'local.json'), JSON.stringify(fetchedData))
 
   // If it changed the sneezeData, then use the sneezeHooks
   if (field = 'sneezeData') runHooks(data)
