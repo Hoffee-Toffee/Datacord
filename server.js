@@ -112,7 +112,7 @@ app.get('/update', async function (request, response) {
   const doc = docSnap.docs.find((doc) => doc.id == field)
   const final = JSON.parse(doc.data().data)
   fetchedData[field] = final
-  fs.writeFileSync('./local.json', JSON.stringify(fetchedData))
+  fs.writeFileSync(path.join(__dirname, './local.json'), JSON.stringify(fetchedData))
   response.send(`Updated '${field}'`)
 })
 app.get('/vote', function (request, response) {
@@ -281,7 +281,7 @@ async function getData(field) {
     const doc = docSnap.docs.find((doc) => doc.id == field)
     const final = JSON.parse(doc.data().data)
     fetchedData[field] = final
-    fs.writeFileSync('./local.json', JSON.stringify(fetchedData))
+    fs.writeFileSync(path.join(__dirname, './local.json'), JSON.stringify(fetchedData))
     return final
   } else {
     return fetchedData[field]
@@ -295,5 +295,5 @@ function setData(field, data) {
   firebase.setDoc(docSnap, { data: JSON.stringify(data) })
   var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, './local.json')))
   fetchedData[field] = data
-  fs.writeFileSync('./local.json', JSON.stringify(fetchedData))
+  fs.writeFileSync(path.join(__dirname, './local.json'), JSON.stringify(fetchedData))
 }
