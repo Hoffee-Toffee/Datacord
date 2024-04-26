@@ -298,4 +298,4 @@ function setData(field, data) {
   fs.writeFileSync(path.join(__dirname, 'local.json'), JSON.stringify(fetchedData))
 }
 
-export default app
+module.exports = app
