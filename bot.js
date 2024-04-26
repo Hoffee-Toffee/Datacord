@@ -2,6 +2,7 @@ const firebase = require('./firebase.js')
 const fetchUrl = require('fetch').fetchUrl
 const fs = require('fs')
 const request = require('request')
+const path = require('path')
 
 const clarkeBot = require('./bots/clarke.js')
 
