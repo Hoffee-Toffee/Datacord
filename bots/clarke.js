@@ -96,7 +96,7 @@ function saveConfig() {
   var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, '../local.json'), 'utf8'))
   fetchedData[field] = data
   fs.writeFileSync(path.join(__dirname, '../local.json'), JSON.stringify(fetchedData))
-  sendMessage(JSON.stringify(state.config, null, 2), true)
+  // sendMessage(JSON.stringify(state.config, null, 2), true)
 }
 
 async function fetchTimes() {
