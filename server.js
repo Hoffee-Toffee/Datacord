@@ -1,12 +1,5 @@
 require('dotenv').config()
 
-const build = 'b356a744c6a54f95eed8b0868bb8b3de'
-
-if (process.env.BUILD != build) {
-  // Stop the server
-  process.exit(0)
-}
-
 var gifSent = false
 var gifQueries = [
   {
@@ -210,10 +203,6 @@ setInterval(async () => {
 
 app.use('/api/v1/', sneezeHook)
 
-const listener = app.listen(process.env.PORT || 3000, function () {
-  console.log('Your app is listening on port ' + listener.address().port)
-})
-
 function getGif() {
   // Check if time for Sunday GIF
   var currenttime = new Date()
@@ -279,11 +268,6 @@ function checkGIF() {
   // Reset the gifSent variable when a gif hasn't been sent
   else {
     gifSent = false
-  }
-
-  // If out of date version, kill this instance
-  if (process.env.BUILD != build) {
-    process.exit(0)
   }
 }
 
