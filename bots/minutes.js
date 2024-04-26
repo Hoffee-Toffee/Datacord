@@ -36,6 +36,8 @@ function genGreeting(plural = true) {
 var fs = require('fs')
 
 const firebase = require('../firebase.js')
+const path = require('path')
+
 
 module.exports = function (controller) {
   /*
