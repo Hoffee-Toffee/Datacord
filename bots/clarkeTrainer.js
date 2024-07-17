@@ -504,7 +504,8 @@ class Bot {
     // Go through each gene, selecting the value from either parent, randomly
     let childGenes = {}
     for (let gene of genes) {
-      childGenes[gene] = Math.random() < 0.5 ? bot1[gene] : bot2[gene]
+      childGenes[gene] =
+        Math.random() < 0.5 ? bot1.exportBot()[gene] : bot2.exportBot()[gene]
     }
 
     // Initialize the child
