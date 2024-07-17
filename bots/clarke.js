@@ -12,6 +12,12 @@ import {
 import { config } from 'dotenv'
 import { join } from 'path'
 import fetch from 'node-fetch'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+// define __dirname
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Create the new client instance including the intents needed for the bot (like presence and guild messages)
 const client = new Client({

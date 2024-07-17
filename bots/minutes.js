@@ -34,6 +34,12 @@ function genGreeting(plural = true) {
 }
 
 import { readFileSync, writeFileSync } from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+// define __dirname
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 import {
   collection,

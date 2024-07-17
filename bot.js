@@ -11,6 +11,12 @@ import { readFileSync, writeFileSync } from 'fs'
 import requestPkg from 'request'
 const { post } = requestPkg
 import { join } from 'path'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+// define __dirname
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 import './bots/clarke.js'
 import './bots/clarkeTrainer.js'
