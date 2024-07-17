@@ -170,7 +170,7 @@ const now = new Date()
 const nextSixPm = new Date()
 
 nextSixPm.setHours(18 + (now.getHours() >= 18 ? 24 : 0), 0, 0, 0)
-const msRemaining = now.getTime() - nextSixPm.getTime()
+const msRemaining = nextSixPm.getTime() - now.getTime()
 
 // Wait until 6PM, then begin the daily fetch function
 setTimeout(dailyFetch, msRemaining)
