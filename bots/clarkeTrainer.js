@@ -218,11 +218,17 @@ client.on('messageCreate', async (message) => {
         return sendMessage('Invalid key')
       }
 
-      data.config[key] = value
+      // Try to set the value
+      try {
+        data.config[key] = JSON.parse(value)
 
-      // Save the data to local and cloud storage
-      await setData(data)
-      sendMessage(`Set ${key} to ${value}`)
+        // Save the data to local and cloud storage
+        await setData(data)
+        sendMessage(`Set ${key} to ${value}`)
+      } catch (err) {
+        console.error(`Error setting value for ${key}: ${err}`)
+        sendMessage('Invalid value')
+      }
 
       break
     case 'get':
@@ -583,9 +589,16 @@ async function startTraining() {
       newChildren.push(child)
     }
 
-    // Log the best from this generation
+    // Log the best, worst, and average fitness scores
+    const best = population.at(0).getFitness()
+    const worst = population.at(-1).getFitness()
+    const average =
+      population.reduce((sum, bot) => sum + bot.getFitness(), 0) /
+      population.length
     sendMessage(
-      `Generation ${gen + 1}: Best fitness ${population[0].getFitness()}`
+      `Generation ${
+        gen + 1
+      }:\n    Best: ${best}\n    Worst: ${worst}\n    Average: ${average}`
     )
 
     // Replace the old population with the new population and the new children
