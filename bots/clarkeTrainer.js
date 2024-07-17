@@ -487,9 +487,6 @@ class Bot {
   }
   // Function to crossover two genes
   static crossover(bot1, bot2) {
-    bot1 = bot1.exportBot()
-    bot2 = bot2.exportBot()
-
     const genes = [
       'lowerMarginPerc',
       'upperMarginPerc',
