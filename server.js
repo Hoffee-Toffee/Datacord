@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 import path from 'path'
 import { fileURLToPath } from 'url'
+import Discord from 'discord.js'
 
 // define __dirname
 const __filename = fileURLToPath(import.meta.url)
@@ -87,7 +88,6 @@ function sendMessage(message, hookname) {
     var token = process.env.TBOT_TOKEN
   }
 
-  const Discord = require('discord.js')
   const webhook = new Discord.WebhookClient({
     id: id,
     token: token,

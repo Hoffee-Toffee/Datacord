@@ -530,7 +530,9 @@ async function startTraining() {
     let dataCopy = [...stockData]
     let genData = Array(config.roundLen)
       .fill(0)
-      .flatMap(() => dataCopy.splice(Math.floor(dataCopy.length), 1))
+      .flatMap(() =>
+        dataCopy.splice(Math.floor(Math.random() * dataCopy.length), 1)
+      )
 
     for (let round = 0; round < config.roundLen; round++) {
       // Pick a random set from the training data, removing it from the old array
