@@ -29,8 +29,12 @@ const avKey = process.env.AV_API_KEY
 // Log in to Discord with your client's token
 client.login(process.env.CLARKE_DISCORD_TOKEN)
 
+let bot
+
+client.on('ready', (c) => (bot = c))
+
 function sendMessage(msg) {
-  state.bot.channels.fetch(channelId).then(async (channel) => {
+  bot.channels.fetch(channelId).then(async (channel) => {
     channel.send(msg)
   })
 }
