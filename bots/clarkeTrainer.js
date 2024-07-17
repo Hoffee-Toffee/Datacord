@@ -498,15 +498,20 @@ class Bot {
       'ignoreFailedOrder',
     ]
 
+    console.log(bot1)
+
+    const config = bot1.config
+    bot1 = bot1.exportBot()
+    bot2 = bot2.exportBot()
+
     // Go through each gene, selecting the value from either parent, randomly
     let childGenes = {}
     for (let gene of genes) {
-      childGenes[gene] =
-        Math.random() < 0.5 ? bot1.exportBot()[gene] : bot2.exportBot()[gene]
+      childGenes[gene] = Math.random() < 0.5 ? bot1[gene] : bot2[gene]
     }
 
     // Initialize the child
-    let child = new Bot(bot1.config, childGenes)
+    let child = new Bot(config, childGenes)
 
     // Try to mutate the child
     child.tryMutate(true)
@@ -568,6 +573,8 @@ async function startTraining() {
       // Use a roulette algorithm to select two different members of the population to mate
       let parents = roulette(newPopulation)
 
+      console.log(parents)
+
       // Crossover and mutate the child
       let child = Bot.crossover(...parents)
       newChildren.push(child)
@@ -591,6 +598,7 @@ async function startTraining() {
 }
 
 function roulette(population) {
+  population = [...population]
   return Array(2)
     .fill(0)
     .map(() => {
@@ -605,7 +613,7 @@ function roulette(population) {
       // Find the index of the first slice end that is greater than or equal to the random value
       let selectedIndex = sliceEnds.findIndex((end) => randomValue >= end)
 
-      // Remove the selected bot from the population for the next iteration
+      // Return the two selected parents
       return population.splice(selectedIndex, 1)[0]
     })
 }
