@@ -1,4 +1,6 @@
-require('dotenv').config()
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 var gifSent = false
 var gifQueries = [
@@ -36,14 +38,21 @@ var gifQueries = [
   },
 ]
 
-const fs = require('fs')
-const express = require('express')
+import { readFileSync, writeFileSync } from 'fs'
+import express, { static as _static, urlencoded, json as _json } from 'express'
 const app = express()
-const fetchUrl = require('fetch').fetchUrl
-const firebase = require('./firebase.js')
-const sneezeHook = require('./sneezeHook.ts')
-const request = require('request');
-const path = require('path')
+import { fetchUrl } from 'fetch'
+import {
+  collection,
+  datacord,
+  getDocs,
+  doc as _doc,
+  setDoc,
+} from './firebase.js'
+import sneezeHook from './sneezeHook.js'
+import requestPkg from 'request'
+const { post } = requestPkg
+import { join } from 'path'
 
 var gifLoop = setInterval(checkGIF, 40000) // Every 40 seconds, check if a gif should be sent
 
@@ -51,7 +60,7 @@ var gifLoop = setInterval(checkGIF, 40000) // Every 40 seconds, check if a gif s
 checkGIF()
 
 // const discordBotkit = require('botkit-discord')
-const discordBot = require('./bot')
+import './bot.js'
 
 function sendMessage(message, hookname) {
   console.log('Sending message "' + message + '" to ' + hookname + ' webhook')
@@ -84,9 +93,9 @@ function sendMessage(message, hookname) {
   })
 }
 
-app.use(express.static('public'))
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(_static('public'))
+app.use(urlencoded({ extended: true }))
+app.use(_json())
 
 app.get('/wakeup', function (request, response) {
   response.send('Wakeup successful.')
@@ -100,19 +109,19 @@ app.get('/notify', function (request, response) {
   response.send('Message sent')
 })
 app.get('/local', function (request, response) {
-  response.send(fs.readFileSync(path.join(__dirname, 'local.json')))
+  response.send(readFileSync(join(__dirname, 'local.json')))
 })
 app.get('/update', async function (request, response) {
   var field = request.query.field
 
-  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, 'local.json')))
+  var fetchedData = JSON.parse(readFileSync(join(__dirname, 'local.json')))
 
-  const docRef = firebase.collection(firebase.datacord, 'data')
-  const docSnap = await firebase.getDocs(docRef)
+  const docRef = collection(datacord, 'data')
+  const docSnap = await getDocs(docRef)
   const doc = docSnap.docs.find((doc) => doc.id == field)
   const final = JSON.parse(doc.data().data)
   fetchedData[field] = final
-  fs.writeFileSync(path.join(__dirname, 'local.json'), JSON.stringify(fetchedData))
+  writeFileSync(join(__dirname, 'local.json'), JSON.stringify(fetchedData))
   response.send(`Updated '${field}'`)
 })
 app.get('/vote', function (request, response) {
@@ -177,27 +186,24 @@ setInterval(async () => {
   const hooks = await getData('hooks')
 
   // Filter out all that have expired
-  const expired = hooks.filter(hook => hook.expires <= new Date().getTime())
+  const expired = hooks.filter((hook) => hook.expires <= new Date().getTime())
 
-  expired.forEach(hook => {
+  expired.forEach((hook) => {
     try {
       const options = {
         url: hook.webhookUrl,
         method: 'POST',
         json: true,
-        body: { expired: true }
-      };
+        body: { expired: true },
+      }
 
-      request.post(options)
-    }
-    catch (error) {
-
-    }
+      post(options)
+    } catch (error) {}
   })
 
   // Update hooks
   if (expired.length) {
-    const active = hooks.filter(hook => hook.expires > new Date().getTime())
+    const active = hooks.filter((hook) => hook.expires > new Date().getTime())
     setData('hooks', active)
   }
 }, 1000)
@@ -251,9 +257,9 @@ function checkGIF() {
 
   console.log(
     'Checking for gif, current time is ' +
-    currenttime.getHours() +
-    ':' +
-    currenttime.getMinutes()
+      currenttime.getHours() +
+      ':' +
+      currenttime.getMinutes()
   )
 
   // Send a gif every 2 hours from 8am till 2am
@@ -274,14 +280,14 @@ function checkGIF() {
 
 async function getData(field) {
   // Get the data from local.json or from firebase if it's not there (and save it to local.json)
-  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, 'local.json')))
+  var fetchedData = JSON.parse(readFileSync(join(__dirname, 'local.json')))
   if (fetchedData[field] == null) {
-    const docRef = firebase.collection(firebase.datacord, 'data')
-    const docSnap = await firebase.getDocs(docRef)
+    const docRef = collection(datacord, 'data')
+    const docSnap = await getDocs(docRef)
     const doc = docSnap.docs.find((doc) => doc.id == field)
     const final = JSON.parse(doc.data().data)
     fetchedData[field] = final
-    fs.writeFileSync(path.join(__dirname, 'local.json'), JSON.stringify(fetchedData))
+    writeFileSync(join(__dirname, 'local.json'), JSON.stringify(fetchedData))
     return final
   } else {
     return fetchedData[field]
@@ -290,12 +296,12 @@ async function getData(field) {
 
 function setData(field, data) {
   // Update the firebase data and local.json
-  const docRef = firebase.collection(firebase.datacord, 'data')
-  const docSnap = firebase.doc(docRef, field)
-  firebase.setDoc(docSnap, { data: JSON.stringify(data) })
-  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, 'local.json')))
+  const docRef = collection(datacord, 'data')
+  const docSnap = _doc(docRef, field)
+  setDoc(docSnap, { data: JSON.stringify(data) })
+  var fetchedData = JSON.parse(readFileSync(join(__dirname, 'local.json')))
   fetchedData[field] = data
-  fs.writeFileSync(path.join(__dirname, 'local.json'), JSON.stringify(fetchedData))
+  writeFileSync(join(__dirname, 'local.json'), JSON.stringify(fetchedData))
 }
 
-module.exports = app
+export default app

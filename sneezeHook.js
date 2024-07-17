@@ -1,12 +1,12 @@
-const express = require('express')
+import express from 'express'
 const router = express.Router()
-const fs = require('fs')
-const firebase = require('./firebase.js')
-const request = require('request')
+import fs from 'fs'
+import * as firebase from './firebase.js'
+import request from 'request'
 
 async function getData(field) {
   // Get the data from local.json or from firebase if it's not there (and save it to local.json)
-  var fetchedData = JSON.parse(fs.readFileSync('./local.json'))
+  var fetchedData = JSON.parse(fs.readFileSync('./local.json').toString())
   if (fetchedData[field] == null) {
     const docRef = firebase.collection(firebase.datacord, 'data')
     const docSnap = await firebase.getDocs(docRef)
@@ -94,9 +94,9 @@ function setData(field, data) {
   const docRef = firebase.collection(firebase.datacord, 'data')
   const docSnap = firebase.doc(docRef, field)
   firebase.setDoc(docSnap, { data: JSON.stringify(data) })
-  var fetchedData = JSON.parse(fs.readFileSync('./local.json'))
+  var fetchedData = JSON.parse(fs.readFileSync('./local.json').toString())
   fetchedData[field] = data
   fs.writeFileSync('./local.json', JSON.stringify(fetchedData))
 }
 
-module.exports = router
+export default router

@@ -33,13 +33,18 @@ function genGreeting(plural = true) {
   return greeting.charAt(0).toUpperCase() + greeting.slice(1)
 }
 
-var fs = require('fs')
+import { readFileSync, writeFileSync } from 'fs'
 
-const firebase = require('../firebase.js')
-const path = require('path')
+import {
+  collection,
+  datacord,
+  getDocs,
+  doc as _doc,
+  setDoc,
+} from '../firebase.js'
+import { join } from 'path'
 
-
-module.exports = function (controller) {
+export default function (controller) {
   /*
     .greet                        - Replies with a random greeting.
 
@@ -361,8 +366,9 @@ module.exports = function (controller) {
       var list = 'Timers: \n'
 
       timers.forEach((timer) => {
-        list += `**${timer.title}** - ${timer.datetime}${timer.estimated ? ' (approx)' : ''
-          }\n`
+        list += `**${timer.title}** - ${timer.datetime}${
+          timer.estimated ? ' (approx)' : ''
+        }\n`
       })
 
       // Reply with a list of all timers
@@ -430,8 +436,9 @@ module.exports = function (controller) {
       // Join the units with commas and "and" at the end
       var diffmessage = units.join(', ').replace(/, ([^,]*)$/, ' and $1')
 
-      var text = `**${timer.title}**\n... in ${timer.estimated ? 'approximately ' : ''
-        }${diffmessage}`
+      var text = `**${timer.title}**\n... in ${
+        timer.estimated ? 'approximately ' : ''
+      }${diffmessage}`
 
       // Reply with the time difference
       bot.reply(message, text)
@@ -494,21 +501,21 @@ module.exports = function (controller) {
       bot.reply(
         message,
         'Commands: \n' +
-        '**.add ' +
-        '"title" "datetime"' +
-        '** - Add a timer \n' +
-        '**.remove ' +
-        '"title"' +
-        '** - Remove a timer \n' +
-        '**.edit ' +
-        '"title" "new title" "new datetime"' +
-        '** - Edit a timer \n' +
-        '**.list** - List all timers \n' +
-        '**.full ' +
-        '"title"' +
-        '** - Show the full amount of time left for a timer \n' +
-        // "**.pick/.spin/.movie/.wheel** - Pick a random movie from the list \n" +
-        '**.help** - Show this message'
+          '**.add ' +
+          '"title" "datetime"' +
+          '** - Add a timer \n' +
+          '**.remove ' +
+          '"title"' +
+          '** - Remove a timer \n' +
+          '**.edit ' +
+          '"title" "new title" "new datetime"' +
+          '** - Edit a timer \n' +
+          '**.list** - List all timers \n' +
+          '**.full ' +
+          '"title"' +
+          '** - Show the full amount of time left for a timer \n' +
+          // "**.pick/.spin/.movie/.wheel** - Pick a random movie from the list \n" +
+          '**.help** - Show this message'
       )
     }
   )
@@ -516,14 +523,16 @@ module.exports = function (controller) {
 
 async function getData(field) {
   // Get the data from local.json or firebase (then save it to local.json)
-  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, '../local.json'), 'utf8'))
+  var fetchedData = JSON.parse(
+    readFileSync(join(__dirname, '../local.json'), 'utf8')
+  )
   if (fetchedData[field] == null) {
-    const docRef = firebase.collection(firebase.datacord, 'data')
-    const docSnap = await firebase.getDocs(docRef)
+    const docRef = collection(datacord, 'data')
+    const docSnap = await getDocs(docRef)
     const doc = docSnap.docs.find((doc) => doc.id == field)
     const final = JSON.parse(doc.data().data)
     fetchedData[field] = final
-    fs.writeFileSync(path.join(__dirname, '../local.json'), JSON.stringify(fetchedData))
+    writeFileSync(join(__dirname, '../local.json'), JSON.stringify(fetchedData))
     return final
   } else {
     return fetchedData[field]
@@ -532,10 +541,12 @@ async function getData(field) {
 
 function setData(field, data) {
   // Update the data in local.json and firebase
-  const docRef = firebase.collection(firebase.datacord, 'data')
-  const docSnap = firebase.doc(docRef, field)
-  firebase.setDoc(docSnap, { data: JSON.stringify(data) })
-  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, '../local.json'), 'utf8'))
+  const docRef = collection(datacord, 'data')
+  const docSnap = _doc(docRef, field)
+  setDoc(docSnap, { data: JSON.stringify(data) })
+  var fetchedData = JSON.parse(
+    readFileSync(join(__dirname, '../local.json'), 'utf8')
+  )
   fetchedData[field] = data
-  fs.writeFileSync(path.join(__dirname, '../local.json'), JSON.stringify(fetchedData))
+  writeFileSync(join(__dirname, '../local.json'), JSON.stringify(fetchedData))
 }

@@ -1,6 +1,6 @@
-const fs = require('fs')
+import { readFile } from 'fs'
 var linesdata = ''
-fs.readFile('./lines.json', function (err, data) {
+readFile('./lines.json', function (err, data) {
   linesdata = JSON.parse(data)
 })
 var realbotname = process.env.REALBOTNAME
@@ -27,7 +27,7 @@ var line = ''
 
 var x
 var y
-module.exports = function (controller) {
+export default function (controller) {
   controller.hears(
     prefix + 'line',
     ['ambient', 'direct_message', 'mention'],

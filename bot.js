@@ -1,11 +1,19 @@
-const firebase = require('./firebase.js')
-const fetchUrl = require('fetch').fetchUrl
-const fs = require('fs')
-const request = require('request')
-const path = require('path')
+import {
+  collection,
+  datacord,
+  getDocs,
+  doc as _doc,
+  setDoc,
+  supedb,
+} from './firebase.js'
+import { fetchUrl } from 'fetch'
+import { readFileSync, writeFileSync } from 'fs'
+import requestPkg from 'request'
+const { post } = requestPkg
+import { join } from 'path'
 
-const clarkeBot = require('./bots/clarke.js')
-const clarkeTrainer = require('./bots/clarkeTrainer.js')
+import './bots/clarke.js'
+import './bots/clarkeTrainer.js'
 
 /*  BOTKIT SECTION START
 
@@ -89,43 +97,56 @@ async function checkGIF() {
 }
 
 function checkDate(currentDate) {
-  let event = "Saw XI";
-  let targetDate = new Date('27 September 2024');
+  let event = 'Saw XI'
+  let targetDate = new Date('27 September 2024')
 
   // Calculate the time difference in milliseconds
-  const timeDifference = targetDate - currentDate;
+  const timeDifference = targetDate - currentDate
 
   // Calculate years, months, weeks, and days
-  const years = targetDate.getFullYear() - currentDate.getFullYear();
-  const currentYearMonth = currentDate.getFullYear() * 12 + currentDate.getMonth();
-  const targetYearMonth = targetDate.getFullYear() * 12 + targetDate.getMonth();
-  const months = targetYearMonth - currentYearMonth;
-  const weeks = Math.floor(timeDifference / (7 * 24 * 60 * 60 * 1000));
-  const days = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
+  const years = targetDate.getFullYear() - currentDate.getFullYear()
+  const currentYearMonth =
+    currentDate.getFullYear() * 12 + currentDate.getMonth()
+  const targetYearMonth = targetDate.getFullYear() * 12 + targetDate.getMonth()
+  const months = targetYearMonth - currentYearMonth
+  const weeks = Math.floor(timeDifference / (7 * 24 * 60 * 60 * 1000))
+  const days = Math.floor(timeDifference / (24 * 60 * 60 * 1000))
 
   // If a year or more away (on this day)
-  if (years > 0 && targetDate.getDate() === currentDate.getDate() && targetDate.getMonth() === currentDate.getMonth()) {
-    return `${years} year${years - 1 ? 's' : ''} until ${event}!`;
+  if (
+    years > 0 &&
+    targetDate.getDate() === currentDate.getDate() &&
+    targetDate.getMonth() === currentDate.getMonth()
+  ) {
+    return `${years} year${years - 1 ? 's' : ''} until ${event}!`
   }
 
   // If 11 months or less away (on this day)
-  if (months > 0 && months <= 11 && targetDate.getDate() === currentDate.getDate()) {
-    return `${months} month${months - 1 ? 's' : ''} until ${event}!`;
+  if (
+    months > 0 &&
+    months <= 11 &&
+    targetDate.getDate() === currentDate.getDate()
+  ) {
+    return `${months} month${months - 1 ? 's' : ''} until ${event}!`
   }
 
   // If a week or more away but less than a month (on this day)
-  if (weeks > 0 && weeks <= 3 && targetDate.getDate() === currentDate.getDate()) {
-    return `${weeks} week${weeks - 1 ? 's' : ''} until ${event}!`;
+  if (
+    weeks > 0 &&
+    weeks <= 3 &&
+    targetDate.getDate() === currentDate.getDate()
+  ) {
+    return `${weeks} week${weeks - 1 ? 's' : ''} until ${event}!`
   }
 
   // If 5, 3, 2, or 1 day away (on this day)
   if ([5, 3, 2, 1].includes(days)) {
-    return `${days} day${days - 1 ? 's' : ''} until ${event}!`;
+    return `${days} day${days - 1 ? 's' : ''} until ${event}!`
   }
 
   // If today
   if (targetDate.toDateString() === currentDate.toDateString()) {
-    return `Woohoo! ${event} is finally here!`;
+    return `Woohoo! ${event} is finally here!`
   }
 }
 
@@ -144,15 +165,15 @@ async function checkSneeze(client) {
         let sneezes = parseInt(activities[0].state.split(' ')[0])
         let updated = activities[0].createdTimestamp
 
-
         if (sneezes != sneezeData.count) {
-          let change = `${(sneezes - sneezeData.count) > 0 ? '+' : ''}${sneezes - sneezeData.count}`
+          let change = `${sneezes - sneezeData.count > 0 ? '+' : ''}${
+            sneezes - sneezeData.count
+          }`
           user.send(`${change} sneezes:\n${sneezeData.count} -> ${sneezes}`)
           sneezeData = {
             ...sneezeData,
             count: sneezes,
             updated,
-
           }
           setData('sneezeData', sneezeData)
 
@@ -167,14 +188,14 @@ async function checkSneeze(client) {
 
 async function getData(field) {
   // Get the data from local.json or from firebase if it's not there (and save it to local.json)
-  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, 'local.json')))
+  var fetchedData = JSON.parse(readFileSync(join(__dirname, 'local.json')))
   if (fetchedData[field] == null) {
-    const docRef = firebase.collection(firebase.datacord, 'data')
-    const docSnap = await firebase.getDocs(docRef)
+    const docRef = collection(datacord, 'data')
+    const docSnap = await getDocs(docRef)
     const doc = docSnap.docs.find((doc) => doc.id == field)
     const final = JSON.parse(doc.data().data)
     fetchedData[field] = final
-    fs.writeFileSync(path.join(__dirname, 'local.json'), JSON.stringify(fetchedData))
+    writeFileSync(join(__dirname, 'local.json'), JSON.stringify(fetchedData))
     return final
   } else {
     return fetchedData[field]
@@ -183,22 +204,22 @@ async function getData(field) {
 
 function setData(field, data) {
   // Update the firebase data and local.json
-  const docRef = firebase.collection(firebase.datacord, 'data')
-  const docSnap = firebase.doc(docRef, field)
-  firebase.setDoc(docSnap, { data: JSON.stringify(data) })
-  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, 'local.json')))
+  const docRef = collection(datacord, 'data')
+  const docSnap = _doc(docRef, field)
+  setDoc(docSnap, { data: JSON.stringify(data) })
+  var fetchedData = JSON.parse(readFileSync(join(__dirname, 'local.json')))
   fetchedData[field] = data
-  fs.writeFileSync(path.join(__dirname, 'local.json'), JSON.stringify(fetchedData))
+  writeFileSync(join(__dirname, 'local.json'), JSON.stringify(fetchedData))
 
   // If it changed the sneezeData, then use the sneezeHooks
-  if (field = 'sneezeData') runHooks(data)
+  if ((field = 'sneezeData')) runHooks(data)
 }
 
 async function runHooks(currentData) {
   const hooks = await getData('hooks')
 
   // Loop though each hook, sending the data to each
-  hooks.forEach(hook => {
+  hooks.forEach((hook) => {
     try {
       const options = {
         url: hook.webhookUrl,
@@ -206,15 +227,12 @@ async function runHooks(currentData) {
         json: true,
         body: {
           timestamp: new Date().getTime(),
-          currentData
-        }
-      };
+          currentData,
+        },
+      }
 
-      request.post(options)
-    }
-    catch (error) {
-
-    }
+      post(options)
+    } catch (error) {}
   })
 }
 
@@ -226,20 +244,20 @@ async function setSneeze(day, count = '0', confirmed = false) {
   switch (String(count).charAt(0)) {
     case '+': // Add
       count = oldCount + parseInt(count.slice(1))
-      break;
+      break
 
     case '-': // Minus
       count = oldCount - parseInt(count.slice(1))
-      break;
+      break
 
     default: // Set
       count = parseInt(count)
-      break;
+      break
   }
 
   sneezeData.calendar[day] = {
     count,
-    confirmed
+    confirmed,
   }
 
   setData('sneezeData', sneezeData)
@@ -247,8 +265,8 @@ async function setSneeze(day, count = '0', confirmed = false) {
 
 async function getSupeData(id) {
   // Get the timeline with the given document ID
-  const docRef = firebase.collection(firebase.supedb, 'timelines')
-  const docSnap = await firebase.getDocs(docRef)
+  const docRef = collection(supedb, 'timelines')
+  const docSnap = await getDocs(docRef)
   const doc = docSnap.docs.find((doc) => doc.id == id)
   const final = JSON.parse(doc.data().map)
   return final
@@ -256,8 +274,8 @@ async function getSupeData(id) {
 
 async function getSupeBackupData(id) {
   // Get the timeline with the given document ID
-  const docRef = firebase.collection(firebase.datacord, 'timelines')
-  const docSnap = await firebase.getDocs(docRef)
+  const docRef = collection(datacord, 'timelines')
+  const docSnap = await getDocs(docRef)
   const doc = docSnap.docs.find((doc) => doc.id == id)
   const final = JSON.parse(doc.data().map)
   return final
@@ -265,9 +283,9 @@ async function getSupeBackupData(id) {
 
 function setSupeBackupData(id, map) {
   // Set the timeline with the given document ID
-  const docRef = firebase.collection(firebase.datacord, 'timelines')
-  const docSnap = firebase.doc(docRef, id)
-  firebase.setDoc(docSnap, { map: JSON.stringify(map) })
+  const docRef = collection(datacord, 'timelines')
+  const docSnap = _doc(docRef, id)
+  setDoc(docSnap, { map: JSON.stringify(map) })
 }
 
 var linesdata = ''
@@ -614,8 +632,8 @@ const interupts = [
 
 // Login to minutesBot and dataBot with discord.js
 // Require discord.js
-const { Client, GatewayIntentBits } = require('discord.js')
-const { time, error } = require('console')
+import { Client, GatewayIntentBits } from 'discord.js'
+import { time, error } from 'console'
 
 // Create the new clients instances including the intents needed for the bots like presence and guild messages
 const minutesClient = new Client({
@@ -624,7 +642,7 @@ const minutesClient = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildPresences,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMessageReactions
+    GatewayIntentBits.GuildMessageReactions,
   ],
 })
 
@@ -650,7 +668,9 @@ dataClient.login(process.env.DATA_DISCORD_TOKEN)
 jigClient.login(process.env.JIG_DISCORD_TOKEN)
 
 jigClient.on('ready', (client) => {
-  var gifLoop = setInterval(() => { checkGIF() }, 40000) // Every 40 seconds, check if a gif should be sent
+  var gifLoop = setInterval(() => {
+    checkGIF()
+  }, 40000) // Every 40 seconds, check if a gif should be sent
 
   // Only start the bots after the first check is done
   checkGIF()
@@ -755,7 +775,9 @@ minutesClient.on('ready', async (client) => {
 
   setTimeout(() => {
     // Run the timer loop just over every second
-    setInterval(() => { timer(client) }, 800)
+    setInterval(() => {
+      timer(client)
+    }, 800)
     console.log('Timers set and are being checked every 800ms.')
   }, timecheck * 1111)
 
@@ -777,7 +799,9 @@ minutesClient.on('ready', async (client) => {
   let msLeft = reportTime - Date.now()
 
   // Set a timeout to run the 'sendReport' function
-  setTimeout(() => { sendReport(client, reportTime) }, msLeft)
+  setTimeout(() => {
+    sendReport(client, reportTime)
+  }, msLeft)
 })
 
 dataClient.on('ready', () => {
@@ -795,10 +819,7 @@ minutesClient.on('messageCreate', async (message) => {
     return
   }
   // Exit if a bot
-  if (
-    message.author.bot
-  )
-    return
+  if (message.author.bot) return
 
   // Blacklist commands
   if (['.blacklist', '.bl'].includes(message.content.toLowerCase())) {
@@ -820,7 +841,9 @@ minutesClient.on('messageCreate', async (message) => {
         }
 
         msg.channel.send(
-          `GIF has been ${removing ? 'removed from' : 'added to'} the blacklist.`
+          `GIF has been ${
+            removing ? 'removed from' : 'added to'
+          } the blacklist.`
         )
 
         // Update the blacklist
@@ -844,12 +867,16 @@ minutesClient.on('messageCreate', async (message) => {
       .then(async (msg) => {
         console.log(msg)
 
-        let embed;
+        let embed
 
         try {
           embed = msg.embeds[0].data
 
-          if (embed && !embed.title.endsWith('✅') && ['-', '+'].includes(message.content[0])) {
+          if (
+            embed &&
+            !embed.title.endsWith('✅') &&
+            ['-', '+'].includes(message.content[0])
+          ) {
             let sneezeData = await getData('sneezeData')
 
             let day = new Date(embed.timestamp).toLocaleDateString('en-NZ')
@@ -862,20 +889,23 @@ minutesClient.on('messageCreate', async (message) => {
 
             count += change
             todayCount -= change
-
-            embed.title = `${count} sneeze${count != 1 ? 's' : ''} recorded today`,
-
+            ;(embed.title = `${count} sneeze${
+              count != 1 ? 's' : ''
+            } recorded today`),
               message.edit({ embeds: [embed] })
 
             setSneeze(day, count, false)
             setSneeze(today, todayCount, false)
 
             msg.channel.send(
-              `${Math.abs(change)} sneeze${Math.abs(change) != 1 ? 's' : ''} transferred from ${change >= 0 ? `${today} to ${day}` : `${day} to ${today}`}.`,
+              `${Math.abs(change)} sneeze${
+                Math.abs(change) != 1 ? 's' : ''
+              } transferred from ${
+                change >= 0 ? `${today} to ${day}` : `${day} to ${today}`
+              }.`
             )
           }
-        }
-        catch (error) {
+        } catch (error) {
           console.error(error)
         }
       })
@@ -883,11 +913,11 @@ minutesClient.on('messageCreate', async (message) => {
 })
 
 let colors = {
-  green: 0x008A0E,
-  blue: 0x1071E5,
-  yellow: 0xFCCE14,
-  orange: 0xCC4E00,
-  red: 0xE81313,
+  green: 0x008a0e,
+  blue: 0x1071e5,
+  yellow: 0xfcce14,
+  orange: 0xcc4e00,
+  red: 0xe81313,
   black: 0x000000,
 }
 
@@ -903,8 +933,7 @@ async function sendReport(client, time) {
 
   try {
     count = sneezeData.calendar[now.toLocaleDateString('en-NZ')].count
-  }
-  catch (err) {
+  } catch (err) {
     console.error(err)
   }
 
@@ -918,14 +947,14 @@ async function sendReport(client, time) {
         timestamp: closeTime,
         footer: {
           text: `Total: ${total}`,
-        }
+        },
       },
-    ]
+    ],
   }
 
   let channel = client.channels.cache.get(process.env.MINUTES_ID)
 
-  channel.send(embed).then(msg => msg.react("👍"))
+  channel.send(embed).then((msg) => msg.react('👍'))
 
   // Prepare for next week
 
@@ -937,7 +966,9 @@ async function sendReport(client, time) {
   let msLeft = reportTime - Date.now()
 
   // Set a timeout to run the 'sendReport' function
-  setTimeout(() => { sendReport(client, reportTime) }, msLeft)
+  setTimeout(() => {
+    sendReport(client, reportTime)
+  }, msLeft)
 }
 
 minutesClient.on('messageReactionAdd', async (reaction, user) => {
@@ -945,20 +976,18 @@ minutesClient.on('messageReactionAdd', async (reaction, user) => {
 
   if (msg.author.id === user.id) {
     // the reaction is coming from the same user who posted the message
-    return;
+    return
   }
 
-  let embed;
+  let embed
 
   try {
     embed = msg.embeds[0].data
-  }
-  catch (error) {
+  } catch (error) {
     console.error(error)
   }
 
-  if (reaction.emoji.name == "👍") {
-
+  if (reaction.emoji.name == '👍') {
     if (!embed.title.endsWith('✅')) {
       embed.color = colors.green
       embed.title = `${embed.title}\n✅`
@@ -1004,7 +1033,8 @@ jigClient.on('messageCreate', async (message) => {
       }
 
       msg.channel.send(
-        `This GIF will ${removing ? 'no longer' : 'now'
+        `This GIF will ${
+          removing ? 'no longer' : 'now'
         } be excluded from selection.`
       )
 
@@ -1480,29 +1510,29 @@ async function timer(client, sort = false) {
       // Seconds will be in units of 10 when paired with minutes, otherwise in units of 1
       var messages = [
         Math.floor(difference / (1000 * 3600 * 24 * 365)) +
-        ' years and ' +
-        Math.floor((difference / (1000 * 3600 * 24 * 30)) % 12) +
-        ' months',
+          ' years and ' +
+          Math.floor((difference / (1000 * 3600 * 24 * 30)) % 12) +
+          ' months',
         Math.floor(difference / (1000 * 3600 * 24 * 30)) +
-        ' months and ' +
-        Math.floor((difference / (1000 * 3600 * 24 * 7)) % 4) +
-        ' weeks',
+          ' months and ' +
+          Math.floor((difference / (1000 * 3600 * 24 * 7)) % 4) +
+          ' weeks',
         Math.floor(difference / (1000 * 3600 * 24 * 7)) +
-        ' weeks and ' +
-        Math.floor((difference / (1000 * 3600 * 24)) % 7) +
-        ' days',
+          ' weeks and ' +
+          Math.floor((difference / (1000 * 3600 * 24)) % 7) +
+          ' days',
         Math.floor(difference / (1000 * 3600 * 24)) +
-        ' days and ' +
-        Math.floor((difference / (1000 * 3600)) % 24) +
-        ' hours',
+          ' days and ' +
+          Math.floor((difference / (1000 * 3600)) % 24) +
+          ' hours',
         Math.floor(difference / (1000 * 3600)) +
-        ' hours and ' +
-        Math.floor((difference / (1000 * 60)) % 60) +
-        ' minutes',
+          ' hours and ' +
+          Math.floor((difference / (1000 * 60)) % 60) +
+          ' minutes',
         Math.floor(difference / (1000 * 60)) +
-        ' minutes and ' +
-        Math.floor(((difference / 1000) % 60) / 10) +
-        '0 seconds',
+          ' minutes and ' +
+          Math.floor(((difference / 1000) % 60) / 10) +
+          '0 seconds',
         Math.floor(difference / 1000) + ' seconds',
       ]
 
@@ -1520,8 +1550,9 @@ async function timer(client, sort = false) {
       else if (diffmessage.includes(' and 0'))
         diffmessage = diffmessage.slice(0, diffmessage.indexOf(' and 0'))
 
-      var text = `**${event.title}**\n... in ${event.estimated ? 'approximately ' : ''
-        }${diffmessage}`
+      var text = `**${event.title}**\n... in ${
+        event.estimated ? 'approximately ' : ''
+      }${diffmessage}`
 
       // Try to update the message, if that fails then send a new message and update the event in the array
       try {
@@ -1544,8 +1575,8 @@ async function timer(client, sort = false) {
 
 async function getPeople() {
   // Get the 'notify' data from the users from firebase
-  const docRef = firebase.collection(firebase.supedb, 'users')
-  const docSnap = await firebase.getDocs(docRef)
+  const docRef = collection(supedb, 'users')
+  const docSnap = await getDocs(docRef)
   const docs = docSnap.docs.filter((doc) => doc.data().notify)
   const final = docs.map((doc) => {
     return {

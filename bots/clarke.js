@@ -1,11 +1,17 @@
 // Login to minutesBot and dataBot with discord.js
 // Require discord.js
-var fs = require('fs')
-const { Client, GatewayIntentBits } = require('discord.js')
-const firebase = require('../firebase.js')
-const { config } = require('dotenv')
-const path = require('path')
-const fetch = require('node-fetch')
+import { readFileSync, writeFileSync } from 'fs'
+import { Client, GatewayIntentBits } from 'discord.js'
+import {
+  collection,
+  datacord,
+  getDocs,
+  doc as _doc,
+  setDoc,
+} from '../firebase.js'
+import { config } from 'dotenv'
+import { join } from 'path'
+import fetch from 'node-fetch'
 
 // Create the new client instance including the intents needed for the bot (like presence and guild messages)
 const client = new Client({
@@ -14,7 +20,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildPresences,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMessageReactions
+    GatewayIntentBits.GuildMessageReactions,
   ],
 })
 
@@ -26,13 +32,13 @@ async function fetchAccount() {
     method: 'GET',
     headers: {
       accept: 'application/json',
-      ...keys.apca
-    }
-  };
+      ...keys.apca,
+    },
+  }
 
   return await fetch('https://paper-api.alpaca.markets/v2/account', options)
-    .then(response => response.json())
-    .catch(err => console.error(err));
+    .then((response) => response.json())
+    .catch((err) => console.error(err))
 }
 
 async function fetchPositions() {
@@ -40,13 +46,13 @@ async function fetchPositions() {
     method: 'GET',
     headers: {
       accept: 'application/json',
-      ...keys.apca
-    }
-  };
+      ...keys.apca,
+    },
+  }
 
   return await fetch('https://paper-api.alpaca.markets/v2/positions', options)
-    .then(response => response.json())
-    .catch(err => console.error(err));
+    .then((response) => response.json())
+    .catch((err) => console.error(err))
 }
 
 function sendMessage(msg, silent = false) {
@@ -58,27 +64,31 @@ function sendMessage(msg, silent = false) {
 }
 
 async function fetchPrice(symbol) {
-  return await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${keys.finn}`)
-    .then(async response => {
+  return await fetch(
+    `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${keys.finn}`
+  )
+    .then(async (response) => {
       let data = await response.json()
 
       return data.c
     })
-    .catch(err => console.error(err));
+    .catch((err) => console.error(err))
 }
 
 async function loadConfig() {
   let field = 'clarke'
 
   // Get the data from local.json or firebase (then save it to local.json)
-  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, '../local.json'), 'utf8'))
+  var fetchedData = JSON.parse(
+    readFileSync(join(__dirname, '../local.json'), 'utf8')
+  )
   if (fetchedData[field] == null) {
-    const docRef = firebase.collection(firebase.datacord, 'data')
-    const docSnap = await firebase.getDocs(docRef)
+    const docRef = collection(datacord, 'data')
+    const docSnap = await getDocs(docRef)
     const doc = docSnap.docs.find((doc) => doc.id == field)
     const final = JSON.parse(doc.data().data)
     fetchedData[field] = final
-    fs.writeFileSync(path.join(__dirname, '../local.json'), JSON.stringify(fetchedData))
+    writeFileSync(join(__dirname, '../local.json'), JSON.stringify(fetchedData))
     return final
   } else {
     return fetchedData[field]
@@ -90,12 +100,14 @@ function saveConfig() {
   let data = state.config
 
   // Update the data in local.json and firebase
-  const docRef = firebase.collection(firebase.datacord, 'data')
-  const docSnap = firebase.doc(docRef, field)
-  firebase.setDoc(docSnap, { data: JSON.stringify(data) })
-  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, '../local.json'), 'utf8'))
+  const docRef = collection(datacord, 'data')
+  const docSnap = _doc(docRef, field)
+  setDoc(docSnap, { data: JSON.stringify(data) })
+  var fetchedData = JSON.parse(
+    readFileSync(join(__dirname, '../local.json'), 'utf8')
+  )
   fetchedData[field] = data
-  fs.writeFileSync(path.join(__dirname, '../local.json'), JSON.stringify(fetchedData))
+  writeFileSync(join(__dirname, '../local.json'), JSON.stringify(fetchedData))
   // sendMessage(JSON.stringify(state.config, null, 2), true)
 }
 
@@ -104,13 +116,13 @@ async function fetchTimes() {
     method: 'GET',
     headers: {
       accept: 'application/json',
-      ...keys.apca
-    }
-  };
+      ...keys.apca,
+    },
+  }
 
   return await fetch('https://paper-api.alpaca.markets/v2/clock', options)
-    .then(response => response.json())
-    .catch(err => console.error(err));
+    .then((response) => response.json())
+    .catch((err) => console.error(err))
 }
 
 async function autoTrader() {
@@ -119,7 +131,10 @@ async function autoTrader() {
   state.account = await fetchAccount()
 
   // Check if market opening / closing times need to be fetched
-  if (!state.timestamp || (state.now > state.next_open && state.now > state.next_close)) {
+  if (
+    !state.timestamp ||
+    (state.now > state.next_open && state.now > state.next_close)
+  ) {
     // Fetch and update
     let data = await fetchTimes()
 
@@ -127,18 +142,23 @@ async function autoTrader() {
       ...state,
       ...data,
       next_open: new Date(data.next_open),
-      next_close: new Date(data.next_close)
+      next_close: new Date(data.next_close),
     }
-
   }
   // Check if now opening / closing
-  else if (state.is_open ? state.now > state.next_close : state.now > state.next_open) {
+  else if (
+    state.is_open ? state.now > state.next_close : state.now > state.next_open
+  ) {
     state.is_open = !state.is_open
     await sendReport()
   }
 
   // If open...
-  if (state.is_open && !(state.now.getMinutes() % 2) && state.now.getSeconds() < 10) {
+  if (
+    state.is_open &&
+    !(state.now.getMinutes() % 2) &&
+    state.now.getSeconds() < 10
+  ) {
     await stockCheck()
   }
 
@@ -156,24 +176,28 @@ async function stockCheck() {
   let positions = await fetchPositions()
 
   let prices = {}
-  positions.forEach(stock => {
+  positions.forEach((stock) => {
     prices[stock.symbol] = parseFloat(stock.current_price)
   })
 
-
   // Loop though each stock
   for (const [symbol, config] of Object.entries(state.config.stocks)) {
-    const price = prices[symbol] || await fetchPrice(symbol)
+    const price = prices[symbol] || (await fetchPrice(symbol))
 
     // If there is no midpoint then set that to the current price and return
     if (config.midpoint == null) {
       config.midpoint = price
       state.change = true
-    }
-    else {
+    } else {
       // Use margin config to calculate heading bounds
-      let lowerBound = Math.min(config.midpoint - state.config.marginDiff, config.midpoint * (1 - state.config.marginPerc))
-      let upperBound = Math.max(config.midpoint + state.config.marginDiff, config.midpoint * (1 + state.config.marginPerc))
+      let lowerBound = Math.min(
+        config.midpoint - state.config.marginDiff,
+        config.midpoint * (1 - state.config.marginPerc)
+      )
+      let upperBound = Math.max(
+        config.midpoint + state.config.marginDiff,
+        config.midpoint * (1 + state.config.marginPerc)
+      )
 
       switch (config.heading) {
         // If heading is 1...
@@ -190,7 +214,7 @@ async function stockCheck() {
             state.change = true
           }
 
-          break;
+          break
 
         // If heading is -1...
         case -1:
@@ -205,31 +229,28 @@ async function stockCheck() {
             config.heading = 0
             state.change = true
           }
-          break;
+          break
 
         // If heading is 0 / undefined / null / other...
         default:
           // Increase by X - update midpoint, change heading to 1, buy stock
           if (price > upperBound) {
-            order("buy", price, symbol)
+            order('buy', price, symbol)
           }
           // Decrease by X - update midpoint, change heading to -1, sell stock
           else if (price < lowerBound) {
-            order("sell", price, symbol)
+            order('sell', price, symbol)
           }
-          break;
+          break
       }
-
     }
-
   }
-
 }
 
 async function order(side, price, symbol) {
   // Get the current position (if any)
   let positions = await fetchPositions()
-  let position = positions.find(pos => pos.symbol == symbol) || { qty: 0 }
+  let position = positions.find((pos) => pos.symbol == symbol) || { qty: 0 }
   let account = await fetchAccount()
 
   tickConfig = state.config.stocks[symbol]
@@ -239,14 +260,14 @@ async function order(side, price, symbol) {
 
   if (state.now.getTime() - tickConfig.lastTransaction > Math.pow(120, 3)) {
     tickConfig.lastTransaction = state.now.getTime()
-    tickConfig.lastValue = (tickConfig.lastValue + (2 * tickConfig.midpoint)) / 3
+    tickConfig.lastValue = (tickConfig.lastValue + 2 * tickConfig.midpoint) / 3
   }
 
   let bodyObj = {
     symbol,
     side,
-    type: "market",
-    time_in_force: "fok"
+    type: 'market',
+    time_in_force: 'fok',
   }
 
   // Try to execute the order, only changing the midpoint and heading if successful
@@ -254,22 +275,31 @@ async function order(side, price, symbol) {
     // Buying
     case 'buy':
       // Calc how much $ worth to buy
-      let cost = Math.min(parseFloat(account.buying_power), state.config.buyLimit)
+      let cost = Math.min(
+        parseFloat(account.buying_power),
+        state.config.buyLimit
+      )
       // Can't if already has stock, not enough cash, or is buying for more than last sell
-      if (position.qty || (cost * state.config.buyPerc <= price) || price > (tickConfig.lastValue || Infinity)) return;
+      if (
+        position.qty ||
+        cost * state.config.buyPerc <= price ||
+        price > (tickConfig.lastValue || Infinity)
+      )
+        return
 
       tickConfig.lastValue = price
       tickConfig.lastTransaction = state.now.getTime()
 
       // Try to buy some stock
-      bodyObj.qty = String(Math.floor(cost * state.config.buyPerc / price)) || 1
+      bodyObj.qty =
+        String(Math.floor((cost * state.config.buyPerc) / price)) || 1
 
-      break;
+      break
 
     // Selling
     case 'sell':
       // Can't if doesn't have stock, or if it will return less that the last buy
-      if (!position.qty || price < (tickConfig.lastValue || 0)) return;
+      if (!position.qty || price < (tickConfig.lastValue || 0)) return
 
       tickConfig.lastValue = price
       tickConfig.lastTransaction = state.now.getTime()
@@ -277,7 +307,7 @@ async function order(side, price, symbol) {
       // Try to sell all of that stock
       bodyObj.qty = String(position.qty)
 
-      break;
+      break
   }
   console.log(tickConfig)
   state.change = true
@@ -286,35 +316,50 @@ async function order(side, price, symbol) {
     method: 'POST',
     headers: {
       accept: 'application/json',
-      ...keys.apca
+      ...keys.apca,
     },
-    body: JSON.stringify(bodyObj)
-  };
+    body: JSON.stringify(bodyObj),
+  }
 
   fetch('https://paper-api.alpaca.markets/v2/orders', options)
-    .then(response => {
-      sendMessage(`New \`${symbol}\`Order Created:\n\n    TYPE: \`${side}\`\n    QTY: \`${bodyObj.qty}\`\n    ESTIMATED VALUE: \`${parseFloat(bodyObj.qty) * price}\`\n    STATUS: \`${response.status}\``)
+    .then((response) => {
+      sendMessage(
+        `New \`${symbol}\`Order Created:\n\n    TYPE: \`${side}\`\n    QTY: \`${
+          bodyObj.qty
+        }\`\n    ESTIMATED VALUE: \`${
+          parseFloat(bodyObj.qty) * price
+        }\`\n    STATUS: \`${response.status}\``
+      )
     })
-    .catch(err => console.error(err));
+    .catch((err) => console.error(err))
 }
 
 async function updateStatus() {
-
   let nextTime = state.is_open ? state.next_close : state.next_open
 
   let diff = nextTime - state.now
 
   let days = Math.floor(diff / 86400000)
-  let hours = Math.floor(diff / 3600000 % 24)
-  let minutes = Math.floor(diff / 60000 % 60)
+  let hours = Math.floor((diff / 3600000) % 24)
+  let minutes = Math.floor((diff / 60000) % 60)
 
-  let delay = [days, hours, minutes].map((x, i) => x ? `${x} ${['day', 'hour', 'minute'][i]}${x > 1 ? 's' : ''}` : 0).filter((x) => x).filter((x, i) => i < 2).join(' and ')
+  let delay = [days, hours, minutes]
+    .map((x, i) =>
+      x ? `${x} ${['day', 'hour', 'minute'][i]}${x > 1 ? 's' : ''}` : 0
+    )
+    .filter((x) => x)
+    .filter((x, i) => i < 2)
+    .join(' and ')
 
   // Set the bot's presence
   client.user.setPresence({
     activities: [
       {
-        name: `Market: ${state.is_open ? 'Open' : 'Closed'},\n ${state.is_open ? 'Closes' : 'Opens'} in: ${delay},\n Cash: ${state.account.cash},\n Equity: ${state.account.equity}\n, Total: ${state.account.buying_power}`,
+        name: `Market: ${state.is_open ? 'Open' : 'Closed'},\n ${
+          state.is_open ? 'Closes' : 'Opens'
+        } in: ${delay},\n Cash: ${state.account.cash},\n Equity: ${
+          state.account.equity
+        }\n, Total: ${state.account.buying_power}`,
         type: 0,
       },
     ],
@@ -327,23 +372,35 @@ async function sendReport() {
   let diff = nextTime - state.now
 
   let days = Math.floor(diff / 86400000)
-  let hours = Math.floor(diff / 3600000 % 24)
-  let minutes = Math.floor(diff / 60000 % 60)
+  let hours = Math.floor((diff / 3600000) % 24)
+  let minutes = Math.floor((diff / 60000) % 60)
 
-  let delay = [days, hours, minutes].map((x, i) => x ? `${x} ${['day', 'hour', 'minute'][i]}${x > 1 ? 's' : ''}` : 0).filter((x) => x).filter((x, i) => i < 2).join(' and ')
+  let delay = [days, hours, minutes]
+    .map((x, i) =>
+      x ? `${x} ${['day', 'hour', 'minute'][i]}${x > 1 ? 's' : ''}` : 0
+    )
+    .filter((x) => x)
+    .filter((x, i) => i < 2)
+    .join(' and ')
 
-  sendMessage(`UPDATE:\n\n    Market: ${state.is_open ? 'Open' : 'Closed'}\n    ${state.is_open ? 'Closes' : 'Opens'} in: ${delay}\n    Cash: ${state.account.cash}\n    Equity: ${state.account.equity}\n    Total: ${state.account.buying_power}`)
+  sendMessage(
+    `UPDATE:\n\n    Market: ${state.is_open ? 'Open' : 'Closed'}\n    ${
+      state.is_open ? 'Closes' : 'Opens'
+    } in: ${delay}\n    Cash: ${state.account.cash}\n    Equity: ${
+      state.account.equity
+    }\n    Total: ${state.account.buying_power}`
+  )
 }
 
 let state = {}
 
 let keys = {
   apca: {
-    "APCA-API-KEY-ID": process.env.APCA_API_KEY_ID,
-    "APCA-API-SECRET-KEY": process.env.APCA_API_SECRET_KEY,
+    'APCA-API-KEY-ID': process.env.APCA_API_KEY_ID,
+    'APCA-API-SECRET-KEY': process.env.APCA_API_SECRET_KEY,
   },
   twlv: process.env.TWLV_API_KEY,
-  finn: process.env.FINN_API_KEY
+  finn: process.env.FINN_API_KEY,
 }
 
 client.on('ready', async (bot) => {
@@ -351,7 +408,9 @@ client.on('ready', async (bot) => {
 
   // Run the main bot loop every 30 seconds, starting 1 second after the nearest 'snap' point
   state.bot = bot
-  let waitMs = 30000 - new Date().getTime() % 30000
+  let waitMs = 30000 - (new Date().getTime() % 30000)
 
-  setTimeout(() => { setInterval(autoTrader, 30000) }, waitMs + 1000)
+  setTimeout(() => {
+    setInterval(autoTrader, 30000)
+  }, waitMs + 1000)
 })

@@ -1,10 +1,16 @@
 // Require discord.js
-var fs = require('fs')
-const { Client, GatewayIntentBits } = require('discord.js')
-const firebase = require('../firebase.js').default
-const { config } = require('dotenv')
-const path = require('path')
-const fetch = require('node-fetch')
+import { readFileSync, writeFileSync } from 'fs'
+import { Client, GatewayIntentBits } from 'discord.js'
+import * as firebase from '../firebase.js'
+import { config } from 'dotenv'
+import { join } from 'path'
+import fetch from 'node-fetch'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+// define __dirname
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Create the new client instance including the intents needed for the bot (like presence and guild messages)
 const client = new Client({
@@ -13,7 +19,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildPresences,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMessageReactions
+    GatewayIntentBits.GuildMessageReactions,
   ],
 })
 
@@ -24,22 +30,22 @@ const avKey = process.env.AV_API_KEY
 client.login(process.env.CLARKE_DISCORD_TOKEN)
 
 function sendMessage(msg) {
-  state.bot.channels
-    .fetch(channelId)
-    .then(async (channel) => {
-      channel.send(msg)
-    })
+  state.bot.channels.fetch(channelId).then(async (channel) => {
+    channel.send(msg)
+  })
 }
 
 async function getData() {
   // Get the data from local.json or firebase (then save it to local.json)
-  var fetchedData = JSON.parse(fs.readFileSync(path.join(__dirname, '../local.json'), 'utf8'))
+  var fetchedData = JSON.parse(
+    readFileSync(join(__dirname, '../local.json'), 'utf8')
+  )
   if (fetchedData.clarke == null) {
     const docRef = firebase.collection(firebase.datacord, 'clarke')
     const docSnap = await firebase.getDocs(docRef)
     fetchedData.clarke = {}
-    docSnap.docs.forEach(doc => fetchedData.clarke[doc.id] = doc.data())
-    fs.writeFileSync(path.join(__dirname, '../local.json'), JSON.stringify(fetchedData))
+    docSnap.docs.forEach((doc) => (fetchedData.clarke[doc.id] = doc.data()))
+    writeFileSync(join(__dirname, '../local.json'), JSON.stringify(fetchedData))
     return fetchedData.clarke
   } else {
     return fetchedData.clarke
@@ -48,84 +54,115 @@ async function getData() {
 
 async function setData(data) {
   // Only update the keys under clarke that don't match the local data
-  const oldData = JSON.parse(fs.readFileSync(path.join(__dirname, '../local.json'), 'utf8'))
+  const oldData = JSON.parse(
+    readFileSync(join(__dirname, '../local.json'), 'utf8')
+  )
   // get all the clarke keys for both the old and the new, as we will compare each to track new, modified, and deleted keys
-  const keys = Array.from(new Set([...Object.keys(data), ...Object.keys(oldData.clarke)]))
+  const keys = Array.from(
+    new Set([...Object.keys(data), ...Object.keys(oldData.clarke)])
+  )
 
-  keys.forEach(async key => {
+  keys.forEach(async (key) => {
     const docRef = firebase.doc(firebase.datacord, 'clarke', key)
 
     // Check which sets this key is in
-    switch (Object.keys(data).includes(key), Object.keys(oldData.clarke).includes(key)) {
+    switch (
+      (Object.keys(data).includes(key),
+      Object.keys(oldData.clarke).includes(key))
+    ) {
       // isInNew, isInOld
-      case true, false:
+      case (true, false):
         // Create new document {key}, with value data[key]
         await firebase.addDoc(docRef, data[key])
         break
-      case false, true:
+      case (false, true):
         // Delete the document
         await firebase.deleteDoc(docRef)
         break
-      case true, true:
+      case (true, true):
         // Only set the document if the stringified values are different
-        if (JSON.stringify(data[key]) !== JSON.stringify(oldData.clarke[key])) await firebase.setDoc(docRef, data[key])
+        if (JSON.stringify(data[key]) !== JSON.stringify(oldData.clarke[key]))
+          await firebase.setDoc(docRef, data[key])
         break
     }
   })
 
   // Update the local data
-  fs.writeFileSync(path.join(__dirname, '../local.json'), JSON.stringify({ ...oldData, clarke: data }))
+  writeFileSync(
+    join(__dirname, '../local.json'),
+    JSON.stringify({ ...oldData, clarke: data })
+  )
 }
 
 let data = await getData()
 
 let stocks = [
-  "TSLA", "HPQ", "INTC", "GOOGL", "DELL", "ABT", "EA", "HON",
-  "AMZN", "AMD", "AAPL", "KO", "RKLB", "GOOG", "NDAQ",
-  "DIS", "SONY", "IMAX", "FOUR", "MSFX"
-];
+  'TSLA',
+  'HPQ',
+  'INTC',
+  'GOOGL',
+  'DELL',
+  'ABT',
+  'EA',
+  'HON',
+  'AMZN',
+  'AMD',
+  'AAPL',
+  'KO',
+  'RKLB',
+  'GOOG',
+  'NDAQ',
+  'DIS',
+  'SONY',
+  'IMAX',
+  'FOUR',
+  'MSFX',
+]
 
 function dailyFetch(setSize = 25) {
-
-  let promises = [];
+  let promises = []
 
   for (let i = 0; i < setSize; i++) {
-    let stock = stocks[Math.floor(Math.random() * stocks.length)];
-    let year = (2014 + Math.floor(Math.random() * 10)).toString();
-    let month = Math.ceil(Math.random() * 12).toString().padStart(2, '0');
-    let date = `${year}-${month}`;
+    let stock = stocks[Math.floor(Math.random() * stocks.length)]
+    let year = (2014 + Math.floor(Math.random() * 10)).toString()
+    let month = Math.ceil(Math.random() * 12)
+      .toString()
+      .padStart(2, '0')
+    let date = `${year}-${month}`
 
     if (data[stock] && data[stock][date]) {
-      continue;
+      continue
     }
 
-    let url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stock}&interval=5min&month=${date}&outputsize=full&extended_hours=false&apikey=${avKey}`;
+    let url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stock}&interval=5min&month=${date}&outputsize=full&extended_hours=false&apikey=${avKey}`
     let fetchPromise = fetch(url)
-      .then(response => response.json())
-      .then(response => {
+      .then((response) => response.json())
+      .then((response) => {
         if (response['Error Message']) {
-          console.error(`Error fetching data for ${stock} on ${date}: ${response['Error Message']}`);
-          return;
+          console.error(
+            `Error fetching data for ${stock} on ${date}: ${response['Error Message']}`
+          )
+          return
         }
 
-        data[stock] = data[stock] || {};
-        data[stock][date] = {};
+        data[stock] = data[stock] || {}
+        data[stock][date] = {}
 
         Object.entries(response['Time Series (5min)']).forEach(([k, v]) => {
-          data[stock][date][k] = parseFloat(v['4. close']);
-        });
+          data[stock][date][k] = parseFloat(v['4. close'])
+        })
       })
-      .catch(err => {
-        console.error(`Error fetching data for ${stock} on ${date}: ${err}`);
-      });
+      .catch((err) => {
+        console.error(`Error fetching data for ${stock} on ${date}: ${err}`)
+      })
 
-    promises.push(fetchPromise);
+    promises.push(fetchPromise)
   }
 
   // Wait for all promises to settle and then set the data
   Promise.allSettled(promises).then(() => {
-    setData(data);
-  });
+    setData(data)
+  })
 }
 
 // Calculate how many milliseconds it is until the next 6pm
@@ -240,7 +277,7 @@ class Bot {
     let roundFitness = null
     if (finalStockPrice) {
       // Add the money remaining to the value of any remaining stocks
-      const equity = this.buyingPower + (this.stockQuantity * finalStockPrice)
+      const equity = this.buyingPower + this.stockQuantity * finalStockPrice
 
       // Will end up returning how many times larger the value is to the starting equity
       roundFitness = equity / config.startCash
@@ -273,8 +310,14 @@ class Bot {
     }
 
     // Define the upper and lower bounds around the midpoint
-    const lowerBound = Math.min(this.midpoint - this.lowerMarginDiff, this.midpoint * (1 - this.lowerMarginPercent))
-    const upperBound = Math.max(this.midpoint + this.upperMarginDiff, this.midpoint * (1 + this.upperMarginPercent))
+    const lowerBound = Math.min(
+      this.midpoint - this.lowerMarginDiff,
+      this.midpoint * (1 - this.lowerMarginPercent)
+    )
+    const upperBound = Math.max(
+      this.midpoint + this.upperMarginDiff,
+      this.midpoint * (1 + this.upperMarginPercent)
+    )
 
     // Use the current decided heading to evaluate a change in direction
     switch (this.heading) {
@@ -301,9 +344,11 @@ class Bot {
       // If heading is 0, price was flat
       default:
         // If it is rising above the upper bound, then try to buy stock (was low, now rising)
-        if (currentStockPrice > upperBound) this.order('buy', currentStockPrice, time)
+        if (currentStockPrice > upperBound)
+          this.order('buy', currentStockPrice, time)
         // If it is falling below the lower bound, then try to sell stock (was high, now falling)
-        else if (currentStockPrice < lowerBound) this.order('sell', currentStockPrice, time)
+        else if (currentStockPrice < lowerBound)
+          this.order('sell', currentStockPrice, time)
         break
     }
   }
@@ -316,7 +361,10 @@ class Bot {
         if (!this.ignoreFailedOrder) this.heading = 1
 
         // Calculate how much money you can spend
-        const spendableCash = Math.min(this.buyLimit, this.buyingPower * (1 - this.buyPer))
+        const spendableCash = Math.min(
+          this.buyLimit,
+          this.buyingPower * (1 - this.buyPer)
+        )
 
         // Can't if you already own stock
         if (this.stockQuantity > 0) return
@@ -332,7 +380,7 @@ class Bot {
         const stocksBought = Math.floor(spendableCash / price)
 
         // Update your buying power and stock quantity
-        this.buyingPower -= (stocksBought * price) + this.buyPenalty
+        this.buyingPower -= stocksBought * price + this.buyPenalty
         this.stockQuantity = stocksBought
 
         // Transaction was successful, so update the heading
@@ -371,23 +419,23 @@ class Bot {
     // It will do this for every gene
 
     const sets = {
-      "Bools": ['riskAverse', 'ignoreFailedOrder'],
-      "Percs": ['lowerMarginPerc', 'upperMarginPerc', 'buyPerc', 'stockDecay'],
-      "Nums": ['lowerMarginDiff', 'upperMarginDiff', 'buyLimit', 'stockExpiry']
+      Bools: ['riskAverse', 'ignoreFailedOrder'],
+      Percs: ['lowerMarginPerc', 'upperMarginPerc', 'buyPerc', 'stockDecay'],
+      Nums: ['lowerMarginDiff', 'upperMarginDiff', 'buyLimit', 'stockExpiry'],
     }
 
     for (let set in sets) {
       for (let gene of sets[set]) {
-        if (Math.random() < (this.mutationRate * (child ? 2 : 1))) {
+        if (Math.random() < this.mutationRate * (child ? 2 : 1)) {
           switch (set) {
-            case "Bools":
+            case 'Bools':
               this[gene] = !this[gene]
               break
-            case "Percs":
+            case 'Percs':
               // The old valu
               this.mutateValue(gene, 1)
               break
-            case "Nums":
+            case 'Nums':
               this.mutateValue(gene, 1000)
               break
           }
@@ -401,10 +449,15 @@ class Bot {
     let oldValue = this[gene]
 
     // Generate a normally distributed value around the current value (Box-Muller transform)
-    let newValue = oldValue + 10 * Math.sqrt(-2 * Math.log(Math.random()) * Math.cos(2 * Math.PI * Math.random()))
+    let newValue =
+      oldValue +
+      10 *
+        Math.sqrt(
+          -2 * Math.log(Math.random()) * Math.cos(2 * Math.PI * Math.random())
+        )
 
     // Ensure the value stays within the specified range
-    this[gene] = Math.min(upperBound, Math.max(0, newValue));
+    this[gene] = Math.min(upperBound, Math.max(0, newValue))
   }
 
   // Function to get the fitness value
@@ -423,7 +476,7 @@ class Bot {
       riskAverse: this.riskAverse,
       stockExpiry: this.stockExpiry,
       stockDecay: this.stockDecay,
-      ignoreFailedOrder: this.ignoreFailedOrder
+      ignoreFailedOrder: this.ignoreFailedOrder,
     }
   }
   // Function to crossover two genes
@@ -436,7 +489,7 @@ class Bot {
       'riskAverse',
       'stockExpiry',
       'stockDecay',
-      'ignoreFailedOrder'
+      'ignoreFailedOrder',
     ]
 
     // Go through each gene, selecting the value from either parent, randomly
@@ -459,17 +512,21 @@ class Bot {
 async function startTraining() {
   // Get the population
   let config = data.config
-  let population = Object.values(data.population).map(genes => new Bot(config, genes))
+  let population = Object.values(data.population).map(
+    (genes) => new Bot(config, genes)
+  )
 
   // Merge all of the stock data into one array of month-sets
-  let stockData = stocks.flatMap(stock => Object.values(data[stock] || {}))
+  let stockData = stocks.flatMap((stock) => Object.values(data[stock] || {}))
 
   sendMessage(`Training started (${config.genLen} x ${config.roundLen})`)
 
   for (let gen = 0; gen < config.genLen; gen++) {
     // Pick a random (roundLen) of stock data
     let dataCopy = [...stockData]
-    let genData = Array(config.roundLen).fill(0).flatMap(() => dataCopy.splice(Math.floor(dataCopy.length), 1))
+    let genData = Array(config.roundLen)
+      .fill(0)
+      .flatMap(() => dataCopy.splice(Math.floor(dataCopy.length), 1))
 
     for (let round = 0; round < config.roundLen; round++) {
       // Pick a random set from the training data, removing it from the old array
@@ -479,13 +536,13 @@ async function startTraining() {
 
       // Go through each entry in the set, running each bot on the values provided
       Object.entries(currentSet).forEach(([date, value]) => {
-        population.forEach(bot => bot.makeDecision(value, date))
+        population.forEach((bot) => bot.makeDecision(value, date))
       })
 
       const lastPrice = Object.values(currentSet).pop()
 
       // Finish the round
-      population.forEach(bot => bot.roundEnd(lastPrice))
+      population.forEach((bot) => bot.roundEnd(lastPrice))
     }
 
     // Sort the population by fitness
@@ -508,31 +565,38 @@ async function startTraining() {
     }
 
     // Log the best from this generation
-    sendMessage(`Generation ${gen + 1}: Best fitness ${population[0].getFitness()}`)
+    sendMessage(
+      `Generation ${gen + 1}: Best fitness ${population[0].getFitness()}`
+    )
 
     // Replace the old population with the new population and the new children
     population = [...newPopulation, ...newChildren]
   }
 
   // Save the final population to the data object
-  data.population = population.reduce((obj, bot, i) => ({ ...obj, [i]: bot.exportBot() }), {})
+  data.population = population.reduce(
+    (obj, bot, i) => ({ ...obj, [i]: bot.exportBot() }),
+    {}
+  )
   setData(data)
 }
 
 function roulette(population) {
-  return Array(2).fill(0).map(() => {
-    let sliceEnds = []
-    population.reduce((sum, bot) => {
-      sliceEnds.push(sum + bot.getFitness())
-      return sum + bot.getFitness()
-    }, 0)
+  return Array(2)
+    .fill(0)
+    .map(() => {
+      let sliceEnds = []
+      population.reduce((sum, bot) => {
+        sliceEnds.push(sum + bot.getFitness())
+        return sum + bot.getFitness()
+      }, 0)
 
-    // Generate a random value between 0 and the fitness sum
-    let randomValue = Math.random() * fitnessSum
-    // Find the index of the first slice end that is greater than or equal to the random value
-    let selectedIndex = sliceEnds.findIndex((end) => randomValue >= end)
+      // Generate a random value between 0 and the fitness sum
+      let randomValue = Math.random() * fitnessSum
+      // Find the index of the first slice end that is greater than or equal to the random value
+      let selectedIndex = sliceEnds.findIndex((end) => randomValue >= end)
 
-    // Remove the selected bot from the population for the next iteration
-    return population.splice(selectedIndex, 1)[0]
-  })
+      // Remove the selected bot from the population for the next iteration
+      return population.splice(selectedIndex, 1)[0]
+    })
 }
