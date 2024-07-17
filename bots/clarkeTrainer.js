@@ -2,7 +2,9 @@
 import { readFileSync, writeFileSync } from 'fs'
 import { Client, GatewayIntentBits } from 'discord.js'
 import * as firebase from '../firebase.js'
-import { config } from 'dotenv'
+import dotenv from 'dotenv'
+
+dotenv.config()
 import { join } from 'path'
 import fetch from 'node-fetch'
 import path from 'path'
