@@ -286,7 +286,7 @@ class Bot {
       const equity = this.buyingPower + this.stockQuantity * finalStockPrice
 
       // Will end up returning how many times larger the value is to the starting equity
-      roundFitness = equity / config.startCash
+      roundFitness = equity / this.config.startCash
 
       // Update the round and fitnessSum for the bot
       this.round++
