@@ -592,7 +592,7 @@ function roulette(population) {
     .fill(0)
     .map(() => {
       let sliceEnds = []
-      population.reduce((sum, bot) => {
+      let fitnessSum = population.reduce((sum, bot) => {
         sliceEnds.push(sum + bot.getFitness())
         return sum + bot.getFitness()
       }, 0)
