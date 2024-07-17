@@ -42,16 +42,19 @@ function sendMessage(msg) {
 }
 
 async function getData() {
-  // Get the data from local.json or firebase (then save it to local.json)
+  // Get the data from clarke.json or firebase (then save it to clarke.json)
   var fetchedData = JSON.parse(
-    readFileSync(join(__dirname, '../local.json'), 'utf8')
+    readFileSync(join(__dirname, '../clarke.json'), 'utf8')
   )
   if (fetchedData.clarke == null) {
     const docRef = firebase.collection(firebase.datacord, 'clarke')
     const docSnap = await firebase.getDocs(docRef)
     fetchedData.clarke = {}
     docSnap.docs.forEach((doc) => (fetchedData.clarke[doc.id] = doc.data()))
-    writeFileSync(join(__dirname, '../local.json'), JSON.stringify(fetchedData))
+    writeFileSync(
+      join(__dirname, '../clarke.json'),
+      JSON.stringify(fetchedData)
+    )
     return fetchedData.clarke
   } else {
     return fetchedData.clarke
@@ -61,7 +64,7 @@ async function getData() {
 async function setData(data) {
   // Only update the keys under clarke that don't match the local data
   const oldData = JSON.parse(
-    readFileSync(join(__dirname, '../local.json'), 'utf8')
+    readFileSync(join(__dirname, '../clarke.json'), 'utf8')
   )
   // get all the clarke keys for both the old and the new, as we will compare each to track new, modified, and deleted keys
   const keys = Array.from(
@@ -95,7 +98,7 @@ async function setData(data) {
 
   // Update the local data
   writeFileSync(
-    join(__dirname, '../local.json'),
+    join(__dirname, '../clarke.json'),
     JSON.stringify({ ...oldData, clarke: data })
   )
 }
