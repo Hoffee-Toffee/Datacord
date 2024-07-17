@@ -77,7 +77,7 @@ async function setData(data) {
         break
       case (false, true):
         // Delete the document
-        await firebase.deleteDoc(docRef)
+        // await firebase.deleteDoc(docRef)
         break
       case (true, true):
         // Only set the document if the stringified values are different
