@@ -5,6 +5,7 @@ const request = require('request')
 const path = require('path')
 
 const clarkeBot = require('./bots/clarke.js')
+const clarkeTrainer = require('./bots/clarkeTrainer.js')
 
 /*  BOTKIT SECTION START
 
