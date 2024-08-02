@@ -118,30 +118,45 @@ let stocks = [
   'AMD',
   'AAPL',
   'KO',
-  'RKLB',
-  'GOOG',
   'NDAQ',
   'DIS',
   'SONY',
   'IMAX',
-  'FOUR',
-  'MSFX',
 ]
 
 function dailyFetch(setSize = 25) {
+  sendMessage('Starting daily fetch...')
   let promises = []
 
-  for (let i = 0; i < setSize; i++) {
-    let stock = stocks[Math.floor(Math.random() * stocks.length)]
-    let year = (2014 + Math.floor(Math.random() * 10)).toString()
-    let month = Math.ceil(Math.random() * 12)
-      .toString()
-      .padStart(2, '0')
-    let date = `${year}-${month}`
+  let end = new Date()
+  end.setMonth(end.getMonth() - 1)
+  end = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, 0)}`
 
-    if (data[stock] && data[stock][date]) {
-      continue
-    }
+  // Create an array of how many months (keys) each stock has, or 0 if it has none, or -1 if it contains data on the last month
+  let stockMonths = stocks.map((stock) =>
+    data[stock] ? (!data[stock][end] ? -1 : Object.keys(data[stock]).length) : 0
+  )
+
+  // Sort by the number of months, from least to most, and remove all stocks set to -1
+  stocks = stocks
+    .filter((_, i) => stockMonths[i] !== -1)
+    .sort(
+      (a, b) => stockMonths[stocks.indexOf(a)] - stockMonths[stocks.indexOf(b)]
+    )
+
+  for (let i = 0; i < setSize; i++) {
+    // Get the stock at index i, modulo
+    let stock = stocks[i % stocks.length]
+    let start = new Date('2014')
+
+    // Get the number of months the stock has data for
+    let months = Object.keys(data[stock] || {}).length
+    start.setMonth(months)
+
+    let date = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(
+      2,
+      0
+    )}`
 
     let url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stock}&interval=5min&month=${date}&outputsize=full&extended_hours=false&apikey=${avKey}`
     let fetchPromise = fetch(url)
@@ -174,14 +189,14 @@ function dailyFetch(setSize = 25) {
   })
 }
 
-// Calculate how many milliseconds it is until the next 6pm
+// Calculate how many milliseconds it is until the next 4pm
 const now = new Date()
-const nextSixPm = new Date()
+const nextFourPm = new Date()
 
-nextSixPm.setHours(18 + (now.getHours() >= 18 ? 24 : 0), 0, 0, 0)
-const msRemaining = nextSixPm.getTime() - now.getTime()
+nextFourPm.setHours(16 + (now.getHours() >= 16 ? 24 : 0), 0, 0, 0)
+const msRemaining = nextFourPm.getTime() - now.getTime()
 
-// Wait until 6PM, then begin the daily fetch function
+// Wait until 4PM, then begin the daily fetch function
 setTimeout(dailyFetch, msRemaining)
 
 // If the user sends message in the channel...
