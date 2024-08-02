@@ -189,14 +189,14 @@ function dailyFetch(setSize = 25) {
   })
 }
 
-// Calculate how many milliseconds it is until the next 4pm
+// Calculate how many milliseconds it is until the next 11pm
 const now = new Date()
-const nextFourPm = new Date()
+const nextElevenPm = new Date()
 
-nextFourPm.setHours(16 + (now.getHours() >= 16 ? 24 : 0), 0, 0, 0)
-const msRemaining = nextFourPm.getTime() - now.getTime()
+nextElevenPm.setHours(23 + (now.getHours() >= 23 ? 24 : 0), 0, 0, 0)
+const msRemaining = nextElevenPm.getTime() - now.getTime()
 
-// Wait until 4PM, then begin the daily fetch function
+// Wait until then, then begin the daily fetch function
 setTimeout(dailyFetch, msRemaining)
 
 // If the user sends message in the channel...
