@@ -151,7 +151,9 @@ function dailyFetch(setSize = 25) {
 
     // Get the number of months the stock has data for
     let months = Object.keys(data[stock] || {}).length
-    start.setMonth(months)
+
+    // Set to number of months plus any modulo cycles
+    start.setMonth(months + Math.floor(i / stocks.length))
 
     let date = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(
       2,
@@ -162,9 +164,20 @@ function dailyFetch(setSize = 25) {
     let fetchPromise = fetch(url)
       .then((response) => response.json())
       .then((response) => {
+        if (i == 0) {
+          console.log(response)
+        }
+
         if (response['Error Message']) {
           console.error(
             `Error fetching data for ${stock} on ${date}: ${response['Error Message']}`
+          )
+          return
+        }
+
+        if (!response['Time Series (5min)']) {
+          console.error(
+            `Error fetching data for ${stock} on ${date}: Time Series data not found`
           )
           return
         }
@@ -189,12 +202,12 @@ function dailyFetch(setSize = 25) {
   })
 }
 
-// Calculate how many milliseconds it is until the next 11pm
+// Calculate how many milliseconds it is until the next 12pm
 const now = new Date()
-const nextElevenPm = new Date()
+const nextTwelvePm = new Date()
 
-nextElevenPm.setHours(23 + (now.getHours() >= 23 ? 24 : 0), 0, 0, 0)
-const msRemaining = nextElevenPm.getTime() - now.getTime()
+nextTwelvePm.setHours(24 + (now.getHours() >= 24 ? 24 : 0), 0, 0, 0)
+const msRemaining = nextTwelvePm.getTime() - now.getTime()
 
 // Wait until then, then begin the daily fetch function
 setTimeout(dailyFetch, msRemaining)

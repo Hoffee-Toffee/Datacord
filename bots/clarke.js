@@ -282,7 +282,7 @@ async function order(side, price, symbol) {
     case 'buy':
       // Calc how much $ worth to buy
       let cost = Math.min(
-        parseFloat(account.buying_power),
+        parseFloat(account.buying_power) - (state.config.banked || 0),
         state.config.buyLimit
       )
       // Can't if already has stock, not enough cash, or is buying for more than last sell
@@ -363,9 +363,13 @@ async function updateStatus() {
       {
         name: `Market: ${state.is_open ? 'Open' : 'Closed'},\n ${
           state.is_open ? 'Closes' : 'Opens'
-        } in: ${delay},\n Cash: ${state.account.cash},\n Equity: ${
+        } in: ${delay},\n Cash: ${
+          state.account.cash - (state.config.banked || 0)
+        },\n In Stocks: ${
+          state.account.equity - state.account.cash
+        },\n Banked: ${state.config.banked || 0},\n Total: ${
           state.account.equity
-        }\n, Total: ${state.account.buying_power}`,
+        }`,
         type: 0,
       },
     ],
@@ -392,9 +396,13 @@ async function sendReport() {
   sendMessage(
     `UPDATE:\n\n    Market: ${state.is_open ? 'Open' : 'Closed'}\n    ${
       state.is_open ? 'Closes' : 'Opens'
-    } in: ${delay}\n    Cash: ${state.account.cash}\n    Equity: ${
+    } in: ${delay}\n    Cash: ${
+      state.account.cash - (state.config.banked || 0)
+    }\n    In Stocks: ${
+      state.account.equity - state.account.cash
+    }\n    Banked: ${state.config.banked || 0}\n    Total: ${
       state.account.equity
-    }\n    Total: ${state.account.buying_power}`
+    }`
   )
 }
 
