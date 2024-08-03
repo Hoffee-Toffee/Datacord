@@ -208,9 +208,9 @@ function dailyFetch(setSize = 25) {
 function createFetch() {
   // Will run every 24 hours, plus 5 minutes to ensure the daily fetch has completed
   const now = new Date()
+  const gapDuration = 1000 * 60 * (60 * 24 + 5)
 
-  let nextFetch = now.getTime() / (1000 * 60 * (60 * 24 + 5))
-  nextFetch = Math.ceil(nextFetch) * 1000 * 60 * (60 * 24 + 5)
+  let nextFetch = Math.ceil(now.getTime() / gapDuration) * gapDuration
 
   const msRemaining = nextFetch - now.getTime()
 
