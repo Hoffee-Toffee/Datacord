@@ -159,6 +159,14 @@ async function autoTrader() {
     await sendReport()
   }
 
+  // If equity is over 1000, bank the excess (or all of the cash on hand if not enough)
+  if (state.account.equity - (state.config.banked || 0) > 1000) {
+    let excess = state.account.equity - (state.config.banked || 0) - 1000
+    excess = Math.min(excess, state.account.cash)
+    state.config.banked = (state.config.banked || 0) + excess
+    state.change = true
+  }
+
   // If open...
   if (
     state.is_open &&
