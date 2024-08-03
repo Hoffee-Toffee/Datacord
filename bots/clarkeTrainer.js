@@ -200,18 +200,25 @@ function dailyFetch(setSize = 25) {
   Promise.allSettled(promises).then(() => {
     setData(data)
   })
+
+  // Create the next fetch
+  createFetch()
 }
 
-// Will run every 24 hours, plus 5 minutes to ensure the daily fetch has completed
-const now = new Date()
+function createFetch() {
+  // Will run every 24 hours, plus 5 minutes to ensure the daily fetch has completed
+  const now = new Date()
 
-let nextFetch = now.getTime() / (1000 * 60 * (60 * 24 + 5))
-nextFetch = Math.ceil(nextFetch) * 1000 * 60 * (60 * 24 + 5)
+  let nextFetch = now.getTime() / (1000 * 60 * (60 * 24 + 5))
+  nextFetch = Math.ceil(nextFetch) * 1000 * 60 * (60 * 24 + 5)
 
-const msRemaining = nextFetch - now.getTime()
+  const msRemaining = nextFetch - now.getTime()
 
-// Wait until then, then begin the daily fetch function
-setTimeout(dailyFetch, msRemaining)
+  // Wait until then, then begin the daily fetch function
+  setTimeout(dailyFetch, msRemaining)
+}
+
+createFetch()
 
 // If the user sends message in the channel...
 client.on('messageCreate', async (message) => {
