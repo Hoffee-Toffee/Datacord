@@ -202,12 +202,13 @@ function dailyFetch(setSize = 25) {
   })
 }
 
-// Calculate how many milliseconds it is until the next 12pm
+// Will run every 24 hours, plus 5 minutes to ensure the daily fetch has completed
 const now = new Date()
-const nextTwelvePm = new Date()
 
-nextTwelvePm.setHours(24 + (now.getHours() >= 24 ? 24 : 0), 0, 0, 0)
-const msRemaining = nextTwelvePm.getTime() - now.getTime()
+let nextFetch = now.getTime() / (1000 * 60 * (60 * 24 + 5))
+nextFetch = Math.ceil(nextFetch) * 1000 * 60 * (60 * 24 + 5)
+
+const msRemaining = nextFetch - now.getTime()
 
 // Wait until then, then begin the daily fetch function
 setTimeout(dailyFetch, msRemaining)
