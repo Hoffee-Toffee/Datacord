@@ -124,7 +124,7 @@ let stocks = [
   'IMAX',
 ]
 
-function dailyFetch(setSize = 25) {
+function dailyFetch(setSize = 12) {
   sendMessage('Starting daily fetch...')
   let promises = []
 
