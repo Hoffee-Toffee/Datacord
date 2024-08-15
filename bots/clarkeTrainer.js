@@ -162,11 +162,12 @@ function dailyFetch(setSize = 12) {
 
     let url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stock}&interval=5min&month=${date}&outputsize=full&extended_hours=false&apikey=${avKey}`
     let fetchPromise = fetch(url)
-      .then((response) => response.json())
       .then((response) => {
-        if (i == 0) {
-          console.log(response)
-        }
+        console.log(i, response)
+        return response.json()
+      })
+      .then((response) => {
+        console.log(i, response)
 
         if (response['Error Message']) {
           console.error(
