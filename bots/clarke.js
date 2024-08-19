@@ -267,7 +267,7 @@ async function order(side, price, symbol) {
   let position = positions.find((pos) => pos.symbol == symbol) || { qty: 0 }
   let account = await fetchAccount()
 
-  tickConfig = state.config.stocks[symbol]
+  let tickConfig = state.config.stocks[symbol]
   tickConfig.midpoint = price
   tickConfig.heading = side == 'buy' ? 1 : -1
   state.change = true
@@ -436,3 +436,16 @@ client.on('ready', async (bot) => {
     setInterval(autoTrader, 30000)
   }, waitMs + 1000)
 })
+
+// C.L.A.R.K.E.
+// Clarke is a stock trading bot
+// It is named after the famous science fiction author, Arthur C. Clarke
+// It uses upper and lower bounds to determine when to buy and sell stocks
+// It also banks excess cash, which can then be transferred to the user's account
+// Clarke is a bot best used on many stocks, as it is designed to be a high-frequency trader
+// It is not recommended to use Clarke with less than 5 stocks
+
+// However, we do not have an acronym for C.L.A.R.K.E. yet
+// We do have some other names and acronyms, though
+// Including:
+// - Bounded Automated Stock Trader Engine with Real-time Knowledge and Execution
