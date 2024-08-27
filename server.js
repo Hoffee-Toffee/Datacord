@@ -185,6 +185,13 @@ app.post('/test', function (req, res) {
   console.log(req.body)
   res.sendStatus(200)
 })
+app.get('/relay', async (req, res) => {
+  // Take url, relay it's response in response
+  const url = req.query.url
+  const response = await fetch(url)
+  const data = await response.json()
+  res.json(data)
+})
 
 // Check hooks every 1000 ms
 setInterval(async () => {
