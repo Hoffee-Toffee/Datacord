@@ -328,8 +328,9 @@ class Bot {
     // Calculate a fitness score if a finalStockPrice is given
     let roundFitness = null
     if (finalStockPrice) {
-      // Add the money remaining to the value of any remaining stocks
-      const equity = this.buyingPower + this.stockQuantity * finalStockPrice
+      // Add the money in the bank to the buying power and in stock
+      const equity =
+        this.buyingPower + this.banked + this.stockQuantity * finalStockPrice
 
       // Will end up returning how many times larger the value is to the starting equity
       roundFitness = equity / this.config.startCash
@@ -346,6 +347,7 @@ class Bot {
     this.lastDate = null // Date of last transaction
     this.stockQuantity = 0 // Number of stock owned by this instance
     this.buyingPower = this.startCash // How much money the bot has to spend
+    this.banked = 0 // How much money the bot has made from selling stock, in excess of the starting cash
   }
 
   // Function to calculate the equity value for this bot
@@ -455,6 +457,12 @@ class Bot {
         this.buyingPower += totalValue - this.sellPenalty
         this.stockQuantity = 0
 
+        // If in excess of the starting cash, move the excess to the bank
+        if (this.buyingPower > this.startCash) {
+          this.banked += this.buyingPower - this.startCash
+          this.buyingPower = this.startCash
+        }
+
         // Transaction was successful, so update the heading
         this.heading = -1
         break
@@ -484,7 +492,6 @@ class Bot {
               this[gene] = !this[gene]
               break
             case 'Percs':
-              // The old valu
               this.mutateValue(gene, 1)
               break
             case 'Nums':

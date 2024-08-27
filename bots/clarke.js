@@ -204,13 +204,14 @@ async function stockCheck() {
       state.change = true
     } else {
       // Use margin config to calculate heading bounds
-      let lowerBound = Math.min(
-        config.midpoint - state.config.marginDiff,
-        config.midpoint * (1 - state.config.marginPerc)
+
+      const lowerBound = Math.min(
+        config.midpoint - state.config.lowerMarginDiff,
+        config.midpoint * (1 - state.config.lowerMarginPerc)
       )
-      let upperBound = Math.max(
-        config.midpoint + state.config.marginDiff,
-        config.midpoint * (1 + state.config.marginPerc)
+      const upperBound = Math.max(
+        config.midpoint + state.config.upperMarginDiff,
+        config.midpoint * (1 + state.config.upperMarginPerc)
       )
 
       switch (config.heading) {
