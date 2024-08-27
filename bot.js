@@ -104,7 +104,7 @@ async function checkGIF() {
 
 function checkDate(currentDate) {
   let event = 'Saw XI'
-  let targetDate = new Date('27 September 2024')
+  let targetDate = new Date('25 September 2025')
 
   // Calculate the time difference in milliseconds
   const timeDifference = targetDate - currentDate
