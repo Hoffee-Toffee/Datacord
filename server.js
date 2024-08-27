@@ -188,7 +188,7 @@ app.post('/test', function (req, res) {
 app.get('/relay', async (req, res) => {
   // Take url, relay it's response in response
   const url = req.query.url
-  const response = await fetch(url)
+  const response = await fetch(decodeURIComponent(url))
   const data = await response.json()
   res.json(data)
 })
