@@ -47,7 +47,7 @@ var gifQueries = [
 import { readFileSync, writeFileSync } from 'fs'
 import express, { static as _static, urlencoded, json as _json } from 'express'
 const app = express()
-import { fetchUrl } from 'fetch'
+import fetch from 'node-fetch'
 import {
   collection,
   datacord,
