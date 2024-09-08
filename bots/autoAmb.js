@@ -255,6 +255,14 @@ async function startStream(retryCount = 0) {
       .output(streamURL + streamKey)
       .on('start', () => {
         console.log('Stream started')
+
+        // End the stream after 10 minutes (for testing purposes)
+        setTimeout(() => {
+          if (streamProcess) {
+            streamProcess.kill('SIGINT')
+            console.log('Stream timed out')
+          }
+        }, 600000)
       })
       .on('end', () => {
         console.log('Stream ended')
@@ -263,12 +271,6 @@ async function startStream(retryCount = 0) {
         console.error('Error during stream:', err)
       })
       .run()
-
-    // End the stream after 10 minutes (for testing purposes)
-    setTimeout(() => {
-      streamProcess.kill('SIGINT')
-      console.log('Stream timed out')
-    }, 600000)
   } catch (err) {
     if (
       err.code === 403 &&
