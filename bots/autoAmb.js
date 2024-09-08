@@ -144,7 +144,7 @@ export default async function autoAmb() {
 }
 
 // Run the main function
-const bgImage = './bots/autoAmb/bg.jpg'
+const bgImage = __dirname + '/autoAmb/bg.jpg'
 const demoSounds = [
   __dirname + '/autoAmb/demo-1.mp3',
   __dirname + '/autoAmb/demo-2.mp3',
