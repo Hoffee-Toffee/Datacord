@@ -4,6 +4,7 @@ dotenv.config()
 import path from 'path'
 import { fileURLToPath } from 'url'
 import Discord from 'discord.js'
+import autoAmb from './bots/autoAmb.js'
 
 // define __dirname
 const __filename = fileURLToPath(import.meta.url)
@@ -191,6 +192,11 @@ app.get('/relay', async (req, res) => {
   const response = await fetch(decodeURIComponent(url))
   const data = await response.json()
   res.json(data)
+})
+app.get('/startStream', async (req, res) => {
+  // Start the stream
+  autoAmb()
+  res.send('Stream started')
 })
 
 // Check hooks every 1000 ms
