@@ -38,9 +38,9 @@ let glitch = 'https://autoamb.glitch.me'
 
 if (side === 'render') {
   config()
-} else {
-  ffmpeg.setFfmpegPath(ffmpegInstaller.path)
 }
+
+ffmpeg.setFfmpegPath(ffmpegInstaller.path)
 
 // define __dirname
 const __filename = fileURLToPath(import.meta.url)
