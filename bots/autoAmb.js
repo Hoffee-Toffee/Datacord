@@ -13,10 +13,17 @@ import {
 import getMP3Duration from 'get-mp3-duration'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
+import ffmpegInstaller from '@ffmpeg-installer/ffmpeg'
 
-// Env setup
 import { config } from 'dotenv'
-config()
+
+if (process.env.YT_STREAM_KEY === undefined) {
+  // Render: Use .env file
+  config()
+} else {
+  // Glitch: Install ffmpeg
+  ffmpeg.setFfmpegPath(ffmpegInstaller.path)
+}
 
 // define __dirname
 const __filename = fileURLToPath(import.meta.url)
@@ -309,7 +316,6 @@ const processSound = async (sound, outputFile) => {
       .inputOptions([
         '-ss ' + sound.offset / 1000,
         '-to ' + (sound.end - sound.start + sound.offset) / 1000,
-        '-threads 1',
       ])
       .complexFilter(
         [
@@ -349,10 +355,8 @@ const mergeSounds = async (soundA, soundB, outputFile) => {
     let command = ffmpeg()
       .input(soundA)
       .inputFormat('mp3')
-      .inputOptions(['-threads 1'])
       .addInput(soundB)
       .inputFormat('mp3')
-      .inputOptions(['-threads 1'])
       .complexFilter(['amix=inputs=2:duration=longest'])
       .output(outputFile)
       .on('start', () => {
