@@ -17,11 +17,28 @@ import ffmpegInstaller from '@ffmpeg-installer/ffmpeg'
 
 import { config } from 'dotenv'
 
-if (process.env.YT_STREAM_KEY === undefined) {
-  // Render: Use .env file
+let side = process.env.YT_STREAM_KEY === undefined ? 'render' : 'glitch'
+
+let render = 'https://tristan-bulmer.onrender.com/projects/datacord'
+let glitch = 'https://autoamb.glitch.me'
+
+// Render: (use dotenv)
+//  - Send start request to glitch
+//  - Listen for chunks from glitch
+//  - Stream chunks to YouTube
+//  - Send stop request to glitch
+//  - Stop listening and streaming
+
+// Glitch: (install ffmpeg)
+//  - Listen for start request
+//  - Process chunks
+//  - Send chunks to render
+//  - Listen for stop request
+//  - Stop processing and sending
+
+if (side === 'render') {
   config()
 } else {
-  // Glitch: Install ffmpeg
   ffmpeg.setFfmpegPath(ffmpegInstaller.path)
 }
 
@@ -29,21 +46,15 @@ if (process.env.YT_STREAM_KEY === undefined) {
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-// ffmpeg.setFfmpegPath(ffmpegPath.path)
-
+// GLITCH SIDE: Generator
 let segNum = 3 // Number of segments to keep in memory
 let minSegs = 2 // Start streaming when there are at least this many segments in memory
 let segLen = 60 // Length of each segment in seconds
 let segOverlap = 5 // Overlap between segments in seconds
 
-let playSeg = 0
-let streaming = false
-
 let { AMB, BG } = JSON.parse(readFileSync(__dirname + '/files.json'))
 
 let fileHost = 'https://od.lk/s/'
-
-let bgImage
 
 let timeline = []
 let processes = []
@@ -149,38 +160,6 @@ const makeTemp = async (tempSeg = minSegs * -1) => {
         })
       }
     })
-
-    console.log('Getting background image...')
-
-    bgImage = await new Promise((resolve, reject) => {
-      fetch(fileHost + BG)
-        .then((res) => {
-          if (res.ok) {
-            console.log('Fetched one-time access URL:', res.url)
-            fetch(res.url)
-              .then((res) => {
-                if (res.ok) {
-                  // console.log('Fetched background image:', res)
-                  // create buffer from the PassThrough stream given in the response body
-                  let stream = new PassThrough()
-                  res.body.pipe(stream)
-                  stream.pipe(concat((buffer) => resolve(buffer)))
-                } else {
-                  reject(new Error('Failed to fetch background image', res))
-                }
-              })
-              .catch(reject)
-          } else {
-            reject(new Error('Failed to fetch one-time access URL', res))
-          }
-        })
-        .catch(reject)
-    })
-
-    // Save to file 'bg.jpg'
-    writeFileSync(__dirname + '/bg.jpg', bgImage)
-
-    bgImage = __dirname + '/bg.jpg'
   }
 
   let oldVal = tempSeg
@@ -272,7 +251,7 @@ const makeTemp = async (tempSeg = minSegs * -1) => {
           : tempA
 
       // Process sound
-      await processSound(sound, outputFile)
+      await processSound(sound, outputFile, isLast && i === 0)
       // Merge with previous sound (if any)
       if (i > 0) {
         let mergeFile =
@@ -282,15 +261,21 @@ const makeTemp = async (tempSeg = minSegs * -1) => {
             ? tempFile
             : tempB
         let mergeOutput = tempHalf.length % 2 === i % 2 ? tempB : tempFile
-        await mergeSounds(outputFile, mergeFile, mergeOutput)
+        await mergeSounds(outputFile, mergeFile, mergeOutput, isLast)
       }
       resolve()
     })
   }
 
-  // Start the stream if this is the last negative
+  // Send the temp file contents to the render side
+  let tempBuffer = readFileSync(tempFile)
+  fetch(`${render}/chunk?chunk=${tempSeg}`, {
+    method: 'POST',
+    body: tempBuffer,
+  })
+
+  // Streaming will have just started if the old value was -1
   if (!streaming && oldVal === -1) {
-    startStream()
     streaming = true
   }
   // If still negative, then we are still loading the initial segments
@@ -298,6 +283,7 @@ const makeTemp = async (tempSeg = minSegs * -1) => {
     // Pass one greater than the initial value given to makeTemp
     makeTemp(oldVal + 1)
   }
+
   return
 }
 
@@ -377,6 +363,21 @@ const mergeSounds = async (soundA, soundB, outputFile) => {
   })
 }
 
+const killProcess = () => {
+  // Stop all streams and functions in this file
+  processes.forEach((process) => {
+    process.kill('SIGINT')
+  })
+  streaming = false
+  playSeg = 0
+  timeline = []
+  weights.fill(0)
+  console.log('Process killed')
+}
+
+// RENDER SIDE: Streamer
+let playSeg = 0
+
 // Function to start the stream
 async function startStream() {
   const fullStreamURL = `rtmp://x.rtmp.youtube.com/live2/${process.env.YT_STREAM_KEY}`
@@ -384,15 +385,17 @@ async function startStream() {
   // Make audio stream from the temp file
   const audioStream = new PassThrough()
   const streamSegment = () => {
-    const soundStream = createReadStream(__dirname + `/temp${playSeg}.mp3`)
-    console.log(`Streaming temp${playSeg}`)
+    const soundStream = createReadStream(__dirname + `/chunk${playSeg}.mp3`)
+    console.log(`Streaming chunk${playSeg}...`)
     soundStream.pipe(audioStream, { end: false })
     soundStream.on('end', () => {
-      console.log(`temp${playSeg} finished streaming`)
+      console.log(`Finished streaming chunk${playSeg}`)
       playSeg = (playSeg + 1) % segNum
 
       streamSegment() // Start the next segment
-      makeTemp(playSeg) // Make the next segment
+
+      // Tell glitch that render is ready for the next chunk
+      fetch(`${glitch}/chunkReady?chunk=${playSeg}`)
     })
   }
   streamSegment()
@@ -424,8 +427,6 @@ async function startStream() {
         console.log('Stream started')
         processes.push(command)
         pInd = processes.length - 1
-        // Make the next segment
-        makeTemp(playSeg)
       })
       .on('end', function (err, stdout, stderr) {
         console.log('Stream ended')
@@ -448,18 +449,6 @@ async function startStream() {
   } catch (err) {
     console.error('Error starting stream:', err)
   }
-}
-
-const killProcess = () => {
-  // Stop all streams and functions in this file
-  processes.forEach((process) => {
-    process.kill('SIGINT')
-  })
-  streaming = false
-  playSeg = 0
-  timeline = []
-  weights.fill(0)
-  console.log('Process killed')
 }
 
 export default { start: makeTemp, stop: killProcess }

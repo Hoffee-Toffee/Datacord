@@ -1,6 +1,12 @@
 import dotenv from 'dotenv'
 
-dotenv.config()
+let side = process.env.YT_STREAM_KEY === undefined ? 'render' : 'glitch'
+
+if (side === 'render') dotenv.config()
+
+let render = 'https://tristan-bulmer.onrender.com/projects/datacord'
+let glitch = 'https://autoamb.glitch.me'
+
 import path from 'path'
 import { fileURLToPath } from 'url'
 import Discord from 'discord.js'
@@ -203,6 +209,20 @@ app.get('/stopStream', async (req, res) => {
   autoAmb.stop()
   res.send('Stream stopped')
 })
+
+if (side === 'render') {
+  app.post('/chunk', async (req, res) => {
+    // Save the chunk
+    const chunk = req.query.chunk // The chunk number
+    const data = req.body // The data to save
+
+    // Save the buffer as an mp3 file
+    const filename = join(__dirname, `chunk${chunk}.mp3`)
+    writeFileSync(filename, Buffer.from(data, 'base64'))
+
+    res.send('Chunk saved')
+  })
+}
 
 // Check hooks every 1000 ms
 setInterval(async () => {
