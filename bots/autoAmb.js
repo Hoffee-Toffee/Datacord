@@ -38,10 +38,9 @@ let glitch = 'https://autoamb.glitch.me'
 
 if (side === 'render') {
   config()
+} else {
+  ffmpeg.setFfmpegPath(ffmpegInstaller.path)
 }
-
-ffmpeg.setFfmpegPath(ffmpegInstaller.path)
-
 // define __dirname
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -438,10 +437,10 @@ async function startStream() {
       .addInput(bgImage)
       .inputFormat('image2')
       .inputFPS(1)
-      .inputOptions(['-re', '-stream_loop -1'])
+      .inputOptions(['-stream_loop -1'])
       .addInput(audioStream)
       .inputFormat('mp3')
-      .inputOptions(['-re', `-t ${segLen}`])
+      .inputOptions([`-t ${segLen}`])
       .outputOptions([
         '-c:v libx264',
         '-c:a aac',
@@ -451,7 +450,6 @@ async function startStream() {
         '-maxrate 2500k',
         '-bufsize 5000k',
         '-b:a 128k',
-        '-preset ultrafast',
         '-crf 23',
       ])
       .output(fullStreamURL)
