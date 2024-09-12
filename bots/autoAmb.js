@@ -12,7 +12,7 @@ import {
 // import ffmpegPath from '@ffmpeg-installer/ffmpeg'
 import getMP3Duration from 'get-mp3-duration'
 import { fileURLToPath } from 'url'
-import { dirname } from 'path'
+import { dirname, join } from 'path'
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg'
 
 import { config } from 'dotenv'
@@ -272,6 +272,7 @@ const makeTemp = async (tempSeg = minSegs * -1) => {
   fetch(`${render}/chunk?chunk=${tempSeg}`, {
     method: 'POST',
     body: tempBuffer,
+    headers: { 'Content-Type': 'application/octet-stream' },
   })
 
   // If still negative, then we are still loading the initial segments
@@ -414,7 +415,9 @@ async function startStream() {
   // Make audio stream from the temp file
   const audioStream = new PassThrough()
   const streamSegment = () => {
-    const soundStream = createReadStream(__dirname + `/chunk${playSeg}.mp3`)
+    const soundStream = createReadStream(
+      join(__dirname, `../chunk${playSeg}.mp3`)
+    )
     console.log(`Streaming chunk${playSeg}...`)
     soundStream.pipe(audioStream, { end: false })
     soundStream.on('end', () => {
