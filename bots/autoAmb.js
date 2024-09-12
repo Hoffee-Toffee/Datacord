@@ -1,240 +1,392 @@
-// AutoAmb: 24/7 Perpetual Dead Space Ambience (YouTube Live Stream Bot)
+import ffmpeg, { setFfmpegPath } from 'fluent-ffmpeg'
+import { PassThrough, Readable } from 'stream'
+import fetch from 'node-fetch'
+import concat from 'concat-stream'
+import { readdir, unlink, createReadStream, writeFileSync } from 'fs'
+import { path } from '@ffmpeg-installer/ffmpeg'
+import getMP3Duration from 'get-mp3-duration'
 
-/* Description:
-    This is the only non-Discord bot, it is a YouTube Live Stream bot that generate perpetual Dead Space ambience using the sounds from the games.
-
-    YT Title: 🔴 Dead Space Ambience | 24/7 Perpetual Soundscape
-
-    YT Description: --start--
-      24/7 Perpetual Dead Space Ambience, generated using sounds from the Dead Space games.
-      
-      This stream is generated using a custom algorithm that mixes ambient sounds, music, and sound effects from the Dead Space games.
-      The algorithm is designed after the Dead Space games' sound design, after analyzing the sound files from the games, and the atmospheres produced by them in-game.
-
-      --end--
-    Includes sounds from:
-      - Dead Space (2008)
-      - Dead Space: Downfall (2008) - Planned
-      - Dead Space: Extraction (2009) - Planned
-      - Dead Space: Ignition (2010) - Planned
-      - Dead Space (mobile) (2011) - Planned
-      - Dead Space: Aftermath (2011) - Planned
-      - Dead Space 2 (2011)
-      - Dead Space 2: Severed (2011) - Planned
-      - Dead Space 3 (2013) - Planned
-      - Dead Space 3: Awakened (2013) - Planned
-      - Dead Space (2023)
-      - Dead Space: Deep Cover (2024) - Planned
-
-    Each sound has varying settings, used by the algorithm:
-      - Location: A mixture of panning, volume, and reverb / echo effects to simulate the sound coming from a specific location.
-      - Class: The sound basic sound class, such as:
-        - amb: General ambience
-        - vac: Vacuum ambience
-        - nec: Necromorph sounds
-        - mus: Musical ambience
-        - uix: UI sounds
-        - npc: NPC vocalizations
-        - env: Environmental sounds
-        - wep: Weapon sounds
-        - isa: Isaac's breathing
-      - Tags: Additional tags that can be used to filter sounds, such as:
-        - Water
-        - Electricity
-        - Machinery
-        - Necromorph
-        - ...
-
-    There are layers for each class, these are defined by sounds we don't want to overlap
-
-
-*/
-
-import { google } from 'googleapis'
-import {
-  readFileSync,
-  writeFileSync,
-  createReadStream,
-  createWriteStream,
-} from 'fs'
-import { createInterface } from 'readline'
-import { join, dirname } from 'path'
-import { fileURLToPath } from 'url'
+// Env setup
 import { config } from 'dotenv'
-import ffmpeg from 'fluent-ffmpeg'
-// import ffmpegInstaller from '@ffmpeg-installer/ffmpeg'
-import { PassThrough } from 'stream'
-
-let streamProcess = null
-
-// Set the path to the ffmpeg binary provided by @ffmpeg-installer/ffmpeg
-// ffmpeg.setFfmpegPath(ffmpegInstaller.path)
-
-// Define __dirname for ES module scope
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-// Create credentials from environment variables
-const credentials = {
-  web: {
-    client_id: process.env.YT_CLIENT_ID,
-    project_id: 'dead-space-ambience',
-    auth_uri: 'https://accounts.google.com/o/oauth2/auth',
-    token_uri: 'https://oauth2.googleapis.com/token',
-    auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
-    client_secret: process.env.YT_CLIENT_SECRET,
-    redirect_uris: [
-      'https://tristan-bulmer.onrender.com',
-      'http://localhost:8080',
-    ],
-    javascript_origins: [
-      'https://tristan-bulmer.onrender.com',
-      'http://localhost:8080',
-    ],
-  },
-}
-
-const token = {
-  access_token: process.env.YT_ACCESS_TOKEN,
-  refresh_token: process.env.YT_REFRESH_TOKEN,
-  scope: 'https://www.googleapis.com/auth/youtube.force-ssl',
-  token_type: 'Bearer',
-  expiry_date: process.env.YT_EXPIRY_DATE,
-}
-
-const { client_secret, client_id, redirect_uris } = credentials.web
-const oauth2Client = new google.auth.OAuth2(
-  client_id,
-  client_secret,
-  redirect_uris[0]
-)
-
-// Function to get a new token
-async function getNewToken() {
-  const authUrl = oauth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: ['https://www.googleapis.com/auth/youtube.force-ssl'],
-    response_type: 'code',
-  })
-
-  console.log('Authorize this app by visiting this url:', authUrl)
-
-  const rl = createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  })
-
-  rl.question('Enter the code from that page here: ', (code) => {
-    rl.close()
-    oauth2Client.getToken(code, (err, token) => {
-      if (err) return console.error('Error retrieving access token', err)
-      oauth2Client.setCredentials(token)
-      console.log('Token retrieved:', token)
-    })
-  })
-}
-
-// Main function to handle the flow
-export default async function autoAmb() {
-  if (!token) {
-    await getNewToken()
-  } else {
-    await startStream()
-  }
-}
-
-// Run the main function
-const bgImage = __dirname + '/autoAmb/bg.jpg'
-const demoSounds = [
-  __dirname + '/autoAmb/demo-1.mp3',
-  __dirname + '/autoAmb/demo-2.mp3',
-  __dirname + '/autoAmb/demo-3.mp3',
-  __dirname + '/autoAmb/demo-4.mp3',
-]
-
 config()
 
-// Start the stream (unlisted, for testing)
-async function startStream(retryCount = 0) {
-  // const youtube = google.youtube({
-  //   version: 'v3',
-  //   auth: oauth2Client,
-  // })
+// define __dirname
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-  // const now = new Date()
-  // const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000) // 1 hour later
+setFfmpegPath(path)
+
+let segNum = 3 // Number of segments to keep in memory
+let minSegs = 2 // Start streaming when there are at least this many segments in memory
+let segLen = 60 // Length of each segment in seconds
+let segOverlap = 5 // Overlap between segments in seconds
+
+let playSeg = 0
+let streaming = false
+
+import { AMB, BG } from './files.json'
+let fileHost = 'https://od.lk/s/'
+
+let bgImage
+
+let timeline = []
+let processes = []
+
+const weights = Array.from({ length: 30 }, () => Math.floor(Math.random() * 10)) // Random initial weights
+
+const addSound = async () => {
+  const totalWeight = weights.reduce((acc, weight) => acc + weight, 0)
+
+  let random = Math.floor(Math.random() * totalWeight)
+
+  let nextIndex = weights.findIndex((weight) => {
+    random -= weight
+    return random <= 0
+  })
+
+  weights[nextIndex]++
+
+  // Get a readable stream of the sound file
+  let song = fileHost + AMB[nextIndex]
+  song = await new Promise((resolve, reject) => {
+    fetch(song)
+      .then((res) => {
+        if (res.ok) {
+          console.log('Fetched one-time access URL:', res.url)
+          fetch(res.url)
+            .then((res) => {
+              if (res.ok) {
+                // console.log('Fetched sound file:', res)
+                // create buffer from the PassThrough stream given in the response body
+                let stream = new PassThrough()
+                res.body.pipe(stream)
+                stream.pipe(concat((buffer) => resolve(buffer)))
+              } else {
+                reject(new Error('Failed to fetch sound file', res))
+              }
+            })
+            .catch(reject)
+        } else {
+          reject(new Error('Failed to fetch one-time access URL', res))
+        }
+      })
+      .catch(reject)
+  })
+
+  // Get the duration of the song (in milliseconds)
+  let duration = getMP3Duration(song)
+
+  // Convert the song from a buffer to a readable stream
+  // let songStream = new Readable()
+  // songStream.push(song)
+  // songStream.push(null)
+  // song = songStream
+
+  console.log(`Song ${nextIndex} has duration:`, duration)
+
+  let playDuration = Math.floor(Math.random() * 480000) + 60000 // 1-9 minutes in milliseconds
+  let startTimeOffset = Math.floor(Math.random() * duration) // Random start time in milliseconds
+  let startTime =
+    timeline.length > 0
+      ? timeline[timeline.length - 1].end - segOverlap * 1000
+      : 0
+
+  while (playDuration > 0) {
+    let segmentDuration = Math.min(duration - startTimeOffset, playDuration)
+
+    timeline.push({
+      sound: song,
+      offset: startTimeOffset,
+      start: startTime,
+      end: startTime + segmentDuration,
+      fadeIn: true,
+      fadeOut: true,
+    })
+
+    playDuration -= segmentDuration
+    startTime = startTime + segmentDuration - segOverlap * 1000
+    startTimeOffset = 0
+  }
+
+  return
+}
+
+const makeTemp = async (tempSeg = minSegs * -1) => {
+  if (tempSeg === -1 * minSegs) {
+    console.log('Deleting temp files...')
+    // Get all temp files './temp*.mp3' and delete them
+    readdir(__dirname, (err, files) => {
+      if (err) {
+        console.error('Error reading directory:', err)
+        return
+      } else {
+        files.forEach((file) => {
+          if (file.startsWith('temp') && file.endsWith('.mp3')) {
+            unlink(__dirname + '/' + file, (err) => {
+              if (err) {
+                console.error('Error deleting file:', err)
+              } else {
+                console.log('Deleted file:', file)
+              }
+            })
+          }
+        })
+      }
+    })
+
+    console.log('Getting background image...')
+
+    bgImage = await new Promise((resolve, reject) => {
+      fetch(fileHost + BG)
+        .then((res) => {
+          if (res.ok) {
+            console.log('Fetched one-time access URL:', res.url)
+            fetch(res.url)
+              .then((res) => {
+                if (res.ok) {
+                  // console.log('Fetched background image:', res)
+                  // create buffer from the PassThrough stream given in the response body
+                  let stream = new PassThrough()
+                  res.body.pipe(stream)
+                  stream.pipe(concat((buffer) => resolve(buffer)))
+                } else {
+                  reject(new Error('Failed to fetch background image', res))
+                }
+              })
+              .catch(reject)
+          } else {
+            reject(new Error('Failed to fetch one-time access URL', res))
+          }
+        })
+        .catch(reject)
+    })
+
+    // Save to file 'bg.jpg'
+    writeFileSync(__dirname + '/bg.jpg', bgImage)
+
+    bgImage = __dirname + '/bg.jpg'
+  }
+
+  let oldVal = tempSeg
+
+  tempSeg = (tempSeg + minSegs) % segNum
+
+  console.log('Populating timeline...')
+
+  let target = segLen * 1000
+
+  // Add sounds until the timeline is at least target segments long
+  while (
+    timeline.length === 0 ||
+    timeline[timeline.length - 1].end < target * segNum
+  ) {
+    await addSound()
+  }
+
+  // console.log('Timeline populated')
+  console.log(`Building file: ${tempSeg}`)
+
+  let overlap = timeline.find(
+    (sound) => sound.end - 1000 <= target && sound.end >= target
+  )
+
+  if (overlap) {
+    // Compare the end - half an overlap time to the segment length
+    if (overlap.end - segOverlap * 1000 <= target) {
+      target = overlap.end
+    } else {
+      target = overlap.end - segOverlap * 1000
+    }
+  }
+
+  let tempHalf = []
+
+  // console.log('Splitting timeline at', target)
+  // console.log('Timeline Before:', timeline)
+
+  timeline.forEach((sound, index) => {
+    // Finishes on or before
+    if (sound.end <= target) {
+      tempHalf.push(sound)
+      timeline[index] = null
+    }
+    // Starts before or on, ends after
+    else if (sound.start <= target && sound.end > target) {
+      tempHalf.push({
+        ...sound,
+        end: target,
+        fadeOut: false,
+      })
+      timeline[index] = {
+        ...sound,
+        start: 0,
+        offset: target - sound.start + sound.offset,
+        fadeIn: false,
+      }
+    }
+    // Starts and ends after
+    else {
+      timeline[index] = {
+        ...sound,
+        start: sound.start - target,
+        end: sound.end - target,
+      }
+    }
+  })
+
+  timeline = timeline.filter(Boolean)
+
+  // console.log('Timeline After:', timeline)
+  // console.log('Temp Half:', tempHalf)
+
+  const tempFile = __dirname + `/temp${tempSeg}.mp3`
+  const tempA = __dirname + `/temp${tempSeg}A.mp3`
+  const tempB = __dirname + `/temp${tempSeg}B.mp3`
+
+  // Must wait for each sound before to finish before starting the next
+  for (let i = 0; i < tempHalf.length; i++) {
+    const sound = tempHalf[i]
+    // console.log('Processing sound', i)
+    await new Promise(async (resolve, reject) => {
+      let outputFile =
+        tempHalf.length % 2 === 1 && i === 0
+          ? tempFile
+          : tempHalf.length % 2 === 0 && i === 1
+          ? tempB
+          : tempA
+
+      // Process sound
+      await processSound(sound, outputFile)
+      // Merge with previous sound (if any)
+      if (i > 0) {
+        let mergeFile =
+          tempHalf.length % 2 === 0 && i == 1
+            ? tempA
+            : tempHalf.length % 2 === i % 2
+            ? tempFile
+            : tempB
+        let mergeOutput = tempHalf.length % 2 === i % 2 ? tempB : tempFile
+        await mergeSounds(outputFile, mergeFile, mergeOutput)
+      }
+      resolve()
+    })
+  }
+
+  // Start the stream if this is the last negative
+  if (!streaming && oldVal === -1) {
+    startStream()
+    streaming = true
+  }
+  // If still negative, then we are still loading the initial segments
+  else if (oldVal < 0) {
+    // Pass one greater than the initial value given to makeTemp
+    makeTemp(oldVal + 1)
+  }
+  return
+}
+
+const processSound = async (sound, outputFile) => {
+  // Use ffmpeg to process the buffer
+  let readStream = new Readable()
+  readStream.push(sound.sound)
+  readStream.push(null)
+
+  // Use ffmpeg to process the sound to the temp file
+  return new Promise((resolve, reject) => {
+    let pInd
+    let command = ffmpeg()
+      .input(readStream)
+      .inputFormat('mp3')
+      .inputOptions([
+        '-ss ' + sound.offset / 1000,
+        '-to ' + (sound.end - sound.start + sound.offset) / 1000,
+        '-threads 1',
+      ])
+      .complexFilter(
+        [
+          sound.fadeIn && `afade=t=in:st=0:d=${segOverlap}`,
+          sound.fadeOut &&
+            `afade=t=out:st=${
+              (sound.end - sound.start) / 1000 - segOverlap
+            }:d=${segOverlap}`,
+          `adelay=${sound.offset / 1000}|${sound.offset / 1000}`,
+        ]
+          .filter(Boolean)
+          .join(',')
+      )
+      .output(outputFile)
+      .on('start', () => {
+        console.log('Started processing sound')
+        processes.push(command)
+        pInd = processes.length - 1
+      })
+      .on('end', () => {
+        console.log('Finished processing sound')
+        processes.splice(pInd, 1)
+        resolve()
+      })
+      .on('error', (err) => {
+        // console.error('Error during processing:', err)
+        reject(err)
+      })
+      .run()
+  })
+}
+
+const mergeSounds = async (soundA, soundB, outputFile) => {
+  // Use ffmpeg to merge the two sounds
+  return new Promise((resolve, reject) => {
+    let pInd
+    let command = ffmpeg()
+      .input(soundA)
+      .inputFormat('mp3')
+      .inputOptions(['-threads 1'])
+      .addInput(soundB)
+      .inputFormat('mp3')
+      .inputOptions(['-threads 1'])
+      .complexFilter(['amix=inputs=2:duration=longest'])
+      .output(outputFile)
+      .on('start', () => {
+        console.log('Started merging sounds')
+        processes.push(command)
+        pInd = processes.length - 1
+      })
+      .on('end', () => {
+        console.log('Finished merging sounds')
+        processes.splice(pInd, 1)
+        resolve()
+      })
+      .on('error', (err) => {
+        console.error('Error during merge:', err)
+        reject(err)
+      })
+      .run()
+  })
+}
+
+// Function to start the stream
+async function startStream() {
+  const fullStreamURL = `rtmp://x.rtmp.youtube.com/live2/${process.env.YT_STREAM_KEY}`
+
+  // Make audio stream from the temp file
+  const audioStream = new PassThrough()
+  const streamSegment = () => {
+    const soundStream = createReadStream(__dirname + `/temp${playSeg}.mp3`)
+    console.log(`Streaming temp${playSeg}`)
+    soundStream.pipe(audioStream, { end: false })
+    soundStream.on('end', () => {
+      console.log(`temp${playSeg} finished streaming`)
+      playSeg = (playSeg + 1) % segNum
+
+      streamSegment() // Start the next segment
+      makeTemp(playSeg) // Make the next segment
+    })
+  }
+  streamSegment()
 
   try {
-    /*
-    const broadcast = await youtube.liveBroadcasts.insert({
-      part: ['snippet', 'status', 'contentDetails'],
-      requestBody: {
-        snippet: {
-          title: '🔴 Dead Space Ambience | 24/7 Perpetual Soundscape',
-          description:
-            "24/7 Perpetual Dead Space Ambience, generated using sounds from the Dead Space games.\n\nThis stream is generated using a custom algorithm that mixes ambient sounds, music, and sound effects from the Dead Space games.\nThe algorithm is designed after the Dead Space games' sound design, after analyzing the sound files from the games, and the atmospheres produced by them in-game.",
-          scheduledStartTime: now.toISOString(),
-          scheduledEndTime: oneHourLater.toISOString(),
-        },
-        status: {
-          privacyStatus: 'unlisted',
-        },
-        contentDetails: {
-          monitorStream: {
-            enableMonitorStream: false,
-          },
-        },
-      },
-    })
-
-    const stream = await youtube.liveStreams.insert({
-      part: ['snippet', 'cdn'],
-      requestBody: {
-        snippet: {
-          title: 'Dead Space Ambience Stream',
-        },
-        cdn: {
-          format: '1080p',
-          ingestionType: 'rtmp',
-          resolution: 'variable',
-          frameRate: 'variable',
-        },
-      },
-    })
-
-    // Bind the stream to the broadcast
-    youtube.liveBroadcasts.bind({
-      part: ['id', 'snippet'],
-      id: broadcast.data.id,
-      streamId: stream.data.id,
-    })
-    */
-
-    // Get the stream URL
-
-    // const streamURL =
-    //   stream.data.cdn.ingestionInfo.ingestionAddress +
-    //   '/' +
-    //   stream.data.cdn.ingestionInfo.streamName
-
-    let streamURL = 'rtmp://x.rtmp.youtube.com/live2/'
-    let streamKey = process.env.YT_STREAM_KEY
-
-    // Use the demo sound (pick a random one to play, 2 seconds after it finishes, play another one)
-    const audioStream = new PassThrough()
-    let i = 0
-    const playSound = () => {
-      const soundStream = createReadStream(demoSounds[i])
-      soundStream.pipe(audioStream, { end: false })
-      soundStream.on('end', () => {
-        i = (i + 1) % demoSounds.length
-        setTimeout(playSound, 2000)
-      })
-    }
-    playSound()
-
-    // Combine together for stream
-    streamProcess = ffmpeg()
+    let pInd
+    let command = ffmpeg()
       .addInput(bgImage)
       .inputFormat('image2')
       .inputFPS(1)
@@ -246,43 +398,50 @@ async function startStream(retryCount = 0) {
         '-c:v libx264',
         '-c:a aac',
         '-f flv',
-        '-g 8',
-        '-b:v 13500k',
-        '-maxrate 13500k',
-        '-bufsize 27000k',
+        '-g 120',
+        '-b:v 3000k',
+        '-maxrate 3000k',
+        '-bufsize 6000k',
         '-b:a 128k',
+        '-vf eq=brightness=0.1:saturation=1.5',
+        '-s 1920x1080',
       ])
-      .output(streamURL + streamKey)
+      .output(fullStreamURL)
       .on('start', () => {
         console.log('Stream started')
-
-        // End the stream after 10 minutes (for testing purposes)
-        setTimeout(() => {
-          if (streamProcess) {
-            streamProcess.kill('SIGINT')
-            console.log('Stream timed out')
-          }
-        }, 600000)
+        processes.push(command)
+        pInd = processes.length - 1
+        // Make the next segment
+        makeTemp(playSeg)
       })
-      .on('end', () => {
+      .on('end', function (err, stdout, stderr) {
         console.log('Stream ended')
+        streaming = false
+        playSeg = 0
+        timeline = []
+        weights.fill(0)
+        processes.splice(pInd, 1)
       })
       .on('error', (err) => {
         console.error('Error during stream:', err)
       })
       .run()
   } catch (err) {
-    if (
-      err.code === 403 &&
-      err.errors &&
-      err.errors[0].reason === 'userRequestsExceedRateLimit'
-    ) {
-      // Exponential backoff with a max delay of 1 hour
-      const delay = Math.min(2 ** retryCount * 1000, 3600000)
-      console.log(`Rate limit exceeded. Retrying in ${delay / 1000} seconds...`)
-      setTimeout(() => startStream(retryCount + 1), delay)
-    } else {
-      console.error('Error starting stream:', err)
-    }
+    console.error('Error starting stream:', err)
   }
 }
+
+const killProcess = () => {
+  // Stop all streams and functions in this file
+  processes.forEach((process) => {
+    process.kill('SIGINT')
+  })
+  streaming = false
+  playSeg = 0
+  timeline = []
+  weights.fill(0)
+  console.log('Process killed')
+}
+
+export const start = makeTemp
+export const stop = killProcess
