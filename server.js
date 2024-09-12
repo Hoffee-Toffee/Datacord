@@ -106,7 +106,6 @@ function sendMessage(message, hookname) {
   })
 }
 
-app.use(_static(path.join(__dirname)))
 app.use(urlencoded({ extended: true }))
 app.use(_json())
 app.use(express.raw({ type: 'audio/mpeg', limit: '50mb' }))
@@ -231,6 +230,12 @@ app.post('/chunk', async (req, res) => {
   }
 
   res.send('Chunk saved')
+})
+app.get('/chunk/:chunk', async (req, res) => {
+  // Return the saved chunk file
+  const chunk = req.params.chunk
+  const filename = join(__dirname, `chunk${chunk}.mp3`)
+  res.sendFile(filename)
 })
 
 // Check hooks every 1000 ms
