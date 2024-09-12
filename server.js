@@ -4,7 +4,7 @@ dotenv.config()
 import path from 'path'
 import { fileURLToPath } from 'url'
 import Discord from 'discord.js'
-import autoAmb from './autoAmb.js'
+import autoAmb from './bots/autoAmb.js'
 
 // define __dirname
 const __filename = fileURLToPath(import.meta.url)
