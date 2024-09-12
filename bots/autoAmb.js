@@ -2,7 +2,13 @@ import ffmpeg from 'fluent-ffmpeg'
 import { PassThrough, Readable } from 'stream'
 import fetch from 'node-fetch'
 import concat from 'concat-stream'
-import { readdir, unlink, createReadStream, writeFileSync } from 'fs'
+import {
+  readdir,
+  unlink,
+  createReadStream,
+  readFileSync,
+  writeFileSync,
+} from 'fs'
 import ffmpegPath from '@ffmpeg-installer/ffmpeg'
 import getMP3Duration from 'get-mp3-duration'
 import { fileURLToPath } from 'url'
