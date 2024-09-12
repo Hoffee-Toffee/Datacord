@@ -210,26 +210,26 @@ app.get('/stopStream', async (req, res) => {
   autoAmb.stop()
   res.send('Stream stopped')
 })
+app.post('/chunk', async (req, res) => {
+  // Save the chunk
+  const chunk = req.query.chunk // The chunk number
+  const data = req.body // The data to save
 
-if (side === 'render') {
-  app.post('/chunk', async (req, res) => {
-    // Save the chunk
-    const chunk = req.query.chunk // The chunk number
-    const data = req.body // The data to save
+  console.log(`Saving chunk ${chunk}`)
 
-    // Save the buffer as an mp3 file
-    const filename = join(__dirname, `chunk${chunk}.mp3`)
-    writeFileSync(filename, Buffer.from(data, 'base64'))
+  // Save the buffer as an mp3 file
+  const filename = join(__dirname, `chunk${chunk}.mp3`)
+  writeFileSync(filename, Buffer.from(data, 'base64'))
 
-    // If not streaming, and this was chunk 1, start the stream
-    if (!streaming && chunk == 1) {
-      streaming = true
-      autoAmb.stream()
-    }
+  // If not streaming, and this was chunk 1, start the stream
+  if (!streaming && chunk == 1) {
+    streaming = true
+    console.log('Ready to stream')
+    autoAmb.stream()
+  }
 
-    res.send('Chunk saved')
-  })
-}
+  res.send('Chunk saved')
+})
 
 // Check hooks every 1000 ms
 setInterval(async () => {
