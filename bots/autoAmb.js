@@ -452,4 +452,4 @@ const killProcess = () => {
   console.log('Process killed')
 }
 
-export default { start: startStream, stop: killProcess }
+export default { start: makeTemp, stop: killProcess }
