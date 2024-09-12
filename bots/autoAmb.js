@@ -41,6 +41,7 @@ if (side === 'render') {
 } else {
   ffmpeg.setFfmpegPath(ffmpegInstaller.path)
 }
+
 // define __dirname
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
