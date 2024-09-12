@@ -219,7 +219,7 @@ app.post('/chunk', async (req, res) => {
 
   // Save the buffer as an mp3 file
   const filename = join(__dirname, `chunk${chunk}.mp3`)
-  writeFileSync(filename, Buffer.from(data, 'base64'))
+  writeFileSync(filename, data)
 
   // If not streaming, and this was chunk 1, start the stream
   if (!streaming && chunk == 1) {
