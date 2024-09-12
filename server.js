@@ -109,6 +109,7 @@ function sendMessage(message, hookname) {
 app.use(_static('public'))
 app.use(urlencoded({ extended: true }))
 app.use(_json())
+app.use(express.raw({ type: 'application/octet-stream', limit: '50mb' }))
 
 app.get('/wakeup', function (request, response) {
   response.send('Wakeup successful.')
