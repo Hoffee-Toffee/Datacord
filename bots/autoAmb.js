@@ -399,7 +399,7 @@ async function startStream() {
       .addInput(bgImage)
       .inputFormat('image2')
       .inputFPS(1)
-      .inputOptions(['-stream_loop -1', '-re'])
+      .inputOptions(['-re'])
       .addInput(audioStream)
       .inputFormat('mp3')
       .inputOptions(['-re'])
@@ -407,13 +407,13 @@ async function startStream() {
         '-c:v libx264',
         '-c:a aac',
         '-f flv',
-        '-g 120',
-        '-b:v 3000k',
-        '-maxrate 3000k',
-        '-bufsize 6000k',
+        '-g 8',
+        '-b:v 2500k',
+        '-maxrate 2500k',
+        '-bufsize 5000k',
         '-b:a 128k',
-        '-vf eq=brightness=0.1:saturation=1.5',
-        '-s 1920x1080',
+        '-preset ultrafast',
+        '-crf 23',
       ])
       .output(fullStreamURL)
       .on('start', () => {
