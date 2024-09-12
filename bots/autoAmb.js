@@ -441,7 +441,7 @@ async function startStream() {
       .inputOptions(['-re', '-stream_loop -1'])
       .addInput(audioStream)
       .inputFormat('mp3')
-      .inputOptions(['-re'])
+      .inputOptions(['-re', `-t ${segLen}`])
       .outputOptions([
         '-c:v libx264',
         '-c:a aac',
