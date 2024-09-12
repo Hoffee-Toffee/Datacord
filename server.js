@@ -214,13 +214,14 @@ app.get('/stopStream', async (req, res) => {
 app.post('/chunk', async (req, res) => {
   // Save the chunk
   const chunk = req.query.chunk // The chunk number
-  const data = req.body.data // The base64 encoded data
+  const data = req.body
 
   console.log(`Saving chunk ${chunk}`)
+  console.log(data)
 
   // Save the buffer as an mp3 file
   const filename = join(__dirname, `chunk${chunk}.mp3`)
-  writeFileSync(filename, Buffer.from(data, 'base64'))
+  writeFileSync(filename, data)
 
   // If not streaming, and this was chunk 1, start the stream
   if (!streaming && chunk == 1) {
