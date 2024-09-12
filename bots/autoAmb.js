@@ -24,7 +24,8 @@ let segOverlap = 5 // Overlap between segments in seconds
 let playSeg = 0
 let streaming = false
 
-import { AMB, BG } from './files.json'
+let { AMB, BG } = JSON.parse(readFileSync(__dirname + '/files.json'))
+
 let fileHost = 'https://od.lk/s/'
 
 let bgImage
