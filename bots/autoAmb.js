@@ -399,7 +399,7 @@ async function startStream() {
       .addInput(bgImage)
       .inputFormat('image2')
       .inputFPS(1)
-      .inputOptions(['-re'])
+      .inputOptions(['-re', '-stream_loop -1'])
       .addInput(audioStream)
       .inputFormat('mp3')
       .inputOptions(['-re'])
@@ -430,6 +430,12 @@ async function startStream() {
         timeline = []
         weights.fill(0)
         processes.splice(pInd, 1)
+      })
+      .on('stderr', (stderr) => {
+        console.log('stderr:', stderr)
+      })
+      .on('stdout', (stdout) => {
+        console.log('stdout:', stdout)
       })
       .on('error', (err) => {
         console.error('Error during stream:', err)
