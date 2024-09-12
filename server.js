@@ -213,7 +213,7 @@ app.get('/stopStream', async (req, res) => {
 app.post('/chunk', async (req, res) => {
   // Save the chunk
   const chunk = req.query.chunk // The chunk number
-  const data = req.body // The data to save
+  const data = req.body.data // The base64 encoded data
 
   console.log(`Saving chunk ${chunk}`)
 
