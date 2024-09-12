@@ -106,7 +106,7 @@ function sendMessage(message, hookname) {
   })
 }
 
-app.use(_static('public'))
+app.use(_static(path.join(__dirname)))
 app.use(urlencoded({ extended: true }))
 app.use(_json())
 app.use(express.raw({ type: 'application/octet-stream', limit: '50mb' }))
