@@ -109,7 +109,7 @@ function sendMessage(message, hookname) {
 app.use(_static(path.join(__dirname)))
 app.use(urlencoded({ extended: true }))
 app.use(_json())
-app.use(express.raw({ type: 'application/octet-stream', limit: '50mb' }))
+app.use(express.raw({ type: 'audio/mpeg', limit: '50mb' }))
 
 app.get('/wakeup', function (request, response) {
   response.send('Wakeup successful.')

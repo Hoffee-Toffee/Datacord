@@ -272,7 +272,7 @@ const makeTemp = async (tempSeg = minSegs * -1) => {
   fetch(`${render}/chunk?chunk=${tempSeg}`, {
     method: 'POST',
     body: tempBuffer,
-    headers: { 'Content-Type': 'application/octet-stream' },
+    headers: { 'Content-Type': 'audio/mpeg' },
   })
 
   // If still negative, then we are still loading the initial segments
