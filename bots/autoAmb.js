@@ -9,7 +9,7 @@ import {
   readFileSync,
   writeFileSync,
 } from 'fs'
-import ffmpegPath from '@ffmpeg-installer/ffmpeg'
+// import ffmpegPath from '@ffmpeg-installer/ffmpeg'
 import getMP3Duration from 'get-mp3-duration'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
@@ -22,7 +22,7 @@ config()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-ffmpeg.setFfmpegPath(ffmpegPath.path)
+// ffmpeg.setFfmpegPath(ffmpegPath.path)
 
 let segNum = 3 // Number of segments to keep in memory
 let minSegs = 2 // Start streaming when there are at least this many segments in memory
