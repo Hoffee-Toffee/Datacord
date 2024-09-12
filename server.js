@@ -4,6 +4,7 @@ let side = process.env.YT_STREAM_KEY === undefined ? 'render' : 'glitch'
 
 if (side === 'render') dotenv.config()
 
+let streaming = false
 let render = 'https://tristan-bulmer.onrender.com/projects/datacord'
 let glitch = 'https://autoamb.glitch.me'
 
@@ -219,6 +220,12 @@ if (side === 'render') {
     // Save the buffer as an mp3 file
     const filename = join(__dirname, `chunk${chunk}.mp3`)
     writeFileSync(filename, Buffer.from(data, 'base64'))
+
+    // If not streaming, and this was chunk 1, start the stream
+    if (!streaming && chunk == 1) {
+      streaming = true
+      autoAmb.stream()
+    }
 
     res.send('Chunk saved')
   })

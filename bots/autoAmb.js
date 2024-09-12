@@ -251,7 +251,7 @@ const makeTemp = async (tempSeg = minSegs * -1) => {
           : tempA
 
       // Process sound
-      await processSound(sound, outputFile, isLast && i === 0)
+      await processSound(sound, outputFile)
       // Merge with previous sound (if any)
       if (i > 0) {
         let mergeFile =
@@ -261,7 +261,7 @@ const makeTemp = async (tempSeg = minSegs * -1) => {
             ? tempFile
             : tempB
         let mergeOutput = tempHalf.length % 2 === i % 2 ? tempB : tempFile
-        await mergeSounds(outputFile, mergeFile, mergeOutput, isLast)
+        await mergeSounds(outputFile, mergeFile, mergeOutput)
       }
       resolve()
     })
@@ -274,12 +274,8 @@ const makeTemp = async (tempSeg = minSegs * -1) => {
     body: tempBuffer,
   })
 
-  // Streaming will have just started if the old value was -1
-  if (!streaming && oldVal === -1) {
-    streaming = true
-  }
   // If still negative, then we are still loading the initial segments
-  else if (oldVal < 0) {
+  if (oldVal < 0) {
     // Pass one greater than the initial value given to makeTemp
     makeTemp(oldVal + 1)
   }
@@ -368,7 +364,6 @@ const killProcess = () => {
   processes.forEach((process) => {
     process.kill('SIGINT')
   })
-  streaming = false
   playSeg = 0
   timeline = []
   weights.fill(0)
@@ -381,6 +376,40 @@ let playSeg = 0
 // Function to start the stream
 async function startStream() {
   const fullStreamURL = `rtmp://x.rtmp.youtube.com/live2/${process.env.YT_STREAM_KEY}`
+
+  console.log('Getting background image...')
+
+  let bgImage
+
+  bgImage = await new Promise((resolve, reject) => {
+    fetch(fileHost + BG)
+      .then((res) => {
+        if (res.ok) {
+          console.log('Fetched one-time access URL:', res.url)
+          fetch(res.url)
+            .then((res) => {
+              if (res.ok) {
+                // console.log('Fetched background image:', res)
+                // create buffer from the PassThrough stream given in the response body
+                let stream = new PassThrough()
+                res.body.pipe(stream)
+                stream.pipe(concat((buffer) => resolve(buffer)))
+              } else {
+                reject(new Error('Failed to fetch background image', res))
+              }
+            })
+            .catch(reject)
+        } else {
+          reject(new Error('Failed to fetch one-time access URL', res))
+        }
+      })
+      .catch(reject)
+  })
+
+  // Save to file 'bg.jpg'
+  writeFileSync(__dirname + '/bg.jpg', bgImage)
+
+  bgImage = __dirname + '/bg.jpg'
 
   // Make audio stream from the temp file
   const audioStream = new PassThrough()
@@ -430,7 +459,6 @@ async function startStream() {
       })
       .on('end', function (err, stdout, stderr) {
         console.log('Stream ended')
-        streaming = false
         playSeg = 0
         timeline = []
         weights.fill(0)
@@ -451,4 +479,4 @@ async function startStream() {
   }
 }
 
-export default { start: makeTemp, stop: killProcess }
+export default { start: makeTemp, stop: killProcess, stream: startStream }
