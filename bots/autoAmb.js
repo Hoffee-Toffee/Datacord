@@ -267,11 +267,13 @@ const makeTemp = async (tempSeg = minSegs * -1) => {
     })
   }
 
-  // Send the temp file contents to the render side (buffer, audio/aac)
+  // Send the temp file contents to the render side
   let tempBuffer = readFileSync(tempFile)
   fetch(`${render}/chunk?chunk=${tempSeg}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'audio/aac' },
+    headers: {
+      'Content-Type': 'audio/mpeg',
+    },
     body: tempBuffer,
   })
 

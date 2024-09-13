@@ -108,7 +108,7 @@ function sendMessage(message, hookname) {
 
 app.use(urlencoded({ extended: true }))
 app.use(_json())
-app.use(express.raw({ type: 'audio/aac', limit: '50mb' }))
+app.use(express.raw({ type: 'audio/mpeg', limit: '50mb' }))
 
 app.get('/wakeup', function (request, response) {
   response.send('Wakeup successful.')
@@ -218,7 +218,7 @@ app.post('/chunk', async (req, res) => {
   console.log(`Saving chunk ${chunk}`)
   console.log(data)
 
-  // Save the buffer as an mp3 file (buffer, audio/aac)
+  // Save the buffer as an mp3 file
   writeFileSync(join(__dirname, `chunk${chunk}.mp3`), data)
 
   // If not streaming, and this was chunk 1, start the stream
