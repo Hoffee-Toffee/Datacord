@@ -267,15 +267,8 @@ const makeTemp = async (tempSeg = minSegs * -1) => {
     })
   }
 
-  // Send the temp file contents to the render side
-  let tempBuffer = readFileSync(tempFile)
-  fetch(`${render}/chunk?chunk=${tempSeg}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'audio/mpeg',
-    },
-    body: tempBuffer,
-  })
+  // Tell render that the chunk is ready
+  fetch(`${render}/chunkReady/${tempSeg}`)
 
   // If still negative, then we are still loading the initial segments
   if (oldVal < 0) {

@@ -75,6 +75,8 @@ checkGIF()
 
 // const discordBotkit = require('botkit-discord')
 import './bot.js'
+import { PassThrough } from 'stream'
+import concat from 'concat-stream'
 
 function sendMessage(message, hookname) {
   console.log('Sending message "' + message + '" to ' + hookname + ' webhook')
@@ -210,16 +212,24 @@ app.get('/stopStream', async (req, res) => {
   autoAmb.stop()
   res.send('Stream stopped')
 })
-app.post('/chunk', async (req, res) => {
-  // Save the chunk
-  const chunk = req.query.chunk // The chunk number
-  const data = req.body
+app.get('/chunkReady/:chunk', async (req, res) => {
+  // Fetch the chunk from glitch
+  const chunk = req.params.chunk
 
-  console.log(`Saving chunk ${chunk}`)
-  console.log(data)
+  let buffer = await new Promise((resolve, reject) => {
+    fetch(`${glitch}/chunk/${chunk}`).then((res) => {
+      if (res.ok) {
+        let incoming = new PassThrough()
+        res.body.pipe(incoming)
+        incoming.pipe(concat((data) => resolve(data)))
+      } else {
+        reject('Failed to fetch chunk')
+      }
+    })
+  })
 
   // Save the buffer as an mp3 file
-  writeFileSync(join(__dirname, `chunk${chunk}.mp3`), data)
+  writeFileSync(join(__dirname, `chunk${chunk}.mp3`), buffer)
 
   // If not streaming, and this was chunk 1, start the stream
   if (!streaming && chunk == 1) {
