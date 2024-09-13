@@ -416,7 +416,6 @@ async function startStream() {
     soundStream.pipe(audioStream, { end: false })
     soundStream.on('end', () => {
       console.log(`Finished streaming chunk${playSeg}`)
-      audioStream.unpipe(soundStream)
 
       playSeg = (playSeg + 1) % segNum
 
