@@ -437,15 +437,19 @@ async function startStream() {
       .inputFPS(1)
       .addInput(audioStream)
       .inputFormat('mp3')
-      .inputOptions([`-re`])
+      .inputOptions([`-re`, '-thread_queue_size 1024'])
       .outputOptions([
         '-c:v libx264',
         '-c:a aac',
         '-f flv',
         '-b:v 3000k',
-        '-maxrate 3000k',
-        '-bufsize 6000k',
-        '-b:a 128k',
+        '-maxrate 2000k',
+        '-bufsize 4000k',
+        '-b:a 96k',
+        '-threads 2',
+        '-s 1280x720',
+        '-r 30',
+        '-preset ultrafast',
       ])
       .output(fullStreamURL)
       .on('start', () => {
