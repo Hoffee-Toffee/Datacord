@@ -433,7 +433,6 @@ async function startStream() {
       .addInput(bgImage)
       .inputFormat('image2')
       .inputFPS(1)
-      .inputOptions(['-stream_loop -1'])
       .addInput(audioStream)
       .inputFormat('mp3')
       .inputOptions([`-t ${segLen}`])
