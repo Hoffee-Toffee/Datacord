@@ -39,7 +39,7 @@ let glitch = 'https://autoamb.glitch.me'
 if (side === 'render') {
   config()
 }
-ffmpeg.setFfmpegPath(ffmpegInstaller.path)
+// ffmpeg.setFfmpegPath(ffmpegInstaller.path)
 
 // define __dirname
 const __filename = fileURLToPath(import.meta.url)
@@ -416,6 +416,8 @@ async function startStream() {
     soundStream.pipe(audioStream, { end: false })
     soundStream.on('end', () => {
       console.log(`Finished streaming chunk${playSeg}`)
+      audioStream.unpipe(soundStream)
+
       playSeg = (playSeg + 1) % segNum
 
       streamSegment() // Start the next segment
