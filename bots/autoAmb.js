@@ -431,20 +431,19 @@ async function startStream() {
     let command = ffmpeg()
       .addInput(bgImage)
       .inputFormat('image2')
+      .inputOptions([`-stream_loop -1`, `-re`])
       .inputFPS(1)
       .addInput(audioStream)
       .inputFormat('mp3')
-      .inputOptions([`-t ${segLen}`])
+      .inputOptions([`-re`])
       .outputOptions([
         '-c:v libx264',
         '-c:a aac',
         '-f flv',
-        '-g 8',
-        '-b:v 2500k',
-        '-maxrate 2500k',
-        '-bufsize 5000k',
+        '-b:v 3000k',
+        '-maxrate 3000k',
+        '-bufsize 6000k',
         '-b:a 128k',
-        '-crf 23',
       ])
       .output(fullStreamURL)
       .on('start', () => {
