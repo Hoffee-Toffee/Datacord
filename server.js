@@ -202,14 +202,15 @@ app.get('/relay', async (req, res) => {
   const data = await response.json()
   res.json(data)
 })
-app.get('/startStream', async (req, res) => {
-  // Start the stream
-  autoAmb.start()
-  res.send('Stream started')
-})
+// app.get('/startStream', async (req, res) => {
+//   // Start the stream
+//   autoAmb.start()
+//   res.send('Stream started')
+// })
 app.get('/stopStream', async (req, res) => {
   // Stop the stream
   autoAmb.stop()
+  streaming = false
   res.send('Stream stopped')
 })
 app.get('/chunkReady/:chunk', async (req, res) => {
