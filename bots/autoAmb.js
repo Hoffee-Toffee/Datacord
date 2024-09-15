@@ -294,7 +294,8 @@ const addSound = async () => {
 
   log(`Song ${nextIndex} has duration: ${duration}`)
 
-  let playDuration = Math.floor(Math.random() * 480000) + 60000 // 1-9 minutes in milliseconds
+  // 1-5 minutes in milliseconds
+  let playDuration = Math.floor(Math.random() * 240000) + 60000
   let startTimeOffset =
     Math.floor(Math.random() * (duration - segOverlap * 2000)) +
     segOverlap * 1000

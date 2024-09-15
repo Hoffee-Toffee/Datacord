@@ -253,7 +253,7 @@ app.get('/chunk/:chunk', async (req, res) => {
   const chunk = req.params.chunk
   const filename = join(
     __dirname,
-    chunk == 'all' ? 'output.mp3' : `chunk${chunk}.mp3`
+    chunk == 'all' ? 'output.mp4' : `chunk${chunk}.mp3`
   )
   res.sendFile(filename)
 })
