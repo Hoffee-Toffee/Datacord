@@ -5,6 +5,8 @@ let side = process.env.YT_STREAM_KEY === undefined ? 'render' : 'glitch'
 if (side === 'render') dotenv.config()
 
 let streaming = false
+let testing = false
+
 let render = 'https://tristan-bulmer.onrender.com/projects/datacord'
 let glitch = 'https://autoamb.glitch.me'
 
@@ -202,15 +204,18 @@ app.get('/relay', async (req, res) => {
   const data = await response.json()
   res.json(data)
 })
-// app.get('/startStream', async (req, res) => {
-//   // Start the stream
-//   autoAmb.start()
-//   res.send('Stream started')
-// })
+app.get('/testStream', async (req, res) => {
+  // Start the stream in test mode
+  testing = true
+  streaming = true
+
+  fetch(`${glitch}/startStream`)
+})
 app.get('/stopStream', async (req, res) => {
   // Stop the stream
   autoAmb.stop()
   streaming = false
+  testing = false
   res.send('Stream stopped')
 })
 app.get('/chunkReady/:chunk', async (req, res) => {
@@ -236,15 +241,20 @@ app.get('/chunkReady/:chunk', async (req, res) => {
   if (!streaming && chunk == 1) {
     streaming = true
     console.log('Ready to stream')
-    autoAmb.stream()
+    autoAmb.stream(testing)
   }
 
   res.send('Chunk saved')
 })
 app.get('/chunk/:chunk', async (req, res) => {
+  // If chunk is 'all', return the output file
+
   // Return the saved chunk file
   const chunk = req.params.chunk
-  const filename = join(__dirname, `chunk${chunk}.mp3`)
+  const filename = join(
+    __dirname,
+    chunk == 'all' ? 'output.mp3' : `chunk${chunk}.mp3`
+  )
   res.sendFile(filename)
 })
 
