@@ -12,7 +12,7 @@ import {
 // import ffmpegPath from '@ffmpeg-installer/ffmpeg'
 import getMP3Duration from 'get-mp3-duration'
 import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
+import { dirname, join, resolve } from 'path'
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg'
 
 import { config } from 'dotenv'
@@ -461,10 +461,10 @@ async function startStream(testing = false) {
 
   // Pipe audio stream from the current chunk to the output stream
   console.log(
-    `Accessing chunk from ${join(__dirname + `../chunk${playSeg}.mp3`)}`
+    `Accessing chunk from ${resolve(__dirname + `../chunk${playSeg}.mp3`)}`
   )
   const audioStream = createReadStream(
-    join(__dirname + `../chunk${playSeg}.mp3`)
+    resolve(__dirname + `../chunk${playSeg}.mp3`)
   )
 
   try {
