@@ -453,26 +453,25 @@ async function startStream(testing = false) {
 
   bgImage = __dirname + '/bg.jpg'
 
-  // Make audio stream from the temp file
-  const audioStream = new PassThrough()
-  const streamSegment = () => {
-    const soundStream = createReadStream(
-      join(__dirname, `../chunk${playSeg}.mp3`)
-    )
-    log(`Streaming chunk${playSeg}...`)
-    soundStream.pipe(audioStream, { end: false })
-    soundStream.on('end', () => {
-      log(`Finished streaming chunk${playSeg}`)
+  // Make audio stream from the temp files (0 -> ... -> segNum - 1 -> 0 -> ...)
+  const audioStream = new Readable({
+    read() {
+      const chunk = createReadStream(__dirname + `/chunk${playSeg}.mp3`)
 
-      playSeg = (playSeg + 1) % segNum
+      chunk.on('data', (data) => {
+        this.push(data)
+      })
 
-      streamSegment() // Start the next segment
+      chunk.on('end', () => {
+        playSeg = (playSeg + 1) % segNum
+        this.read()
+      })
 
-      // Tell glitch that render is ready for the next chunk
-      fetch(`${glitch}/chunkReady?chunk=${playSeg}`)
-    })
-  }
-  streamSegment()
+      chunk.on('error', (err) => {
+        console.error('Error reading chunk:', err)
+      })
+    },
+  })
 
   try {
     let pInd
@@ -530,7 +529,11 @@ function log(message, show = true) {
   if (show) console.log(message)
 
   // Append to test log
-  writeFileSync(testLogPath, message + '\n', { flag: 'a' })
+  writeFileSync(
+    testLogPath,
+    message + '\n' + new Date().toLocaleTimeString('en-GB'),
+    { flag: 'a' }
+  )
 }
 
 export default {
