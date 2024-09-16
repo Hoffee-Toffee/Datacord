@@ -417,6 +417,7 @@ const killProcess = () => {
 
 // RENDER SIDE: Streamer
 let playSeg = 0
+let bgImage
 
 // Function to start the stream
 async function startStream(testing = false) {
@@ -424,60 +425,44 @@ async function startStream(testing = false) {
     ? __dirname + '/output.mp4'
     : `rtmp://x.rtmp.youtube.com/live2/${process.env.YT_STREAM_KEY}`
 
-  log('Getting background image...')
+  if (!bgImage) {
+    log('Getting background image...')
 
-  let bgImage
-
-  bgImage = await new Promise((resolve, reject) => {
-    fetch(fileHost + BG)
-      .then((res) => {
-        if (res.ok) {
-          log(`Fetched one-time access URL: ${res.url}`)
-          fetch(res.url)
-            .then((res) => {
-              if (res.ok) {
-                // log('Fetched background image:', res)
-                // create buffer from the PassThrough stream given in the response body
-                let stream = new PassThrough()
-                res.body.pipe(stream)
-                stream.pipe(concat((buffer) => resolve(buffer)))
-              } else {
-                reject(new Error('Failed to fetch background image', res))
-              }
-            })
-            .catch(reject)
-        } else {
-          reject(new Error('Failed to fetch one-time access URL', res))
-        }
-      })
-      .catch(reject)
-  })
-
-  // Save to file 'bg.jpg'
-  writeFileSync(__dirname + '/bg.jpg', bgImage)
-
-  bgImage = __dirname + '/bg.jpg'
-
-  // Pipe audio stream from the temp files (real-time, loop 0 -> segNum cyclically)
-  const audioStream = new PassThrough()
-
-  const streamSegment = () => {
-    const soundStream = createReadStream(
-      join(__dirname, `../chunk${playSeg}.mp3`)
-    )
-    log(`Streaming chunk${playSeg}...`)
-    soundStream.pipe(audioStream, { end: false })
-    soundStream.on('end', () => {
-      log(`Finished streaming chunk${playSeg}`)
-
-      // Tell glitch that render is ready for the next chunk
-      fetch(`${glitch}/chunkReady?chunk=${playSeg}`)
-      playSeg = (playSeg + 1) % segNum
-
-      streamSegment() // Start the next segment
+    bgImage = await new Promise((resolve, reject) => {
+      fetch(fileHost + BG)
+        .then((res) => {
+          if (res.ok) {
+            log(`Fetched one-time access URL: ${res.url}`)
+            fetch(res.url)
+              .then((res) => {
+                if (res.ok) {
+                  // log('Fetched background image:', res)
+                  // create buffer from the PassThrough stream given in the response body
+                  let stream = new PassThrough()
+                  res.body.pipe(stream)
+                  stream.pipe(concat((buffer) => resolve(buffer)))
+                } else {
+                  reject(new Error('Failed to fetch background image', res))
+                }
+              })
+              .catch(reject)
+          } else {
+            reject(new Error('Failed to fetch one-time access URL', res))
+          }
+        })
+        .catch(reject)
     })
+
+    // Save to file 'bg.jpg'
+    writeFileSync(__dirname + '/bg.jpg', bgImage)
+
+    bgImage = __dirname + '/bg.jpg'
   }
-  streamSegment()
+
+  // Pipe audio stream from the current chunk to the output stream
+  const audioStream = createReadStream(
+    join(__dirname + `../chunk${playSeg}.mp3`)
+  )
 
   try {
     let pInd
@@ -509,11 +494,15 @@ async function startStream(testing = false) {
         pInd = processes.length - 1
       })
       .on('end', function (err, stdout, stderr) {
-        log('Stream ended')
-        playSeg = 0
-        timeline = []
-        weights.fill(0)
-        processes.splice(pInd, 1)
+        log(`Finished streaming chunk${playSeg}`)
+
+        // Tell glitch that render can now overwrite the last chunk with the next one
+        fetch(`${glitch}/chunkReady?chunk=${playSeg}`)
+
+        playSeg = (playSeg + 1) % segNum
+
+        // Start streaming the next chunk
+        startStream()
       })
       .on('stderr', (stderr) => {
         log(`stderr: ${stderr}`)
