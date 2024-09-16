@@ -55,7 +55,7 @@ let minSegs = 2 // Start streaming when there are at least this many segments in
 let segLen = 120 // Length of each segment in seconds
 let segOverlap = 5 // Overlap between segments in seconds
 
-let { AMB, BG, MUS } = JSON.parse(readFileSync(__dirname + '/files.json'))
+let { AMB, BG, MUS } = JSON.parse(readFileSync(__dirname + '/files.jsonc'))
 
 let files = [...AMB, MUS]
 
