@@ -458,25 +458,26 @@ async function startStream(testing = false) {
 
   bgImage = __dirname + '/bg.jpg'
 
-  // Make audio stream from the temp files (looped)
-  const audioStream = new Readable({
-    read() {
-      const chunk = createReadStream(join(__dirname, `../chunk${playSeg}.mp3`))
+  // Pipe audio stream from the temp files (real-time, loop 0 -> segNum cyclically)
+  const audioStream = new PassThrough()
 
-      chunk.on('data', (data) => {
-        this.push(data)
-      })
+  const streamSegment = () => {
+    const soundStream = createReadStream(
+      join(__dirname, `../chunk${playSeg}.mp3`)
+    )
+    log(`Streaming chunk${playSeg}...`)
+    soundStream.pipe(audioStream, { end: false })
+    soundStream.on('end', () => {
+      log(`Finished streaming chunk${playSeg}`)
 
-      chunk.on('end', () => {
-        playSeg = (playSeg + 1) % segNum
-        this.read()
-      })
+      // Tell glitch that render is ready for the next chunk
+      fetch(`${glitch}/chunkReady?chunk=${playSeg}`)
+      playSeg = (playSeg + 1) % segNum
 
-      chunk.on('error', (err) => {
-        console.error('Error reading chunk:', err)
-      })
-    },
-  })
+      streamSegment() // Start the next segment
+    })
+  }
+  streamSegment()
 
   try {
     let pInd
