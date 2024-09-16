@@ -1,0 +1,70 @@
+{  
+  // Background Image
+  "BG": "NjlfMzMzNDM4ODBf",
+
+  // --- Non-Directional Audio ---
+  // Plays normally, no panning or distance effects
+  // Normal volume variance only
+
+  // Heartbeat / Breathing
+  "HB": null,
+
+  // Room Tones
+  "RT": [],
+
+  // Room Ambience
+  "AMB": [
+    "NjlfMzMzNDM4NDZf",
+    "NjlfMzMzNDM4NDRf",
+    "NjlfMzMzNDM4Nzhf",
+    "NjlfMzMzNDM4NDFf",
+    "NjlfMzMzNDM3Njdf",
+    "NjlfMzMzNDM3NjZf",
+    "NjlfMzMzNDM4NzJf"
+  ],
+  
+  // Music Ambience
+  "MUS": [
+    "NjlfMzMzNDM4Nzlf",
+    "NjlfMzMzNDM4NjZf",
+    "NjlfMzMzNDM4NTNf",
+    "NjlfMzMzNDM4NTJf",
+    "NjlfMzMzNDM4NTFf",
+    "NjlfMzMzNDM4NTBf",
+    "NjlfMzMzNDM4NDlf",
+    "NjlfMzMzNDM4NDdf",
+    "NjlfMzMzNDM4NDVf",
+    "NjlfMzMzNDM4NDNf",
+    "NjlfMzMzNDM3Njhf",
+    "NjlfMzMzNDM3NjVf",
+    "NjlfMzMzNDM4NDBf",
+    "NjlfMzMzNDM4Mzhf",
+    "NjlfMzMzNDM4Nzdf",
+    "NjlfMzMzNDM4MzZf",
+    "NjlfMzMzNDM4NzRf",
+    "NjlfMzMzNDM4NzFf",
+    "NjlfMzMzNDM4NzBf",
+    "NjlfMzMzNDM4Njhf",
+    "NjlfMzMzNDM4Njdf",
+    "NjlfMzMzNDM4Mzlf"
+  ],
+
+  // --- Directional Audio ---
+  // Panning, volume, and distance effects added
+  // to give the sound a position in a 3D space
+
+  // Environmental Ambience
+  "ENV": [],
+
+  // Sound Effects
+  "SFX": {
+    // Creaks
+    "C": [],
+    // Fire
+    "F": [],
+    // Water
+    "W": [],
+    // Zaps
+    "Z": []
+  }
+}

@@ -55,7 +55,9 @@ let minSegs = 2 // Start streaming when there are at least this many segments in
 let segLen = 120 // Length of each segment in seconds
 let segOverlap = 5 // Overlap between segments in seconds
 
-let { AMB, BG } = JSON.parse(readFileSync(__dirname + '/files.json'))
+let { AMB, BG, MUS } = JSON.parse(readFileSync(__dirname + '/files.json'))
+
+let files = [...AMB, MUS]
 
 let fileHost = 'https://od.lk/s/'
 
@@ -257,7 +259,7 @@ const addSound = async () => {
   weights[nextIndex]++
 
   // Get a readable stream of the sound file
-  let song = fileHost + AMB[nextIndex]
+  let song = fileHost + files[nextIndex]
   song = await new Promise((resolve, reject) => {
     fetch(song)
       .then((res) => {
