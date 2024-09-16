@@ -461,7 +461,7 @@ async function startStream(testing = false) {
   // Make audio stream from the temp files (looped)
   const audioStream = new Readable({
     read() {
-      const chunk = createReadStream(__dirname + `../chunk${playSeg}.mp3`)
+      const chunk = createReadStream(join(__dirname, `../chunk${playSeg}.mp3`))
 
       chunk.on('data', (data) => {
         this.push(data)
