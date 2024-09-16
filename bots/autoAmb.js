@@ -461,10 +461,10 @@ async function startStream(testing = false) {
 
   // Pipe audio stream from the current chunk to the output stream
   console.log(
-    `Accessing chunk from ${join(__dirname + '..', `chunk${playSeg}.mp3`)}`
+    `Accessing chunk from ${join(__dirname, '..', `chunk${playSeg}.mp3`)}`
   )
   const audioStream = createReadStream(
-    join(__dirname + '..', `chunk${playSeg}.mp3`)
+    join(__dirname, '..', `chunk${playSeg}.mp3`)
   )
 
   try {
