@@ -236,6 +236,7 @@ app.get('/chunkReady/:chunk', async (req, res) => {
 
   // Save the buffer as an mp3 file
   writeFileSync(join(__dirname, `chunk${chunk}.mp3`), buffer)
+  console.log(`Chunk ${chunk} saved at ${join(__dirname, `chunk${chunk}.mp3`)}`)
 
   // If not streaming, and this was chunk 1, start the stream
   if (!streaming && chunk == 1) {
