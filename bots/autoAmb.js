@@ -497,12 +497,15 @@ async function startStream(testing = false) {
         log(`Finished streaming chunk${playSeg}`)
 
         // Tell glitch that render can now overwrite the last chunk with the next one
-        fetch(`${glitch}/chunkReady?chunk=${playSeg}`)
+        let next = (segNum + playSeg - minSegs + 1) % segNum
+        fetch(`${glitch}/chunkReady?chunk=${next}`)
 
         playSeg = (playSeg + 1) % segNum
 
         // Start streaming the next chunk
         startStream()
+
+        processes.splice(pInd, 1)
       })
       .on('stderr', (stderr) => {
         log(`stderr: ${stderr}`)
