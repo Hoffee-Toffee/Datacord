@@ -455,10 +455,10 @@ async function startStream(testing = false) {
 
   bgImage = __dirname + '/bg.jpg'
 
-  // Make audio stream from the temp files (0 -> ... -> segNum - 1 -> 0 -> ...)
+  // Make audio stream from the temp files (looped)
   const audioStream = new Readable({
     read() {
-      const chunk = createReadStream(__dirname + `/chunk${playSeg}.mp3`)
+      const chunk = createReadStream(__dirname + `../chunk${playSeg}.mp3`)
 
       chunk.on('data', (data) => {
         this.push(data)
