@@ -60,7 +60,7 @@ let { AMB, BG, MUS } = JSON.parse(
   readFileSync(__dirname + '/files.jsonc', 'utf8').replace(/\/\/.*/g, '')
 )
 
-let files = [...AMB, MUS]
+let files = [...AMB, ...MUS]
 
 let fileHost = 'https://od.lk/s/'
 
@@ -126,7 +126,7 @@ const makeTemp = async (tempSeg = minSegs * -1) => {
   log(`Building file: ${tempSeg}`)
 
   let overlap = timeline.find(
-    (sound) => sound.end - 1000 <= target && sound.end >= target
+    (sound) => sound.end - segOverlap * 1000 <= target && sound.end >= target
   )
 
   log(`Target Split Time: ${target}`)
@@ -463,9 +463,19 @@ async function startStream(testing = false) {
   console.log(
     `Accessing chunk from ${join(__dirname, '..', `chunk${playSeg}.mp3`)}`
   )
-  const audioStream = createReadStream(
+
+  // PassThrough stream to pipe the audio stream to ffmpeg
+  const audioStream = new PassThrough()
+
+  // Read the audio stream from the current chunk
+  const audioFile = createReadStream(
     join(__dirname, '..', `chunk${playSeg}.mp3`)
   )
+
+  audioFile.pipe(audioStream)
+  audioFile.on('end', () => {
+    log('Audio stream ended')
+  })
 
   try {
     let pInd
