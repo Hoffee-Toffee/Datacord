@@ -464,18 +464,9 @@ async function startStream(testing = false) {
     `Accessing chunk from ${join(__dirname, '..', `chunk${playSeg}.mp3`)}`
   )
 
-  // PassThrough stream to pipe the audio stream to ffmpeg
-  const audioStream = new PassThrough()
-
-  // Read the audio stream from the current chunk
-  const audioFile = createReadStream(
+  let audioStream = createReadStream(
     join(__dirname, '..', `chunk${playSeg}.mp3`)
   )
-
-  audioFile.pipe(audioStream)
-  audioFile.on('end', () => {
-    log('Audio stream ended')
-  })
 
   try {
     let pInd
@@ -486,7 +477,6 @@ async function startStream(testing = false) {
       .inputFPS(1)
       .addInput(audioStream)
       .inputFormat('mp3')
-      .inputOptions([`-re`, '-thread_queue_size 1024'])
       .outputOptions([
         '-c:v libx264',
         '-c:a aac',
