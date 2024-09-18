@@ -459,14 +459,24 @@ async function startStream(testing = false) {
     bgImage = __dirname + '/bg.jpg'
   }
 
-  // Pipe audio stream from the current chunk to the output stream
-  console.log(
-    `Accessing chunk from ${join(__dirname, '..', `chunk${playSeg}.mp3`)}`
-  )
+  let audioStream = new PassThrough()
 
-  let audioStream = createReadStream(
-    join(__dirname, '..', `chunk${playSeg}.mp3`)
-  )
+  // Run each segment in sequence, looping back to the start once the end is reached
+  let streamNext = async () => {
+    let file = join(__dirname, '..', `chunk${playSeg}.mp3`)
+    let segStream = createReadStream(file)
+
+    segStream.pipe(audioStream, { end: false })
+
+    segStream.on('end', () => {
+      playSeg = (playSeg + 1) % segNum
+      streamNext()
+
+      // Tell glitch that it can generate over the last played file
+      let next = (segNum + playSeg - minSegs + 1) % segNum
+      fetch(`${glitch}/chunkReady?chunk=${next}`)
+    })
+  }
 
   try {
     let pInd
@@ -495,19 +505,10 @@ async function startStream(testing = false) {
         log('Stream started')
         processes.push(command)
         pInd = processes.length - 1
+        streamNext()
       })
       .on('end', function (err, stdout, stderr) {
-        log(`Finished streaming chunk${playSeg}`)
-
-        // Tell glitch that render can now overwrite the last chunk with the next one
-        let next = (segNum + playSeg - minSegs + 1) % segNum
-        fetch(`${glitch}/chunkReady?chunk=${next}`)
-
-        playSeg = (playSeg + 1) % segNum
-
-        // Start streaming the next chunk
-        startStream()
-
+        log(`Finished stream: ${err}`)
         processes.splice(pInd, 1)
       })
       .on('stderr', (stderr) => {
