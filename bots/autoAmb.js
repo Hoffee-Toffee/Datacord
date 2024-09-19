@@ -499,7 +499,7 @@ async function startStream(testing = false) {
         '-s 1280x720',
         '-r 30',
         '-preset ultrafast',
-        '-max_alloc 1024M',
+        '-max_alloc 8192',
       ])
       .output(fullStreamURL)
       .on('start', () => {
