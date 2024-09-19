@@ -8,6 +8,7 @@ import {
   createReadStream,
   readFileSync,
   writeFileSync,
+  writeFile,
 } from 'fs'
 // import ffmpegPath from '@ffmpeg-installer/ffmpeg'
 import getMP3Duration from 'get-mp3-duration'
@@ -438,9 +439,20 @@ async function startStream(testing = false) {
                 if (res.ok) {
                   // log('Fetched background image:', res)
                   // create buffer from the PassThrough stream given in the response body
+                  // Save to file 'bg.jpg' (asynchronously)
                   let stream = new PassThrough()
                   res.body.pipe(stream)
-                  stream.pipe(concat((buffer) => resolve(buffer)))
+                  stream.pipe(
+                    concat((buffer) => {
+                      writeFile(join(__dirname, 'bg.jpg'), buffer, (err) => {
+                        if (err) {
+                          reject(err)
+                        } else {
+                          resolve(join(__dirname, 'bg.jpg'))
+                        }
+                      })
+                    })
+                  )
                 } else {
                   reject(new Error('Failed to fetch background image', res))
                 }
@@ -453,10 +465,7 @@ async function startStream(testing = false) {
         .catch(reject)
     })
 
-    // Save to file 'bg.jpg'
-    writeFileSync(__dirname + '/bg.jpg', bgImage)
-
-    bgImage = __dirname + '/bg.jpg'
+    bgImage = join(__dirname, 'bg.jpg')
   }
 
   let audioStream = new PassThrough()
