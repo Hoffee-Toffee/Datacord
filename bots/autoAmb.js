@@ -499,16 +499,18 @@ async function startStream(testing = false) {
       .outputOptions([
         '-c:v libx264',
         '-c:a copy',
+        '-strict -2',
         '-f flv',
-        '-b:v 3000k',
-        '-maxrate 2000k',
-        '-bufsize 4000k',
-        '-b:a 96k',
+        '-b:v 1500k',
+        '-b:a 128k',
         '-threads 2',
         '-s 1280x720',
         '-r 30',
         '-preset ultrafast',
-        '-max_alloc 1024000000',
+        '-analyzeduration 2147483647',
+        '-probesize 2147483647',
+        '-maxrate 1500k',
+        '-bufsize 1500k',
       ])
       .output(fullStreamURL)
       .on('start', () => {
