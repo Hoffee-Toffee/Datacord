@@ -498,7 +498,7 @@ async function startStream(testing = false) {
       .inputFormat('mp3')
       .outputOptions([
         '-c:v libx264',
-        '-c:a aac',
+        '-c:a copy',
         '-f flv',
         '-b:v 3000k',
         '-maxrate 2000k',
