@@ -498,7 +498,7 @@ async function startStream(testing = false) {
       .inputFormat('mp3')
       .outputOptions([
         '-c:v libx264',
-        '-c:a copy',
+        '-c:a aac',
         '-strict -2',
         '-f flv',
         '-b:v 1500k',
@@ -511,10 +511,15 @@ async function startStream(testing = false) {
         '-probesize 2147483647',
         '-maxrate 1500k',
         '-bufsize 1500k',
+        '-max_muxing_queue_size 1024',
+        '-v debug',
+        '-loglevel debug',
+        '-report',
       ])
       .output(fullStreamURL)
-      .on('start', () => {
+      .on('start', (commandLine) => {
         log('Stream started')
+        log(`Full command: ${commandLine}`)
         processes.push(command)
         pInd = processes.length - 1
         streamNext()
