@@ -58,6 +58,8 @@ import { readFileSync, writeFileSync } from 'fs'
 import express, { static as _static, urlencoded, json as _json } from 'express'
 const app = express()
 import fetch from 'node-fetch'
+import { fetchUrl } from 'fetch'
+
 import {
   collection,
   datacord,
@@ -319,7 +321,7 @@ function getGif() {
     '&key=' +
     process.env.TENOR_KEY +
     '&client_key=gif_bot&limit=10&random=true'
-  var response = fetch(url, async function (error, meta, body) {
+  var response = fetchUrl(url, async function (error, meta, body) {
     var data = JSON.parse(body.toString())
     // Retrieve the first non-blacklisted GIF
     var blacklist = await getData('blacklist')
