@@ -385,7 +385,7 @@ const mergeSounds = async (soundA, soundB, outputFile) => {
       .inputFormat('mp3')
       .addInput(soundB)
       .inputFormat('mp3')
-      .complexFilter(['[0a][1a]amix=inputs=2:duration=longest'])
+      .complexFilter(['amix=inputs=2:duration=longest'])
       .output(outputFile)
       .on('start', () => {
         log('Started merging sounds')
@@ -478,6 +478,7 @@ async function startStream(testing = false) {
     segStream.pipe(audioStream, { end: false })
 
     segStream.on('end', () => {
+      segStream.unpipe(audioStream)
       playSeg = (playSeg + 1) % segNum
       streamNext()
 
@@ -486,6 +487,8 @@ async function startStream(testing = false) {
       fetch(`${glitch}/chunkReady?chunk=${next}`)
     })
   }
+
+  streamNext()
 
   try {
     let pInd
@@ -496,16 +499,19 @@ async function startStream(testing = false) {
       .inputFPS(1)
       .addInput(audioStream)
       .inputFormat('mp3')
+      .inputOptions([`-re`, '-thread_queue_size 1024'])
       .outputOptions([
         '-c:v libx264',
         '-c:a aac',
         '-f flv',
-        '-b:v 1500k',
-        '-b:a 128k',
+        '-b:v 3000k',
+        '-maxrate 2000k',
+        '-bufsize 4000k',
+        '-b:a 96k',
+        '-threads 2',
         '-s 1280x720',
         '-r 30',
         '-preset ultrafast',
-        '-max_muxing_queue_size 1024',
         '-v debug',
         '-loglevel debug',
         '-report',
