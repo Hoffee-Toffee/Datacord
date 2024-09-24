@@ -519,8 +519,8 @@ async function startStream(testing = false) {
         '-s 1280x720',
         '-r 30',
         '-preset ultrafast',
-        '-v debug',
-        '-loglevel debug',
+        '-loglevel trace',
+        '-v verbose',
         '-report',
       ])
       .output(fullStreamURL)
