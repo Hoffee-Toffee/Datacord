@@ -214,6 +214,9 @@ const makeTemp = async (tempSeg = minSegs * -1) => {
         : tempA
 
       // Process sound
+      log(
+        `Processing (Step ${Math.max(0.5, i) * 2}/${tempHalf.length * 2 - 1})`
+      )
       await processSound(sound, outputFile)
       // Merge with previous sound (if any)
       if (i > 0) {
@@ -230,6 +233,9 @@ const makeTemp = async (tempSeg = minSegs * -1) => {
           : tempHalf.length % 2 === i % 2
           ? tempB
           : tempFile
+
+        log(`Merging (Step ${i * 2 + 1}/${tempHalf.length * 2 - 1})`)
+
         await mergeSounds(outputFile, mergeFile, mergeOutput)
       }
       resolve()
@@ -360,12 +366,12 @@ const processSound = async (sound, outputFile) => {
       )
       .output(outputFile)
       .on('start', () => {
-        log('Started processing sound')
+        // log('Started processing sound')
         processes.push(command)
         pInd = processes.length - 1
       })
       .on('end', () => {
-        log('Finished processing sound')
+        // log('Finished processing sound')
         processes.splice(pInd, 1)
         resolve()
       })
@@ -378,6 +384,7 @@ const processSound = async (sound, outputFile) => {
 }
 
 const mergeSounds = async (soundA, soundB, outputFile) => {
+  // Use ffmpeg to merge the two sounds
   return new Promise((resolve, reject) => {
     let pInd
     let command = ffmpeg()
@@ -388,12 +395,12 @@ const mergeSounds = async (soundA, soundB, outputFile) => {
       .complexFilter(['amix=inputs=2:duration=longest'])
       .output(outputFile)
       .on('start', () => {
-        log('Started merging sounds')
+        // log('Started merging sounds')
         processes.push(command)
         pInd = processes.length - 1
       })
       .on('end', () => {
-        log('Finished merging sounds')
+        // log('Finished merging sounds')
         processes.splice(pInd, 1)
         resolve()
       })
@@ -499,17 +506,19 @@ async function startStream(testing = false) {
       .inputFPS(1)
       .addInput(audioStream)
       .inputFormat('mp3')
+      .inputOptions([`-re`, '-thread_queue_size 1024'])
       .outputOptions([
         '-c:v libx264',
         '-c:a aac',
         '-f flv',
-        '-g 8',
-        '-b:v 2500k',
-        '-maxrate 2500k',
-        '-bufsize 5000k',
-        '-b:a 128k',
+        '-b:v 3000k',
+        '-maxrate 2000k',
+        '-bufsize 4000k',
+        '-b:a 96k',
+        '-threads 2',
+        '-s 1280x720',
+        '-r 30',
         '-preset ultrafast',
-        '-crf 23',
         '-v debug',
         '-loglevel debug',
         '-report',
@@ -520,7 +529,6 @@ async function startStream(testing = false) {
         log(`Full command: ${commandLine}`)
         processes.push(command)
         pInd = processes.length - 1
-        streamNext()
       })
       .on('end', function (err, stdout, stderr) {
         log(`Finished stream: ${err}`)
