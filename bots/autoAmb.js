@@ -540,8 +540,10 @@ async function startStream(testing = false) {
       .on('stdout', (stdout) => {
         log(`stdout: ${stdout}`)
       })
-      .on('error', (err) => {
-        console.error('Error during stream:', err)
+      .on('error', (err, stdout, stderr) => {
+        log(`Error during stream: ${err}`)
+        log(`stdout: ${stdout}`)
+        log(`stderr: ${stderr}`)
       })
       .run()
   } catch (err) {
