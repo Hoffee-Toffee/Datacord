@@ -1,6 +1,6 @@
 // Login to minutesBot and dataBot with discord.js
 // Require discord.js
-import { readFileSync, writeFileSync } from 'fs'
+import { readFileSync, stat, writeFileSync } from 'fs'
 import { Client, GatewayIntentBits } from 'discord.js'
 import {
   collection,
@@ -160,10 +160,16 @@ async function autoTrader() {
   }
 
   // If equity is over 1000, bank the excess (or all of the cash on hand if not enough)
-  if (state.account.equity - (state.config.banked || 0) > 1000) {
-    let excess = state.account.equity - (state.config.banked || 0) - 1000
+  if (state.account.equity - (state.config.banked || 0) > state.config.limit) {
+    let excess =
+      state.account.equity - (state.config.banked || 0) - state.config.limit
     excess = Math.min(excess, state.account.cash)
-    state.config.banked = (state.config.banked || 0) + excess
+    // Bank 'state.config.bankPerc'% of the excess
+    // and add 1 - 'state.config.bankPerc'% to the limit
+    state.config.banked =
+      (state.config.banked || 0) + excess * state.config.bankPerc
+    state.config.limit =
+      (state.config.limit || 0) + excess * (1 - state.config.bankPerc)
     state.change = true
   }
 

@@ -1,19 +1,9 @@
 import dotenv from 'dotenv'
-
-let side = process.env.YT_STREAM_KEY === undefined ? 'render' : 'glitch'
-
-if (side === 'render') dotenv.config()
-
-let streaming = false
-let testing = false
-
-let render = 'https://tristan-bulmer.onrender.com/projects/datacord'
-let glitch = 'https://autoamb.glitch.me'
+dotenv.config()
 
 import path from 'path'
 import { fileURLToPath } from 'url'
 import Discord from 'discord.js'
-import autoAmb from './bots/autoAmb.js'
 
 // define __dirname
 const __filename = fileURLToPath(import.meta.url)
@@ -79,8 +69,6 @@ checkGIF()
 
 // const discordBotkit = require('botkit-discord')
 import './bot.js'
-import { PassThrough } from 'stream'
-import concat from 'concat-stream'
 
 function sendMessage(message, hookname) {
   console.log('Sending message "' + message + '" to ' + hookname + ' webhook')
@@ -114,7 +102,6 @@ function sendMessage(message, hookname) {
 
 app.use(urlencoded({ extended: true }))
 app.use(_json())
-app.use(express.raw({ type: 'audio/mpeg', limit: '50mb' }))
 
 app.get('/wakeup', function (request, response) {
   response.send('Wakeup successful.')
@@ -205,60 +192,6 @@ app.get('/relay', async (req, res) => {
   const response = await fetch(decodeURIComponent(url))
   const data = await response.json()
   res.json(data)
-})
-app.get('/testStream', async (req, res) => {
-  // Start the stream in test mode
-  testing = true
-  streaming = true
-
-  fetch(`${glitch}/startStream`)
-})
-app.get('/stopStream', async (req, res) => {
-  // Stop the stream
-  autoAmb.stop()
-  streaming = false
-  testing = false
-  res.send('Stream stopped')
-})
-app.get('/chunkReady/:chunk', async (req, res) => {
-  // Fetch the chunk from glitch
-  const chunk = req.params.chunk
-
-  let buffer = await new Promise((resolve, reject) => {
-    fetch(`${glitch}/chunk/${chunk}`).then((res) => {
-      if (res.ok) {
-        let incoming = new PassThrough()
-        res.body.pipe(incoming)
-        incoming.pipe(concat((data) => resolve(data)))
-      } else {
-        reject('Failed to fetch chunk')
-      }
-    })
-  })
-
-  // Save the buffer as an mp3 file
-  writeFileSync(join(__dirname, `chunk${chunk}.mp3`), buffer)
-  console.log(`Chunk ${chunk} saved at ${join(__dirname, `chunk${chunk}.mp3`)}`)
-
-  // If not streaming, and this was chunk 1, start the stream
-  if (!streaming && chunk == 1) {
-    streaming = true
-    console.log('Ready to stream')
-    autoAmb.stream(testing)
-  }
-
-  res.send('Chunk saved')
-})
-app.get('/chunk/:chunk', async (req, res) => {
-  // If chunk is 'all', return the output file
-
-  // Return the saved chunk file
-  const chunk = req.params.chunk
-  const filename = join(
-    __dirname,
-    chunk == 'all' ? 'output.mp4' : `chunk${chunk}.mp3`
-  )
-  res.sendFile(filename)
 })
 
 // Check hooks every 1000 ms
