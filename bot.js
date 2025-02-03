@@ -20,6 +20,8 @@ const __dirname = path.dirname(__filename)
 
 import './bots/clarke.js'
 import './bots/clarkeTrainer.js'
+import './bots/sharebot.js'
+
 // import './bots/autoAmb.js'
 
 /*  BOTKIT SECTION START

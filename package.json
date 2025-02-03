@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@google-cloud/local-auth": "^2.1.0",
     "concat-stream": "^2.0.0",
     "discord.js": "^14.8.0",
     "dotenv": "^16.4.5",
@@ -20,8 +21,9 @@
     "fluent-ffmpeg-multistream": "^1.0.0",
     "fs": "^0.0.1-security",
     "get-mp3-duration": "^1.0.0",
-    "googleapis": "^144.0.0",
+    "googleapis": "^105.0.0",
     "handlebars": "^4.7.7",
+    "jsdom": "^26.0.0",
     "node-fetch": "^3.3.2",
     "request": "^2.88.2",
     "stream": "^0.0.3"
