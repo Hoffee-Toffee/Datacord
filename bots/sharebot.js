@@ -16,7 +16,7 @@ import { config } from 'dotenv'
 config()
 
 const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const __dirname = join(path.dirname(__filename), '../')
 
 const client = new Client({
   intents: [
