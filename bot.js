@@ -4,12 +4,9 @@ import {
   getDocs,
   doc as _doc,
   setDoc,
-  supedb,
 } from './firebase.js'
 import { fetchUrl } from 'fetch'
 import { readFileSync, writeFileSync } from 'fs'
-import requestPkg from 'request'
-const { post } = requestPkg
 import { join } from 'path'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -18,9 +15,9 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-import './bots/clarke.js'
-import './bots/clarkeTrainer.js'
-import './bots/sharebot.js'
+// import './bots/clarke.js'
+// import './bots/clarkeTrainer.js'
+// import './bots/sharebot.js'
 
 // import './bots/autoAmb.js'
 
@@ -80,7 +77,7 @@ async function checkGIF() {
     })
   }
 
-  var currenttime = new Date()
+  const currenttime = new Date()
 
   // Send a gif every 2 hours from 8am till 2am
   if (
@@ -88,14 +85,6 @@ async function checkGIF() {
     currenttime.getMinutes() == 0 &&
     !gifSent
   ) {
-    if (currenttime.getHours() == 0) {
-      let message = checkDate(currenttime)
-
-      if (message)
-        await jigClient.channels
-          .fetch('1145973830918094848')
-          .then(async (channel) => channel.send(message))
-    }
     jigGIF()
     gifSent = true
   }
@@ -103,96 +92,6 @@ async function checkGIF() {
   else {
     gifSent = false
   }
-}
-
-function checkDate(currentDate) {
-  let event = 'Saw XI'
-  let targetDate = new Date('25 September 2025')
-
-  // Calculate the time difference in milliseconds
-  const timeDifference = targetDate - currentDate
-
-  // Calculate years, months, weeks, and days
-  const years = targetDate.getFullYear() - currentDate.getFullYear()
-  const currentYearMonth =
-    currentDate.getFullYear() * 12 + currentDate.getMonth()
-  const targetYearMonth = targetDate.getFullYear() * 12 + targetDate.getMonth()
-  const months = targetYearMonth - currentYearMonth
-  const weeks = Math.floor(timeDifference / (7 * 24 * 60 * 60 * 1000))
-  const days = Math.floor(timeDifference / (24 * 60 * 60 * 1000))
-
-  // If a year or more away (on this day)
-  if (
-    years > 0 &&
-    targetDate.getDate() === currentDate.getDate() &&
-    targetDate.getMonth() === currentDate.getMonth()
-  ) {
-    return `${years} year${years - 1 ? 's' : ''} until ${event}!`
-  }
-
-  // If 11 months or less away (on this day)
-  if (
-    months > 0 &&
-    months <= 11 &&
-    targetDate.getDate() === currentDate.getDate()
-  ) {
-    return `${months} month${months - 1 ? 's' : ''} until ${event}!`
-  }
-
-  // If a week or more away but less than a month (on this day)
-  if (
-    weeks > 0 &&
-    weeks <= 3 &&
-    targetDate.getDate() === currentDate.getDate()
-  ) {
-    return `${weeks} week${weeks - 1 ? 's' : ''} until ${event}!`
-  }
-
-  // If 5, 3, 2, or 1 day away (on this day)
-  if ([5, 3, 2, 1].includes(days)) {
-    return `${days} day${days - 1 ? 's' : ''} until ${event}!`
-  }
-
-  // If today
-  if (targetDate.toDateString() === currentDate.toDateString()) {
-    return `Woohoo! ${event} is finally here!`
-  }
-}
-
-async function checkSneeze(client) {
-  // Get current sneeze data
-  let sneezeData = await getData('sneezeData')
-
-  await client.channels.fetch('1146256683748827177').then(async (channel) => {
-    let user = await channel.guild.members.fetch('390419737915555840')
-    let presence = await user.presence
-
-    if (presence) {
-      let activities = presence.activities
-
-      if (activities.length) {
-        let sneezes = parseInt(activities[0].state.split(' ')[0])
-        let updated = activities[0].createdTimestamp
-
-        if (sneezes != sneezeData.count) {
-          let change = `${sneezes - sneezeData.count > 0 ? '+' : ''}${
-            sneezes - sneezeData.count
-          }`
-          user.send(`${change} sneezes:\n${sneezeData.count} -> ${sneezes}`)
-          sneezeData = {
-            ...sneezeData,
-            count: sneezes,
-            updated,
-          }
-          setData('sneezeData', sneezeData)
-
-          let day = new Date().toLocaleDateString('en-NZ')
-
-          setSneeze(day, change, false)
-        }
-      }
-    }
-  })
 }
 
 async function getData(field) {
@@ -219,85 +118,7 @@ function setData(field, data) {
   var fetchedData = JSON.parse(readFileSync(join(__dirname, 'local.json')))
   fetchedData[field] = data
   writeFileSync(join(__dirname, 'local.json'), JSON.stringify(fetchedData))
-
-  // If it changed the sneezeData, then use the sneezeHooks
-  if ((field = 'sneezeData')) runHooks(data)
 }
-
-async function runHooks(currentData) {
-  const hooks = await getData('hooks')
-
-  // Loop though each hook, sending the data to each
-  hooks.forEach((hook) => {
-    try {
-      const options = {
-        url: hook.webhookUrl,
-        method: 'POST',
-        json: true,
-        body: {
-          timestamp: new Date().getTime(),
-          currentData,
-        },
-      }
-
-      post(options)
-    } catch (error) {}
-  })
-}
-
-async function setSneeze(day, count = '0', confirmed = false) {
-  let sneezeData = await getData('sneezeData')
-
-  let oldCount = sneezeData.calendar[day] ? sneezeData.calendar[day].count : 0
-
-  switch (String(count).charAt(0)) {
-    case '+': // Add
-      count = oldCount + parseInt(count.slice(1))
-      break
-
-    case '-': // Minus
-      count = oldCount - parseInt(count.slice(1))
-      break
-
-    default: // Set
-      count = parseInt(count)
-      break
-  }
-
-  sneezeData.calendar[day] = {
-    count,
-    confirmed,
-  }
-
-  setData('sneezeData', sneezeData)
-}
-
-async function getSupeData(id) {
-  // Get the timeline with the given document ID
-  const docRef = collection(supedb, 'timelines')
-  const docSnap = await getDocs(docRef)
-  const doc = docSnap.docs.find((doc) => doc.id == id)
-  const final = JSON.parse(doc.data().map)
-  return final
-}
-
-async function getSupeBackupData(id) {
-  // Get the timeline with the given document ID
-  const docRef = collection(datacord, 'timelines')
-  const docSnap = await getDocs(docRef)
-  const doc = docSnap.docs.find((doc) => doc.id == id)
-  const final = JSON.parse(doc.data().map)
-  return final
-}
-
-function setSupeBackupData(id, map) {
-  // Set the timeline with the given document ID
-  const docRef = collection(datacord, 'timelines')
-  const docSnap = _doc(docRef, id)
-  setDoc(docSnap, { map: JSON.stringify(map) })
-}
-
-var linesdata = ''
 
 // Data has a set of activities that it will cycle through
 // These are all activities that Data would do/has done in the show
@@ -642,7 +463,6 @@ const interupts = [
 // Login to minutesBot and dataBot with discord.js
 // Require discord.js
 import { Client, GatewayIntentBits } from 'discord.js'
-import { time, error } from 'console'
 
 // Create the new clients instances including the intents needed for the bots like presence and guild messages
 const minutesClient = new Client({
@@ -677,140 +497,12 @@ dataClient.login(process.env.DATA_DISCORD_TOKEN)
 jigClient.login(process.env.JIG_DISCORD_TOKEN)
 
 jigClient.on('ready', (client) => {
-  var gifLoop = setInterval(() => {
+  setInterval(() => {
     checkGIF()
   }, 40000) // Every 40 seconds, check if a gif should be sent
 
   // Only start the bots after the first check is done
   checkGIF()
-})
-
-// Generate southern greetings
-function genGreeting(plural = true, user = null) {
-  var greets = ['howdy', "mornin'", 'hello', 'hiya', 'hey', 'good morning']
-  var subjects = [null, 'there']
-
-  if (plural) {
-    subjects.push('folks')
-    subjects.push("y'all")
-    subjects.push('guys')
-    subjects.push('everybody')
-  } else {
-    subjects.push('partner')
-    subjects.push('friend')
-    subjects.push('pal')
-    subjects.push('buddy')
-  }
-
-  // Get the parts of the greeting (1 in 3 chance of the subject being the user's name)
-  var g = greets[Math.floor(Math.random() * greets.length)]
-  var s =
-    user && Math.floor(Math.random() * 3) == 0
-      ? user
-      : subjects[Math.floor(Math.random() * subjects.length)]
-
-  // Check for exceptions
-  // "hiya" can't be used with "y'all", it will just be "hey"
-  if (g == 'hiya' && s == "y'all") g = 'hey'
-
-  // Generate the greeting
-  var greeting = g + (s ? ' ' + s : '')
-
-  // Return the greeting with the first letter capitalized
-  return greeting.charAt(0).toUpperCase() + greeting.slice(1)
-}
-
-// Use order and depth to create a nested JSON
-// e.g. [{depth: 0, title: A, content:a}, {depth: 1, title: B, content: b}, {depth: 2, title: C, content: c}, {depth: 1, title: D, content: d}], becomes
-// {title: A, content: a, children: [{title: B, content: b, children: [{title: C, content: c}]}, {title: D, content: d}]}
-function createNestedJSON(data) {
-  var nestedJSON = {}
-  var stack = []
-
-  data.forEach((item) => {
-    var current = nestedJSON
-    while (stack.length > 0 && item.depth <= stack[stack.length - 1].depth) {
-      stack.pop()
-    }
-    for (var i = 0; i < stack.length; i++) {
-      current = current.children[current.children.length - 1]
-    }
-    var newItem = {}
-    Object.keys(item).forEach((key) => {
-      if (key !== 'depth') newItem[key] = item[key]
-    })
-    if (!current.children) {
-      current.children = []
-    }
-    current.children.push(newItem)
-    stack.push(item)
-  })
-
-  return nestedJSON.children ? nestedJSON.children : []
-}
-
-function emailFormat(data, top = true) {
-  // Convert data into elements
-  // e.g. {title: A, content: a, children: [{title: B, content: b, children: [{title: C, content: c}]}, {title: D, content: d}]}, becomes
-  // <li><span>A</span><p>a</p><ul><li><span>B</span><p>b</p><ul><li><span>C</span><p>c</p></li></ul></li><li><span>D</span><p>d</p></li></ul></li>
-  var start = top ? '' : `<li><span>${data.title}</span><p>${data.content}</p>`
-  var end = top ? '' : '</li>'
-
-  if (top) {
-    data.forEach((item) => {
-      if (item instanceof Array) start += emailFormat(item[0], false)
-    })
-  } else if (data.children) {
-    start += '<ul>'
-    data.children.forEach((item) => {
-      start += emailFormat(item, false)
-    })
-    start += '</ul>'
-  }
-
-  return start + end
-}
-
-// Run when each client is ready
-minutesClient.on('ready', async (client) => {
-  // Run the timer loop right away
-  timer(client, true)
-
-  // Set a timeout to wait 1.111 seconds for every timer to be set
-  var timecheck = await getData('timers').then((timers) => {
-    return timers.length
-  })
-  console.log('Waiting ' + timecheck + ' seconds for timers to be set...')
-
-  setTimeout(() => {
-    // Run the timer loop just over every second
-    setInterval(() => {
-      timer(client)
-    }, 800)
-    console.log('Timers set and are being checked every 800ms.')
-  }, timecheck * 1111)
-
-  // Set the bot's presence
-  minutesClient.user.setPresence({
-    activities: [
-      {
-        name: 'over the Sacred Timelines',
-        type: 3,
-      },
-    ],
-  })
-
-  // Get midnight tonight
-  var reportTime = new Date()
-  reportTime.setHours(24, 0, 0, -1)
-
-  // Get the ms until then
-  let msLeft = reportTime - Date.now()
-
-  // Set a timeout to run the 'sendReport' function
-  setTimeout(() => {
-    sendReport(client, reportTime)
-  }, msLeft)
 })
 
 dataClient.on('ready', () => {
@@ -822,11 +514,6 @@ dataClient.on('ready', () => {
 })
 
 minutesClient.on('messageCreate', async (message) => {
-  //
-  if (message.content == 'RUN SEND REPORT') {
-    sendReport(minutesClient, '11/01/2023')
-    return
-  }
   // Exit if a bot
   if (message.author.bot) return
 
@@ -852,7 +539,7 @@ minutesClient.on('messageCreate', async (message) => {
         msg.channel.send(
           `GIF has been ${
             removing ? 'removed from' : 'added to'
-          } the blacklist.`
+          } the blacklist.`,
         )
 
         // Update the blacklist
@@ -860,159 +547,13 @@ minutesClient.on('messageCreate', async (message) => {
       })
       .catch((err) => {
         if (message.reference == null) {
-          msg.channel.send(
-            'This command must be used in a reply to the GIF in question.'
+          message.channel.send(
+            'This command must be used in a reply to the GIF in question.',
           )
         } else {
           console.log(err)
         }
       })
-  }
-  // Sneeze update
-  else if (message.channel.id == process.env.MINUTES_ID) {
-    // Try to get the reply
-    message.channel.messages
-      .fetch(message.reference.messageId)
-      .then(async (msg) => {
-        console.log(msg)
-
-        let embed
-
-        try {
-          embed = msg.embeds[0].data
-
-          if (
-            embed &&
-            !embed.title.endsWith('✅') &&
-            ['-', '+'].includes(message.content[0])
-          ) {
-            let sneezeData = await getData('sneezeData')
-
-            let day = new Date(embed.timestamp).toLocaleDateString('en-NZ')
-            let today = new Date().toLocaleDateString('en-NZ')
-
-            let count = parseInt(embed.title.split(' ')[0])
-            let todayCount = sneezeData.calendar[today].count
-
-            let change = parseInt(message.content)
-
-            count += change
-            todayCount -= change
-            ;(embed.title = `${count} sneeze${
-              count != 1 ? 's' : ''
-            } recorded today`),
-              message.edit({ embeds: [embed] })
-
-            setSneeze(day, count, false)
-            setSneeze(today, todayCount, false)
-
-            msg.channel.send(
-              `${Math.abs(change)} sneeze${
-                Math.abs(change) != 1 ? 's' : ''
-              } transferred from ${
-                change >= 0 ? `${today} to ${day}` : `${day} to ${today}`
-              }.`
-            )
-          }
-        } catch (error) {
-          console.error(error)
-        }
-      })
-  }
-})
-
-let colors = {
-  green: 0x008a0e,
-  blue: 0x1071e5,
-  yellow: 0xfcce14,
-  orange: 0xcc4e00,
-  red: 0xe81313,
-  black: 0x000000,
-}
-
-async function sendReport(client, time) {
-  // Get the current time and date
-  var now = new Date(time)
-  var closeTime = now.toISOString()
-
-  // Get the data for this day
-  let sneezeData = await getData('sneezeData')
-  let total = sneezeData.count
-  let count = 0
-
-  try {
-    count = sneezeData.calendar[now.toLocaleDateString('en-NZ')].count
-  } catch (err) {
-    console.error(err)
-  }
-
-  var embed = {
-    embeds: [
-      {
-        type: 'rich',
-        title: `${count} sneeze${count != 1 ? 's' : ''} recorded today`,
-        description: `Please confirm the count for this day, or reply with a change or new count`,
-        color: colors.blue,
-        timestamp: closeTime,
-        footer: {
-          text: `Total: ${total}`,
-        },
-      },
-    ],
-  }
-
-  let channel = client.channels.cache.get(process.env.MINUTES_ID)
-
-  channel.send(embed).then((msg) => msg.react('👍'))
-
-  // Prepare for next week
-
-  // Get midnight tonight
-  var reportTime = new Date()
-  reportTime.setHours(24, 0, 0, -1)
-
-  // Get the ms until then
-  let msLeft = reportTime - Date.now()
-
-  // Set a timeout to run the 'sendReport' function
-  setTimeout(() => {
-    sendReport(client, reportTime)
-  }, msLeft)
-}
-
-minutesClient.on('messageReactionAdd', async (reaction, user) => {
-  let msg = reaction.message
-
-  if (msg.author.id === user.id) {
-    // the reaction is coming from the same user who posted the message
-    return
-  }
-
-  let embed
-
-  try {
-    embed = msg.embeds[0].data
-  } catch (error) {
-    console.error(error)
-  }
-
-  if (reaction.emoji.name == '👍') {
-    if (!embed.title.endsWith('✅')) {
-      embed.color = colors.green
-      embed.title = `${embed.title}\n✅`
-      delete embed.description
-
-      msg.edit({ embeds: [embed] })
-
-      let day = new Date(embed.timestamp).toLocaleDateString('en-NZ')
-      // reaction.message.channel.send(parseInt(embed.title.split(' ')[0]))
-
-      let count = embed.title.split(' ')[0]
-
-      setSneeze(day, count, true)
-    }
-
-    msg.reactions.removeAll()
   }
 })
 
@@ -1044,7 +585,7 @@ jigClient.on('messageCreate', async (message) => {
       msg.channel.send(
         `This GIF will ${
           removing ? 'no longer' : 'now'
-        } be excluded from selection.`
+        } be excluded from selection.`,
       )
 
       jiggy.blacklist = blacklist
@@ -1054,9 +595,9 @@ jigClient.on('messageCreate', async (message) => {
     })
     .catch((err) => {
       if (message.reference == null) {
-        msg.channel
+        message.channel
           .send('This command must be used in reply to a GIF.')
-          .finally((reply) => {
+          .then((reply) => {
             setTimeout(function () {
               reply.delete()
             }, 5000)
@@ -1087,7 +628,7 @@ async function jigGIF() {
         '&key=' +
         process.env.TENOR_KEY +
         '&client_key=gif_bot&limit=10&random=true'
-      var response = fetchUrl(url, function (error, meta, body) {
+      fetchUrl(url, function (error, meta, body) {
         var data = JSON.parse(body.toString())
         // Retrieve the first non-blacklisted GIF
         var gif = data.results.find((result) => !jigBL.includes(result.itemurl))
@@ -1171,8 +712,8 @@ function dataPresence(trigger = 'reset') {
   console.log(`Shift: ${onDuty ? shift : 'off'} duty`)
   console.log(
     `Shift ends in ${Math.floor(endTime / 1000 / 60 / 60)} hours, ${Math.floor(
-      (endTime / 1000 / 60) % 60
-    )} minutes and ${Math.floor((endTime / 1000) % 60)} seconds.`
+      (endTime / 1000 / 60) % 60,
+    )} minutes and ${Math.floor((endTime / 1000) % 60)} seconds.`,
   )
 
   // Set Data's activity if he is on duty, he will be doing his bridge dutys by default
@@ -1224,10 +765,10 @@ function dataPresence(trigger = 'reset') {
     // Log the time Data's activity ends (hours, minutes and seconds)
     console.log(
       `Activity ends in ${Math.floor(
-        (duration + offset) / 1000 / 60 / 60
+        (duration + offset) / 1000 / 60 / 60,
       )} hours, ${Math.floor(
-        ((duration + offset) / 1000 / 60) % 60
-      )} minutes and ${Math.floor(((duration + offset) / 1000) % 60)} seconds.`
+        ((duration + offset) / 1000 / 60) % 60,
+      )} minutes and ${Math.floor(((duration + offset) / 1000) % 60)} seconds.`,
     )
   }
   // If not then check if it's time for First Contact celebrations (on the 6th of April in the first 5 mins of 4pm and if not during an emergency)
@@ -1258,10 +799,10 @@ function dataPresence(trigger = 'reset') {
     // Log the time Data's activity ends (hours, minutes and seconds)
     console.log(
       `Activity ends in ${Math.floor(
-        (duration + offset) / 1000 / 60 / 60
+        (duration + offset) / 1000 / 60 / 60,
       )} hours, ${Math.floor(
-        ((duration + offset) / 1000 / 60) % 60
-      )} minutes and ${Math.floor(((duration + offset) / 1000) % 60)} seconds.`
+        ((duration + offset) / 1000 / 60) % 60,
+      )} minutes and ${Math.floor(((duration + offset) / 1000) % 60)} seconds.`,
     )
   }
   // If not then check if it's time for the Captain Picard Day celebrations and competition (on the 17th of July in the first 5 mins of 4pm and if not during an emergency)
@@ -1292,10 +833,10 @@ function dataPresence(trigger = 'reset') {
     // Log the time Data's activity ends (hours, minutes and seconds)
     console.log(
       `Activity ends in ${Math.floor(
-        (duration + offset) / 1000 / 60 / 60
+        (duration + offset) / 1000 / 60 / 60,
       )} hours, ${Math.floor(
-        ((duration + offset) / 1000 / 60) % 60
-      )} minutes and ${Math.floor(((duration + offset) / 1000) % 60)} seconds.`
+        ((duration + offset) / 1000 / 60) % 60,
+      )} minutes and ${Math.floor(((duration + offset) / 1000) % 60)} seconds.`,
     )
   }
   // If not then pick a random activity
@@ -1306,23 +847,16 @@ function dataPresence(trigger = 'reset') {
     })
 
     // Now filter out all activities that are not the same as Data's current activity
-    activities = activities.filter((activity) => {
+    activities = activities.filter((act) => {
       // Check if string and doesn't match
-      if (typeof activity.name == 'string' && activity.name != activity)
-        return true
-      // Check if array and doesn't contain the activity
-      else if (
-        typeof activity.name == 'object' &&
-        !activity.name.includes(activity)
-      )
-        return true
-      // If it is an array, then drop the matching element and return true
-      else if (typeof activity.name == 'object') {
-        activity.name = activity.name.splice(activity.name.indexOf(activity), 1)
-        return true
+      if (typeof act.name == 'string') return act.name !== activity
+      // Check if array: remove current activity name if present, exclude if no names remain
+      else if (typeof act.name == 'object') {
+        const idx = act.name.indexOf(activity)
+        if (idx !== -1) act.name.splice(idx, 1)
+        return act.name.length > 0
       }
-      // Otherwise, return false
-      else return false
+      return false
     })
 
     // Now, pick a random activity from the filtered list
@@ -1351,12 +885,12 @@ function dataPresence(trigger = 'reset') {
     // Log the time Data's activity ends (hours, minutes and seconds)
     console.log(
       `Activity ends in ${Math.floor(
-        (activity.duration + offset) / 1000 / 60 / 60
+        (activity.duration + offset) / 1000 / 60 / 60,
       )} hours, ${Math.floor(
-        ((activity.duration + offset) / 1000 / 60) % 60
+        ((activity.duration + offset) / 1000 / 60) % 60,
       )} minutes and ${Math.floor(
-        ((activity.duration + offset) / 1000) % 60
-      )} seconds.`
+        ((activity.duration + offset) / 1000) % 60,
+      )} seconds.`,
     )
   }
 }
@@ -1433,167 +967,14 @@ function interuptEvent() {
     console.log('Interrupt event initiated.')
     console.log(
       `Interrupt ends in ${Math.floor(
-        (interrupt.duration + offset) / 1000 / 60 / 60
+        (interrupt.duration + offset) / 1000 / 60 / 60,
       )} hours, ${Math.floor(
-        ((interrupt.duration + offset) / 1000 / 60) % 60
+        ((interrupt.duration + offset) / 1000 / 60) % 60,
       )} minutes and ${Math.floor(
-        ((interrupt.duration + offset) / 1000) % 60
-      )} seconds.`
+        ((interrupt.duration + offset) / 1000) % 60,
+      )} seconds.`,
     )
   } else {
     console.log('No interrupt event.')
   }
-}
-
-async function timer(client, sort = false) {
-  // Get the timers
-  // It will be in the following format:
-  // [
-  //   {
-  //     "id": (string), // The ID of the message that will be updated
-  //     "channel": (string), // The ID of the channel that the message is in
-  //     "title": (string), // The title of the event that is being counted down to
-  //     "datetime": (string), // The datetime that the event will occur
-  //     "estimated": (boolean) // Whether the datetime is estimated or not
-  //   },
-  //   ...
-  // ]
-
-  var timecheck = await getData('timers')
-
-  var tcText = JSON.stringify(timecheck)
-
-  // If sort is true, then sort the events by datetime
-  if (sort) {
-    // Sort the events by datetime
-    var sorted = timecheck.sort((a, b) => {
-      return new Date(b.datetime) - new Date(a.datetime)
-    })
-
-    // If the sorted array is different to the original array, then update the timers
-    if (JSON.stringify(sorted) !== JSON.stringify(timecheck)) {
-      timecheck = sorted
-    }
-  }
-
-  // Loop through each event
-  // The client is minutesClient, which is the bot that sends the messages
-  timecheck = timecheck.filter(async (event) => {
-    // Get the message that will be updated
-    var message = null
-    // First get the message as if it's a server
-    try {
-      await minutesClient.channels
-        .fetch(event.channel)
-        .then((channel) =>
-          channel.messages.fetch(event.id).then((msg) => (message = msg))
-        )
-    } catch (error) {
-      console.error(error)
-    }
-
-    var date = new Date()
-
-    // Get the time difference between now and the event
-    var difference = new Date(event.datetime) - date
-
-    // If the event has already happened, then delete the message and the event from the array
-    if (difference < 1000) {
-      try {
-        message.delete()
-      } catch (error) {
-        console.error(error)
-      }
-
-      var newTimers = (await getData('timers')) || []
-
-      newTimers.splice(newTimers.indexOf(event), 1)
-
-      setData('timers', newTimers)
-
-      return false
-    }
-    // Otherwise, update the message
-    else {
-      // Only display the uppermost unit (years, months, days, hours, minutes or seconds)
-      // Seconds will be in units of 10 when paired with minutes, otherwise in units of 1
-      var messages = [
-        Math.floor(difference / (1000 * 3600 * 24 * 365)) +
-          ' years and ' +
-          Math.floor((difference / (1000 * 3600 * 24 * 30)) % 12) +
-          ' months',
-        Math.floor(difference / (1000 * 3600 * 24 * 30)) +
-          ' months and ' +
-          Math.floor((difference / (1000 * 3600 * 24 * 7)) % 4) +
-          ' weeks',
-        Math.floor(difference / (1000 * 3600 * 24 * 7)) +
-          ' weeks and ' +
-          Math.floor((difference / (1000 * 3600 * 24)) % 7) +
-          ' days',
-        Math.floor(difference / (1000 * 3600 * 24)) +
-          ' days and ' +
-          Math.floor((difference / (1000 * 3600)) % 24) +
-          ' hours',
-        Math.floor(difference / (1000 * 3600)) +
-          ' hours and ' +
-          Math.floor((difference / (1000 * 60)) % 60) +
-          ' minutes',
-        Math.floor(difference / (1000 * 60)) +
-          ' minutes and ' +
-          Math.floor(((difference / 1000) % 60) / 10) +
-          '0 seconds',
-        Math.floor(difference / 1000) + ' seconds',
-      ]
-
-      // Set diffmessage to the first message that does not begin with "0 "
-      var diffmessage = messages.find((message) => !message.startsWith('0 '))
-
-      // If the message begins with "1 ", replace the "s and " with " and "
-      if (diffmessage.startsWith('1 '))
-        diffmessage = diffmessage.replace('s and ', ' and ')
-
-      // If the message contains " and 1 ", delete the final letter
-      if (diffmessage.includes(' and 1 '))
-        diffmessage = diffmessage.slice(0, -1)
-      // Else if the message contains " and 0", delete everything after (and including) " and 0"
-      else if (diffmessage.includes(' and 0'))
-        diffmessage = diffmessage.slice(0, diffmessage.indexOf(' and 0'))
-
-      var text = `**${event.title}**\n... in ${
-        event.estimated ? 'approximately ' : ''
-      }${diffmessage}`
-
-      // Try to update the message, if that fails then send a new message and update the event in the array
-      try {
-        // Only update the message if the text is different, but not undefined
-        if (message.content !== undefined && message.content !== text)
-          message.edit(text)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-    return true
-  })
-
-  // If the timers need to be updated, then update them
-  if (tcText !== JSON.stringify(timecheck)) setData('timers', timecheck)
-
-  // Check/Update the sneeze count
-  checkSneeze(client)
-}
-
-async function getPeople() {
-  // Get the 'notify' data from the users from firebase
-  const docRef = collection(supedb, 'users')
-  const docSnap = await getDocs(docRef)
-  const docs = docSnap.docs.filter((doc) => doc.data().notify)
-  const final = docs.map((doc) => {
-    return {
-      name: doc.data().name,
-      email: doc.data().email,
-      discord: doc.data().discord || null,
-      watching: doc.data().notify,
-    }
-  })
-  return final
 }
