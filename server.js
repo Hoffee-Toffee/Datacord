@@ -4,51 +4,8 @@ dotenv.config()
 import path from 'path'
 import { fileURLToPath } from 'url'
 import Discord from 'discord.js'
-
-// define __dirname
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-var gifSent = false
-var gifQueries = [
-  {
-    query: 'dua lipa',
-    weight: 3, // 3
-  },
-  {
-    query: 'jess bush star trek nurse christine chapel',
-    weight: 5, // 2
-  },
-  {
-    query: 'death on the nile emma mackey jacqueline de bellefort',
-    weight: 7, // 2
-  },
-  {
-    query: 'sylvie sophia di martino',
-    weight: 9, // 2
-  },
-  {
-    query: 'gal gadot',
-    weight: 11, // 2
-  },
-  {
-    query: 'ava max',
-    weight: 13, // 2
-  },
-  {
-    query: 'emma mackey',
-    weight: 14, // 1
-  },
-  {
-    query: 'shin hati',
-    weight: 17, // 3
-  },
-]
-
 import { readFileSync, writeFileSync } from 'fs'
 import express, { urlencoded, json as _json } from 'express'
-const app = express()
-import { fetchUrl } from 'fetch'
-
 import {
   collection,
   datacord,
@@ -58,12 +15,13 @@ import {
 } from './firebase.js'
 import { join } from 'path'
 
-setInterval(checkGIF, 40000) // Every 40 seconds, check if a gif should be sent
+// define __dirname
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const app = express()
 
 // Only start the bots after the first check is done
-checkGIF()
-
-// const discordBotkit = require('botkit-discord')
 import './bot.js'
 
 function sendMessage(message, hookname) {
@@ -104,6 +62,7 @@ app.get('/wakeup', function (request, response) {
   response.send('Wakeup successful.')
   console.log(`Pinged at ${new Date()}`)
 })
+
 app.get('/notify', function (request, response) {
   // Send a message to the req
   var message = request.query.message
@@ -111,9 +70,11 @@ app.get('/notify', function (request, response) {
   sendMessage(message, hook)
   response.send('Message sent')
 })
+
 app.get('/local', function (request, response) {
   response.send(readFileSync(join(__dirname, 'local.json')))
 })
+
 app.get('/update', async function (request, response) {
   var field = request.query.field
 
@@ -127,78 +88,11 @@ app.get('/update', async function (request, response) {
   writeFileSync(join(__dirname, 'local.json'), JSON.stringify(fetchedData))
   response.send(`Updated '${field}'`)
 })
+
 app.post('/test', function (req, res) {
   console.log(req.body)
   res.sendStatus(200)
 })
-
-function getGif() {
-  // Check if time for Sunday GIF
-  const currenttime = new Date()
-
-  if (currenttime.getDay() == 0 && currenttime.getHours() == 0) {
-    // Send a special gif
-    sendMessage(
-      [
-        'https://tenor.com/view/sylvie-sunday-marvel-loki-gif-22319892',
-        'https://tenor.com/view/it%27s-shin-sunday-it%27s-shin-shin-sunday-star-wars-shin-hati-star-wars-shin-sunday-gif-17221787885420664774',
-      ][Math.floor(Math.random() * 2)],
-      'GIF',
-    )
-    return
-  }
-
-  // Get a random number between 0 and the weight of the last gif
-  var random = Math.floor(
-    Math.random() * gifQueries[gifQueries.length - 1].weight,
-  )
-
-  // Get a random query from the array based on the random number
-  var query = gifQueries.find((x) => random <= x.weight - 1).query
-
-  // Use fetch and the Giphy API to get a random gif
-  var url =
-    'https://tenor.googleapis.com/v2/search?q=' +
-    query +
-    '&key=' +
-    process.env.TENOR_KEY +
-    '&client_key=gif_bot&limit=10&random=true'
-  fetchUrl(url, async function (error, meta, body) {
-    var data = JSON.parse(body.toString())
-    // Retrieve the first non-blacklisted GIF
-    var blacklist = await getData('blacklist')
-
-    var gif = data.results.find((result) => !blacklist.includes(result.itemurl))
-
-    if (gif) sendMessage(gif.itemurl, 'GIF')
-  })
-}
-
-function checkGIF() {
-  const currenttime = new Date()
-
-  console.log(
-    'Checking for gif, current time is ' +
-      currenttime.getHours() +
-      ':' +
-      currenttime.getMinutes(),
-  )
-
-  // Send a gif every 2 hours from 8am till 2am
-  if (
-    ![3, 4, 5, 6, 7].includes(currenttime.getHours()) &&
-    currenttime.getMinutes() == 0 &&
-    !gifSent
-  ) {
-    console.log('Time matches, sending gif')
-    getGif()
-    gifSent = true
-  }
-  // Reset the gifSent variable when a gif hasn't been sent
-  else {
-    gifSent = false
-  }
-}
 
 async function getData(field) {
   // Get the data from local.json or from firebase if it's not there (and save it to local.json)
@@ -225,5 +119,10 @@ function setData(field, data) {
   fetchedData[field] = data
   writeFileSync(join(__dirname, 'local.json'), JSON.stringify(fetchedData))
 }
+
+const port = process.env.PORT || 3000
+const listener = app.listen(port, () => {
+  console.log('Your app is listening on port ' + listener.address().port)
+})
 
 export default app
